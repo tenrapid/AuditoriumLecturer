@@ -48,7 +48,8 @@
 
 - (void)sendSlide:(Slide *)slide
 {
-	NSDictionary *currentSlide = [slide dictionaryWithValuesForKeys:[NSArray arrayWithObjects:@"number", @"title", @"body", @"notes", nil] ];
+	NSArray *keys = [NSArray arrayWithObjects:@"number", @"identifier", @"title", @"body", @"notes", nil];
+	NSDictionary *currentSlide = [slide dictionaryWithValuesForKeys:keys];
 	NSLog(@"%@", currentSlide);
 }
 

@@ -11,11 +11,12 @@
 @interface Slide : NSObject
 
 @property (assign) NSInteger number;
+@property (assign) NSInteger identifier;
 @property (retain) NSString *title;
 @property (retain) NSString *body;
 @property (retain) NSString *notes;
 
-- (id)initWithNumber:(NSInteger)number title:(NSString *)title body:(NSString *)body notes:(NSString *)notes;
+- (id)initWithNumber:(NSInteger)number identifier:(NSInteger)identifier title:(NSString *)title body:(NSString *)body notes:(NSString *)notes;
 
 @end
 

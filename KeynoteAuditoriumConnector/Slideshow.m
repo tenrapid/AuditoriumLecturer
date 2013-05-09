@@ -61,7 +61,7 @@
 			KeynoteSlide *slide = [slideshow currentSlide];
 
 			slideshowPlaying = [keynote playing];
-			slideshowCurrentSlide = [[Slide alloc] initWithNumber:[slide slideNumber] title:[slide title] body:[slide body] notes:[slide notes]];
+			slideshowCurrentSlide = [[Slide alloc] initWithNumber:[slide slideNumber] identifier:[slide id] title:[slide title] body:[slide body] notes:[slide notes]];
 		}
 		else {
 			slideshowPlaying = NO;
@@ -82,12 +82,14 @@
 			PowerpointSlideShowView *slideshowView = [[presentation slideShowWindow] slideshowView];
 			slideshowPlaying = [slideshowView currentShowPosition] > 0;
 
+			NSInteger slideID = 0;
 			NSString *slideNotes = nil;
 			if (slideshowPlaying) {
 				PowerpointSlide *slide = [[presentation slides] objectAtIndex:([slideshowView currentShowPosition] - 1)];
+				slideID = [slide slideID];
 				slideNotes = [[[[[[slide notesPage] shapes] objectAtIndex:1] textFrame] textRange] content];
 			}
-			slideshowCurrentSlide = [[Slide alloc] initWithNumber:[slideshowView currentShowPosition] title:nil body:nil notes:slideNotes];
+			slideshowCurrentSlide = [[Slide alloc] initWithNumber:[slideshowView currentShowPosition] identifier:slideID title:nil body:nil notes:slideNotes];
 
 			// geht nicht wenn slideminiaturen aktiv
 //			for (PowerpointDocumentWindow *w in presentation.documentWindows) {

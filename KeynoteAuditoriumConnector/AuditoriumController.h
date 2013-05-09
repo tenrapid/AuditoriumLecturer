@@ -18,8 +18,6 @@
 
 	IBOutlet NSToolbarItem *sendToolbarItem;
 	IBOutlet NSPopUpButton *eventPopUpButton;
-
-	BOOL sending;
 }
 
 - (IBAction)sendToolbarItemPressed:(id)sender;
