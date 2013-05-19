@@ -24,7 +24,7 @@
 	self = [super init];
     if (self) {
 		systemEventsApplication = [[SBApplication applicationWithBundleIdentifier:@"com.apple.SystemEvents"] retain];
-		updateTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(update:) userInfo:nil repeats:YES];
+		updateTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(update:) userInfo:nil repeats:YES];
 		[self update:updateTimer];
     }
     return self;
@@ -68,7 +68,7 @@
 			slideshowCurrentSlide = nil;
 		}
 	}
-	else if (powerpointRunning) {
+	if (powerpointRunning && !slideshowDocument) {
 		PowerpointApplication *powerpoint = [SBApplication applicationWithBundleIdentifier:@"com.microsoft.Powerpoint"];
 
 		if (![powerpoint respondsToSelector:@selector(activePresentation)]) {
@@ -82,19 +82,29 @@
 			PowerpointSlideShowView *slideshowView = [[presentation slideShowWindow] slideshowView];
 			slideshowPlaying = [slideshowView currentShowPosition] > 0;
 
+			PowerpointSlide *slide = nil;
+			NSInteger slideNumber = 0;
 			NSInteger slideID = 0;
 			NSString *slideNotes = nil;
+
 			if (slideshowPlaying) {
-				PowerpointSlide *slide = [[presentation slides] objectAtIndex:([slideshowView currentShowPosition] - 1)];
+				slideNumber = [slideshowView currentShowPosition];
+				slide = [[presentation slides] objectAtIndex:slideNumber - 1];
+			}
+			else {
+				// geht nicht wenn slideminiaturen aktiv
+				slide = [[(PowerpointDocumentWindow *)[[presentation documentWindows] objectAtIndex:0] view] slide];
+				slideNumber = [slide slideNumber];
+			}
+
+			if (slideNumber) {
 				slideID = [slide slideID];
 				slideNotes = [[[[[[slide notesPage] shapes] objectAtIndex:1] textFrame] textRange] content];
+				slideshowCurrentSlide = [[Slide alloc] initWithNumber:slideNumber identifier:slideID title:nil body:nil notes:slideNotes];
 			}
-			slideshowCurrentSlide = [[Slide alloc] initWithNumber:[slideshowView currentShowPosition] identifier:slideID title:nil body:nil notes:slideNotes];
-
-			// geht nicht wenn slideminiaturen aktiv
-//			for (PowerpointDocumentWindow *w in presentation.documentWindows) {
-//				NSLog(@"%ld", (long)[[[w view] slide] slideNumber]);
-//			}
+			else {
+				slideshowCurrentSlide = nil;
+			}
 		}
 		else {
 			slideshowCurrentSlide = nil;
@@ -103,7 +113,7 @@
 	}
 
 	if ((![slideshowDocument isEqualToString:self.document] && !(slideshowDocument == nil && self.document == nil))
-		|| (slideshowDocument && slideshowCurrentSlide.number != self.currentSlide.number)) {
+		|| (slideshowDocument && slideshowCurrentSlide && slideshowCurrentSlide.number != self.currentSlide.number)) {
 		self.document = slideshowDocument;
 		self.playing = slideshowPlaying;
 		self.currentSlide = slideshowCurrentSlide;
