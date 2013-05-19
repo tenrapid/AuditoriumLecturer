@@ -28,16 +28,12 @@
 @implementation AuditoriumController
 
 @synthesize auditoriumEvents;
+@synthesize currentAuditoriumEvent;
 @synthesize sending;
 @synthesize window;
 
 - (void)awakeFromNib
 {
-	if (self.window != nil) {
-		[window setLevel:NSFloatingWindowLevel];
-		return;
-	}
-
 	sending = NO;
 	[sendToolbarItem setEnabled:NO];
 	[eventPopUpButton setEnabled:NO];
@@ -45,8 +41,11 @@
 	[slideshow addObserver:self forKeyPath:@"currentSlide" options:NSKeyValueObservingOptionNew context:nil];
 	[auditorium addObserver:self forKeyPath:@"loggedIn" options:NSKeyValueObservingOptionNew context:nil];
 	[self addObserver:self forKeyPath:@"sending" options:NSKeyValueObservingOptionNew context:nil];
-	
-	[NSBundle loadNibNamed:@"EditPresentation" owner:self];
+	[self addObserver:self forKeyPath:@"currentAuditoriumEvent" options:NSKeyValueObservingOptionNew context:nil];
+
+	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+	[notificationCenter addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:[NSApp mainWindow]];
+	[notificationCenter addObserver:self selector:@selector(windowDidResignKey:) name:NSWindowDidResignKeyNotification object:[NSApp mainWindow]];
 }
 
 - (void)dealloc
@@ -54,6 +53,8 @@
 	[slideshow removeObserver:self forKeyPath:@"currentSlide"];
 	[auditorium removeObserver:self forKeyPath:@"loggedIn"];
 	[self removeObserver:self forKeyPath:@"sending"];
+	[self removeObserver:self forKeyPath:@"currentAuditoriumEvent"];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[auditoriumEvents release];
 	[super dealloc];
 }
@@ -75,6 +76,7 @@
 			[eventPopUpButton setEnabled:NO];
 			[eventPopUpButton removeAllItems];
 			self.auditoriumEvents = nil;
+			self.currentAuditoriumEvent = nil;
 		}
 	}
 	else if ([keyPath isEqualToString:@"sending"]) {
@@ -88,6 +90,12 @@
 			[sendToolbarItem setImage:[NSImage imageNamed:@"TB3_Record-Active"]];
 			[pulsingTimer invalidate];
 			pulsingTimer = nil;
+		}
+	}
+	else if ([keyPath isEqualToString:@"currentAuditoriumEvent"]) {
+		[sendToolbarItem setEnabled:self.currentAuditoriumEvent != nil];
+		if (self.currentAuditoriumEvent == nil) {
+			self.sending = NO;
 		}
 	}
 }
@@ -117,13 +125,14 @@
 
 - (IBAction)eventPopUpButtonPressed:(id)sender
 {
-	[sendToolbarItem setEnabled:[eventPopUpButton indexOfSelectedItem] > 0];
-	if ([eventPopUpButton indexOfSelectedItem] == 0) {
-		self.sending = NO;
+	if ([eventPopUpButton indexOfSelectedItem] > 0) {
+		self.currentAuditoriumEvent = [self.auditoriumEvents objectAtIndex:[eventPopUpButton indexOfSelectedItem] - 1];
+		[auditorium fetchQuestionsForEvent:self.currentAuditoriumEvent];
+	}
+	else {
+		self.currentAuditoriumEvent = nil;
 	}
 }
-
-#pragma mark <NSWindowDelegate>
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
 {
@@ -133,16 +142,6 @@
 - (void)windowDidResignKey:(NSNotification *)notification
 {
 	[sendToolbarItem setEnabled:NO];
-}
-
-- (void)windowDidResignMain:(NSNotification *)notification
-{
-//	[window setLevel:NSFloatingWindowLevel];
-}
-
-- (void)windowDidBecomeMain:(NSNotification *)notification
-{
-//	[window setLevel:NSNormalWindowLevel];
 }
 
 @end

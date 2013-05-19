@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2061" systemVersion="11G63" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Event" syncable="YES"/>
+    <entity name="Question" representedClassName="Question" syncable="YES">
+        <attribute name="order" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="slideIdentifier" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="text" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Event" positionX="160" positionY="192" width="128" height="45"/>
+        <element name="Question" positionX="0" positionY="0" width="128" height="90"/>
+    </elements>
+</model>

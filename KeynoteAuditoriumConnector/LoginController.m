@@ -35,7 +35,7 @@
 		return;
 	}
 	
-	[notLoggedInBox.superview addSubview:loggedInBox];
+	[notLoggedInBox.superview addSubview:loggedInBox positioned:NSWindowAbove relativeTo:notLoggedInBox];
 	[loggedInBox setFrame:notLoggedInBox.frame];
 	[loggedInBox setHidden:YES];
 
@@ -62,7 +62,7 @@
 	[username selectText:self];
 	[loginDialogErrorMessage setHidden:YES];
 	[self controlTextDidChange:nil];
-	[NSApp beginSheet:loginDialog modalForWindow:[NSApp mainWindow] modalDelegate:self didEndSelector:@selector(loginDialoDidEnd:returnCode:contextInfo:) contextInfo:nil];
+	[NSApp beginSheet:loginDialog modalForWindow:[NSApp mainWindow] modalDelegate:self didEndSelector:@selector(loginDialogDidEnd:returnCode:contextInfo:) contextInfo:nil];
 }
 
 - (IBAction)loginDialogLoginButtonPressed:(id)sender
@@ -81,7 +81,7 @@
 	[NSApp endSheet:loginDialog returnCode:NSCancelButton];
 }
 
-- (void)loginDialoDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
+- (void)loginDialogDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
 {
 	[sheet orderOut:self];
 }
