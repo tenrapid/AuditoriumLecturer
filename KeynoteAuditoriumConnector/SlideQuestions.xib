@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">11G63b</string>
+		<string key="IBDocument.SystemVersion">11G63</string>
 		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
 		<string key="IBDocument.AppKitVersion">1138.51</string>
 		<string key="IBDocument.HIToolboxVersion">569.00</string>
@@ -67,7 +67,6 @@
 														<int key="NSvFlags">266</int>
 														<string key="NSFrame">{{11, 100}, {333, 320}}</string>
 														<reference key="NSSuperview" ref="217165355"/>
-														<reference key="NSWindow"/>
 														<reference key="NSNextKeyView" ref="776931057"/>
 														<string key="NSReuseIdentifierKey">_NS:9</string>
 														<string key="NSClassName">SlideQuestionsView</string>
@@ -77,7 +76,6 @@
 														<int key="NSvFlags">266</int>
 														<string key="NSFrame">{{15, 460}, {326, 14}}</string>
 														<reference key="NSSuperview" ref="217165355"/>
-														<reference key="NSWindow"/>
 														<reference key="NSNextKeyView" ref="833449134"/>
 														<string key="NSReuseIdentifierKey">_NS:1535</string>
 														<bool key="NSEnabled">YES</bool>
@@ -125,7 +123,6 @@
 														</set>
 														<string key="NSFrame">{{19, 439}, {14, 16}}</string>
 														<reference key="NSSuperview" ref="217165355"/>
-														<reference key="NSWindow"/>
 														<reference key="NSNextKeyView" ref="668041487"/>
 														<bool key="NSEnabled">YES</bool>
 														<object class="NSImageCell" key="NSCell" id="863249449">
@@ -147,7 +144,6 @@
 														<int key="NSvFlags">268</int>
 														<string key="NSFrame">{{36, 434}, {34, 22}}</string>
 														<reference key="NSSuperview" ref="217165355"/>
-														<reference key="NSWindow"/>
 														<reference key="NSNextKeyView" ref="768251953"/>
 														<string key="NSReuseIdentifierKey">_NS:1535</string>
 														<bool key="NSEnabled">YES</bool>
@@ -180,8 +176,7 @@
 														<int key="NSvFlags">293</int>
 														<string key="NSFrame">{{83, 48}, {189, 25}}</string>
 														<reference key="NSSuperview" ref="217165355"/>
-														<reference key="NSWindow"/>
-														<reference key="NSNextKeyView" ref="52159252"/>
+														<reference key="NSNextKeyView"/>
 														<string key="NSReuseIdentifierKey">_NS:9</string>
 														<bool key="NSEnabled">YES</bool>
 														<object class="NSButtonCell" key="NSCell" id="956766114">
@@ -211,14 +206,12 @@
 												</array>
 												<string key="NSFrameSize">{354, 480}</string>
 												<reference key="NSSuperview" ref="138178096"/>
-												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="908532512"/>
 												<string key="NSReuseIdentifierKey">_NS:11</string>
 											</object>
 										</array>
 										<string key="NSFrameSize">{354, 480}</string>
 										<reference key="NSSuperview" ref="620408413"/>
-										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="217165355"/>
 										<string key="NSReuseIdentifierKey">_NS:9</string>
 										<string key="NSOffsets">{0, 0}</string>
@@ -254,14 +247,12 @@
 								</array>
 								<string key="NSFrameSize">{354, 480}</string>
 								<reference key="NSSuperview" ref="297195195"/>
-								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="138178096"/>
 								<string key="NSReuseIdentifierKey">_NS:13</string>
 							</object>
 						</array>
 						<string key="NSFrameSize">{354, 480}</string>
 						<reference key="NSSuperview" ref="355860399"/>
-						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="620408413"/>
 						<string key="NSReuseIdentifierKey">_NS:11</string>
 						<reference key="NSDocView" ref="620408413"/>
@@ -273,7 +264,6 @@
 						<int key="NSvFlags">-2147483392</int>
 						<string key="NSFrame">{{339, 0}, {15, 465}}</string>
 						<reference key="NSSuperview" ref="355860399"/>
-						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="427304975"/>
 						<string key="NSReuseIdentifierKey">_NS:15</string>
 						<reference key="NSTarget" ref="355860399"/>
@@ -286,7 +276,6 @@
 						<int key="NSvFlags">-2147483392</int>
 						<string key="NSFrame">{{0, 465}, {339, 15}}</string>
 						<reference key="NSSuperview" ref="355860399"/>
-						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:26</string>
 						<int key="NSsFlags">1</int>
@@ -297,7 +286,6 @@
 				</array>
 				<string key="NSFrameSize">{354, 480}</string>
 				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="297195195"/>
 				<string key="NSReuseIdentifierKey">_NS:9</string>
 				<int key="NSsFlags">133680</int>
@@ -345,15 +333,15 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">hidden: slideshow.currentSlide.number</string>
+						<string key="label">hidden: delegate.slideshow.currentSlide.number</string>
 						<reference key="source" ref="833449134"/>
-						<reference key="destination" ref="1001"/>
+						<reference key="destination" ref="1004"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="833449134"/>
-							<reference key="NSDestination" ref="1001"/>
-							<string key="NSLabel">hidden: slideshow.currentSlide.number</string>
+							<reference key="NSDestination" ref="1004"/>
+							<string key="NSLabel">hidden: delegate.slideshow.currentSlide.number</string>
 							<string key="NSBinding">hidden</string>
-							<string key="NSKeyPath">slideshow.currentSlide.number</string>
+							<string key="NSKeyPath">delegate.slideshow.currentSlide.number</string>
 							<object class="NSDictionary" key="NSOptions">
 								<string key="NS.key.0">NSValueTransformerName</string>
 								<string key="NS.object.0">NSNegateBoolean</string>
@@ -361,35 +349,35 @@
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">338</int>
+					<int key="connectionID">378</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: self.slideshow.currentSlide.number</string>
+						<string key="label">value: delegate.slideshow.currentSlide.number</string>
 						<reference key="source" ref="668041487"/>
-						<reference key="destination" ref="1001"/>
+						<reference key="destination" ref="1004"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="668041487"/>
-							<reference key="NSDestination" ref="1001"/>
-							<string key="NSLabel">value: self.slideshow.currentSlide.number</string>
+							<reference key="NSDestination" ref="1004"/>
+							<string key="NSLabel">value: delegate.slideshow.currentSlide.number</string>
 							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">self.slideshow.currentSlide.number</string>
+							<string key="NSKeyPath">delegate.slideshow.currentSlide.number</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">255</int>
+					<int key="connectionID">375</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">hidden: slideshow.currentSlide.number</string>
+						<string key="label">hidden: delegate.slideshow.currentSlide.number</string>
 						<reference key="source" ref="668041487"/>
-						<reference key="destination" ref="1001"/>
+						<reference key="destination" ref="1004"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="668041487"/>
-							<reference key="NSDestination" ref="1001"/>
-							<string key="NSLabel">hidden: slideshow.currentSlide.number</string>
+							<reference key="NSDestination" ref="1004"/>
+							<string key="NSLabel">hidden: delegate.slideshow.currentSlide.number</string>
 							<string key="NSBinding">hidden</string>
-							<string key="NSKeyPath">slideshow.currentSlide.number</string>
+							<string key="NSKeyPath">delegate.slideshow.currentSlide.number</string>
 							<object class="NSDictionary" key="NSOptions">
 								<string key="NS.key.0">NSValueTransformerName</string>
 								<string key="NS.object.0">NSNegateBoolean</string>
@@ -397,23 +385,23 @@
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">341</int>
+					<int key="connectionID">381</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: slideshow.document</string>
+						<string key="label">value: delegate.slideshow.document</string>
 						<reference key="source" ref="908532512"/>
-						<reference key="destination" ref="1001"/>
+						<reference key="destination" ref="1004"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="908532512"/>
-							<reference key="NSDestination" ref="1001"/>
-							<string key="NSLabel">value: slideshow.document</string>
+							<reference key="NSDestination" ref="1004"/>
+							<string key="NSLabel">value: delegate.slideshow.document</string>
 							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">slideshow.document</string>
+							<string key="NSKeyPath">delegate.slideshow.document</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">259</int>
+					<int key="connectionID">372</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
@@ -422,6 +410,26 @@
 						<reference key="destination" ref="776931057"/>
 					</object>
 					<int key="connectionID">368</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">hidden: delegate.slideshow.currentSlide.number</string>
+						<reference key="source" ref="776931057"/>
+						<reference key="destination" ref="1004"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="776931057"/>
+							<reference key="NSDestination" ref="1004"/>
+							<string key="NSLabel">hidden: delegate.slideshow.currentSlide.number</string>
+							<string key="NSBinding">hidden</string>
+							<string key="NSKeyPath">delegate.slideshow.currentSlide.number</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">384</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -580,97 +588,9 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">368</int>
+			<int key="maxID">392</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes">
-			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
-				<object class="IBPartialClassDescription">
-					<string key="className">Auditorium</string>
-					<string key="superclassName">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/Auditorium.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">FlippedBox</string>
-					<string key="superclassName">NSBox</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/FlippedBox.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SlideQuestionsController</string>
-					<string key="superclassName">NSObject</string>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="auditorium">Auditorium</string>
-						<string key="documentView">NSView</string>
-						<string key="scrollView">NSScrollView</string>
-						<string key="slideQuestionsView">SlideQuestionsView</string>
-						<string key="slideshow">Slideshow</string>
-						<string key="tabViewItem">NSTabViewItem</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="auditorium">
-							<string key="name">auditorium</string>
-							<string key="candidateClassName">Auditorium</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="documentView">
-							<string key="name">documentView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="scrollView">
-							<string key="name">scrollView</string>
-							<string key="candidateClassName">NSScrollView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="slideQuestionsView">
-							<string key="name">slideQuestionsView</string>
-							<string key="candidateClassName">SlideQuestionsView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="slideshow">
-							<string key="name">slideshow</string>
-							<string key="candidateClassName">Slideshow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tabViewItem">
-							<string key="name">tabViewItem</string>
-							<string key="candidateClassName">NSTabViewItem</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/SlideQuestionsController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SlideQuestionsView</string>
-					<string key="superclassName">NSView</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">addQuestionButtonAction:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">addQuestionButtonAction:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">addQuestionButtonAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/SlideQuestionsView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">Slideshow</string>
-					<string key="superclassName">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/Slideshow.h</string>
-					</object>
-				</object>
-			</array>
-		</object>
+		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">

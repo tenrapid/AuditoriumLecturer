@@ -10,6 +10,9 @@
 
 @class Question, Slide, MoveQuestionToSlideViewController;
 
+extern NSString * const QuestionEditSheetWillOpenNotification;
+extern NSString * const QuestionEditSheetDidCloseNotification;
+
 @interface SlideQuestionsView : NSView
 {
 	NSMutableArray *questions;
@@ -17,7 +20,6 @@
 }
 
 @property (assign) NSMutableArray *questionEditViewControllers;
-@property (assign) Slide *slide;
 
 - (IBAction)addQuestionButtonAction:(id)sender;
 

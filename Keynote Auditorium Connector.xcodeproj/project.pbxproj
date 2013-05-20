@@ -38,8 +38,10 @@
 		2BD5D92717442C4A000F69E7 /* MoveQuestionToSlideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BD5D92617442C49000F69E7 /* MoveQuestionToSlideViewController.m */; };
 		2BD5D92A1744BFE8000F69E7 /* QuestionEditSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BD5D9291744BFE8000F69E7 /* QuestionEditSheetController.m */; };
 		2BD5D92D174853AF000F69E7 /* QuestionEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BD5D92C174853A9000F69E7 /* QuestionEditViewController.m */; };
+		2BD5D9391748DC0B000F69E7 /* Answer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BD5D9381748DC0A000F69E7 /* Answer.m */; };
 		2BE0F0281734315000BFD776 /* TB3_Record-Active.tif in Resources */ = {isa = PBXBuildFile; fileRef = 2BE0F0261734315000BFD776 /* TB3_Record-Active.tif */; };
 		2BE0F0291734315000BFD776 /* TB3_Record-Pressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = 2BE0F0271734315000BFD776 /* TB3_Record-Pressed.tif */; };
+		2BE7FC30174A5D130004FF7D /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE7FC2F174A5D130004FF7D /* Event.m */; };
 		2BF07095173A409D0071A52F /* TB3_Record-Pressed-Off.png in Resources */ = {isa = PBXBuildFile; fileRef = 2BF07094173A409D0071A52F /* TB3_Record-Pressed-Off.png */; };
 		2BF07098173CDB450071A52F /* QuestionsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BF07097173CDB450071A52F /* QuestionsController.m */; };
 		2BF070A4173CE0F90071A52F /* NSDictionary+SMKeyValueObserving.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BF0709B173CE0F90071A52F /* NSDictionary+SMKeyValueObserving.m */; };
@@ -106,8 +108,12 @@
 		2BD5D9291744BFE8000F69E7 /* QuestionEditSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionEditSheetController.m; sourceTree = "<group>"; };
 		2BD5D92B174853A6000F69E7 /* QuestionEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionEditViewController.h; sourceTree = "<group>"; };
 		2BD5D92C174853A9000F69E7 /* QuestionEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionEditViewController.m; sourceTree = "<group>"; };
+		2BD5D9371748DC09000F69E7 /* Answer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Answer.h; path = Models/Answer.h; sourceTree = "<group>"; };
+		2BD5D9381748DC0A000F69E7 /* Answer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Answer.m; path = Models/Answer.m; sourceTree = "<group>"; };
 		2BE0F0261734315000BFD776 /* TB3_Record-Active.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "TB3_Record-Active.tif"; sourceTree = "<group>"; };
 		2BE0F0271734315000BFD776 /* TB3_Record-Pressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "TB3_Record-Pressed.tif"; sourceTree = "<group>"; };
+		2BE7FC2E174A5D130004FF7D /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Event.h; path = Models/Event.h; sourceTree = "<group>"; };
+		2BE7FC2F174A5D130004FF7D /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Event.m; path = Models/Event.m; sourceTree = "<group>"; };
 		2BF07094173A409D0071A52F /* TB3_Record-Pressed-Off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TB3_Record-Pressed-Off.png"; sourceTree = "<group>"; };
 		2BF07096173CDB450071A52F /* QuestionsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionsController.h; sourceTree = "<group>"; };
 		2BF07097173CDB450071A52F /* QuestionsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionsController.m; sourceTree = "<group>"; };
@@ -165,14 +171,18 @@
 			path = KeynoteAuditoriumConnector;
 			sourceTree = "<group>";
 		};
-		2BB4735117453B6F00DA6C1F /* Models */ = {
+		2BB4735117453B6F00DA6C1F /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				2BB4734B174539C600DA6C1F /* Model.xcdatamodeld */,
+				2BE7FC2E174A5D130004FF7D /* Event.h */,
+				2BE7FC2F174A5D130004FF7D /* Event.m */,
+				2BD5D9371748DC09000F69E7 /* Answer.h */,
+				2BD5D9381748DC0A000F69E7 /* Answer.m */,
 				2BB4734E17453B3500DA6C1F /* Question.h */,
 				2BB4734F17453B3500DA6C1F /* Question.m */,
 			);
-			name = Models;
+			name = Model;
 			sourceTree = "<group>";
 		};
 		2BBE3B5B172A6D4800BCF546 = {
@@ -218,7 +228,7 @@
 		2BBE3B6D172A6D4800BCF546 /* KeynoteAuditoriumConnector */ = {
 			isa = PBXGroup;
 			children = (
-				2BB4735117453B6F00DA6C1F /* Models */,
+				2BB4735117453B6F00DA6C1F /* Model */,
 				2BCA20BF1730306D00C9415E /* Resources */,
 				2BBE3B79172A6D4800BCF546 /* AppDelegate.h */,
 				2BBE3B7A172A6D4800BCF546 /* AppDelegate.m */,
@@ -230,10 +240,6 @@
 				2B777F6B172C65CC00D1F54F /* AuditoriumController.m */,
 				2BCA20DA173068CD00C9415E /* LoginController.h */,
 				2BCA20DB173068CD00C9415E /* LoginController.m */,
-				2BD5D92517442C49000F69E7 /* MoveQuestionToSlideViewController.h */,
-				2BD5D92617442C49000F69E7 /* MoveQuestionToSlideViewController.m */,
-				2BD5D9281744BFE7000F69E7 /* QuestionEditSheetController.h */,
-				2BD5D9291744BFE8000F69E7 /* QuestionEditSheetController.m */,
 				2B3820841737057D00822217 /* Slide.h */,
 				2B3820851737057D00822217 /* Slide.m */,
 				2BBE3B84172A700900BCF546 /* Slideshow.h */,
@@ -244,6 +250,10 @@
 				2BC7E9D21740301D00D911AE /* QuestionEditView.m */,
 				2BD5D92B174853A6000F69E7 /* QuestionEditViewController.h */,
 				2BD5D92C174853A9000F69E7 /* QuestionEditViewController.m */,
+				2BD5D92517442C49000F69E7 /* MoveQuestionToSlideViewController.h */,
+				2BD5D92617442C49000F69E7 /* MoveQuestionToSlideViewController.m */,
+				2BD5D9281744BFE7000F69E7 /* QuestionEditSheetController.h */,
+				2BD5D9291744BFE8000F69E7 /* QuestionEditSheetController.m */,
 				2BC7E9CB173EDF3500D911AE /* SlideQuestionsView.h */,
 				2BC7E9CC173EDF3500D911AE /* SlideQuestionsView.m */,
 				2BF070AD173D292C0071A52F /* SlideQuestionsController.h */,
@@ -410,6 +420,8 @@
 				2BB4734D174539C600DA6C1F /* Model.xcdatamodeld in Sources */,
 				2BB4735017453B3500DA6C1F /* Question.m in Sources */,
 				2BD5D92D174853AF000F69E7 /* QuestionEditViewController.m in Sources */,
+				2BD5D9391748DC0B000F69E7 /* Answer.m in Sources */,
+				2BE7FC30174A5D130004FF7D /* Event.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

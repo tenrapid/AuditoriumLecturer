@@ -8,14 +8,14 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class Question;
+@class Question, Slide;
 
 @interface MoveQuestionToSlideViewController : NSViewController
 {
 	id delegate;
 }
 
-@property (assign) NSInteger slideNumber;
+@property (assign) Slide *slide;
 
 - (id)initWithQuestion:(Question *)question delegate:(id)delegate;
 - (IBAction)cancelButtonAction:(id)sender;

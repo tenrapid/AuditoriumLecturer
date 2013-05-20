@@ -46,7 +46,7 @@
 		[notLoggedInBoxLoginButton setEnabled:NO];
 		username.stringValue = @"abc";
 		password.stringValue = @"abc";
-		[auditorium loginWithUsername:@"abc" password:@"" delegate:self];
+		[[Auditorium sharedInstance] loginWithUsername:@"abc" password:@"" delegate:self];
 	}
 }
 
@@ -73,7 +73,7 @@
 	[loginDialogErrorMessage setHidden:YES];
 	[loginDialogSpinner setHidden:NO];
 	[loginDialogSpinner startAnimation:self];
-	[auditorium loginWithUsername:username.stringValue password:password.stringValue delegate:self];
+	[[Auditorium sharedInstance] loginWithUsername:username.stringValue password:password.stringValue delegate:self];
 }
 
 - (IBAction)loginDialogCancelButtonPressed:(id)sender
@@ -90,7 +90,7 @@
 {
 	[loggedInBoxSpinner setHidden:NO];
 	[loggedInBoxSpinner startAnimation:self];
-	[auditorium logoutWithDelegate:self];
+	[[Auditorium sharedInstance] logoutWithDelegate:self];
 }
 
 - (void)didLogin
@@ -103,7 +103,7 @@
 	[notLoggedInBox setHidden:YES];
 	
 	[loggedInBox setHidden:NO];
-	loggedInUser.stringValue = auditorium.loggedInUser;
+	loggedInUser.stringValue = [Auditorium sharedInstance].loggedInUser;
 	
 	if ([loginDialog isSheet]) {
 		[NSApp endSheet:loginDialog returnCode:NSOKButton];

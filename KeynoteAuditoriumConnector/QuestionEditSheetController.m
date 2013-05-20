@@ -14,6 +14,11 @@
 	NSWindow *sheet;
 	id delegate;
 }
+
+@property (assign) IBOutlet NSTextField *textField;
+@property (assign) IBOutlet NSPopUpButton *type;
+@property (assign) IBOutlet NSRuleEditor *ruleEditor;
+
 @end
 
 @implementation QuestionEditSheetController

@@ -12,8 +12,6 @@
 
 @interface LoginController : NSObject
 {
-	IBOutlet Auditorium *auditorium;
-
 	IBOutlet NSTextField *username;
 	IBOutlet NSTextField *password;
 	IBOutlet NSWindow *loginDialog;

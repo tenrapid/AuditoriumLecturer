@@ -19,6 +19,18 @@
 @synthesize currentSlide;
 @synthesize playing;
 
++ (Slideshow *)sharedInstance
+{
+	static Slideshow *sharedInstance;
+	@synchronized(self)
+	{
+		if (!sharedInstance) {
+			sharedInstance = [[Slideshow alloc] init];
+		}
+		return sharedInstance;
+	}
+}
+
 - (id)init
 {
 	self = [super init];
@@ -61,7 +73,7 @@
 			KeynoteSlide *slide = [slideshow currentSlide];
 
 			slideshowPlaying = [keynote playing];
-			slideshowCurrentSlide = [[Slide alloc] initWithNumber:[slide slideNumber] identifier:[slide id] title:[slide title] body:[slide body] notes:[slide notes]];
+			slideshowCurrentSlide = [[Slide alloc] initWithNumber:[slide slideNumber] identifier:0 title:[slide title] body:[slide body] notes:[slide notes]];
 		}
 		else {
 			slideshowPlaying = NO;

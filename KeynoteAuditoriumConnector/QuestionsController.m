@@ -9,7 +9,6 @@
 #import "QuestionsController.h"
 #import "Auditorium.h"
 #import "AuditoriumEvent.h"
-#import "Slideshow.h"
 #import "SMTabBar.h"
 #import "SMTabBarItem.h"
 
@@ -24,9 +23,7 @@
 
 @implementation QuestionsController
 
-@synthesize auditorium;
 @synthesize auditoriumController;
-@synthesize slideshow;
 @synthesize tabBar;
 @synthesize tabView;
 

@@ -7,16 +7,13 @@
 //
 
 #import "MoveQuestionToSlideViewController.h"
+#import "Slideshow.h"
+#import	"Slide.h"
 
-@interface MoveQuestionToSlideViewController ()
-{
-	
-}
-@end
 
 @implementation MoveQuestionToSlideViewController
 
-@synthesize slideNumber;
+@synthesize slide;
 
 - (id)initWithQuestion:(Question *)aQuestion delegate:(id)aDelegate
 {
@@ -24,9 +21,16 @@
     if (self) {
 		self.representedObject = aQuestion;
 		delegate = aDelegate;
+		[self bind:@"slide" toObject:[Slideshow sharedInstance] withKeyPath:@"currentSlide" options:nil];
 		[NSApp beginSheet:self.view.window modalForWindow:[NSApp mainWindow] modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
 	}
     return self;
+}
+
+- (void)dealloc
+{
+	[self unbind:@"slide"];
+	[super dealloc];
 }
 
 - (void)sheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo

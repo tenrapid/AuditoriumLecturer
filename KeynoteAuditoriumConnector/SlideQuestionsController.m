@@ -13,12 +13,10 @@
 #import "Auditorium.h"
 #import "Slideshow.h"
 #import "Slide.h"
+#import "Event.h"
 
 
 @interface SlideQuestionsController ()
-
-@property (assign) IBOutlet Slideshow *slideshow;
-@property (assign) IBOutlet Auditorium *auditorium;
 
 @property (assign) IBOutlet NSTabViewItem *tabViewItem;
 @property (assign) IBOutlet NSScrollView *scrollView;
@@ -27,14 +25,12 @@
 
 @property (assign) NSArrayController *questions;
 @property (retain) Slide *slide;
+@property (retain) Event *event;
 
 @end
 
 
 @implementation SlideQuestionsController
-
-@synthesize slideshow;
-@synthesize auditorium;
 
 @synthesize tabViewItem;
 @synthesize scrollView;
@@ -43,6 +39,7 @@
 
 @synthesize questions;
 @synthesize slide;
+@synthesize event;
 
 - (void)awakeFromNib
 {
@@ -60,9 +57,10 @@
 
 		[self.slideQuestionsView bind:@"questions" toObject:self.questions withKeyPath:@"arrangedObjects" options:nil];
 
+		[self addObserver:self forKeyPath:@"event" options:0 context:nil];
 		[self addObserver:self forKeyPath:@"slide" options:0 context:nil];
-		[self bind:@"slide" toObject:self.slideshow withKeyPath:@"currentSlide" options:nil];
-		[self.slideQuestionsView bind:@"slide" toObject:self withKeyPath:@"slide" options:nil];
+		[self bind:@"event" toObject:[Auditorium sharedInstance] withKeyPath:@"event" options:nil];
+		[self bind:@"slide" toObject:[Slideshow sharedInstance] withKeyPath:@"currentSlide" options:nil];
 
 		NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 		[notificationCenter addObserver:self selector:@selector(slideQuestionsViewHeightDidChange:) name:NSViewFrameDidChangeNotification object:self.slideQuestionsView];
@@ -76,8 +74,9 @@
 - (void)dealloc
 {
 	[self.slideQuestionsView unbind:@"questions"];
-	[self.slideQuestionsView unbind:@"slide"];
+	[self unbind:@"event"];
 	[self unbind:@"slide"];
+	[self removeObserver:self forKeyPath:@"event"];
 	[self removeObserver:self forKeyPath:@"slide"];
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter removeObserver:self];
@@ -88,8 +87,8 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	if ([keyPath isEqualToString:@"slide"]) {
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"slideIdentifier = %@", [NSNumber numberWithInteger:self.slide.number]];
+	if ([keyPath isEqualToString:@"event"] || [keyPath isEqualToString:@"slide"]) {
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"event = %@ AND slideNumber = %@", self.event, [NSNumber numberWithInteger:self.slide.number]];
 		[self.questions setFilterPredicate:predicate];
 	}
 }

@@ -8,21 +8,21 @@
 
 #import <Foundation/Foundation.h>
 
-@class Slide, AuditoriumEvent;
+@class Slide, AuditoriumEvent, Event;
 
 @interface Auditorium : NSObject
 
 @property BOOL loggedIn;
 @property (retain) NSString *loggedInUser;
+@property (getter = isSaveEnabled) BOOL saveEnabled;
 
-@property (retain) NSMutableArray *events;
-@property (retain) NSMutableArray *questions;
+@property (assign) Event *event;
+
++ (Auditorium *)sharedInstance;
 
 - (void)loginWithUsername:(NSString *)username password:(NSString *)password delegate:(id)delegate;
 - (void)logoutWithDelegate:(id)delegate;
 
 - (void)sendSlide:(Slide *)slide;
-- (void)getEventsWithDelegate:(id)delegate;
-- (void)fetchQuestionsForEvent:(AuditoriumEvent *)event;
 
 @end

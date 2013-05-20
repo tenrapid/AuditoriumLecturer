@@ -21,6 +21,8 @@
 @property (retain) Slide *currentSlide;
 @property (getter=isPlaying) BOOL playing;
 
++ (Slideshow *)sharedInstance;
+
 - (void)update:(NSTimer*)myTimer;
 
 @end

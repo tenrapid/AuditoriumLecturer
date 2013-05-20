@@ -12,9 +12,6 @@
 
 @interface QuestionEditSheetController : NSViewController <NSControlTextEditingDelegate>
 
-@property (assign) IBOutlet NSTextField *textField;
-@property (assign) IBOutlet NSRuleEditor *ruleEditor;
-
 - (id)initWithQuestion:(Question *)question delegate:(id)delegate;
 
 @end

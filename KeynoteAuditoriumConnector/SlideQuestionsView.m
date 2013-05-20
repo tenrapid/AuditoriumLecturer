@@ -1,5 +1,5 @@
 //
-//  EditQuestionsView.m
+//  SlideQuestionsView.m
 //  Keynote Auditorium Connector
 //
 //  Created by Matthias Rahne on 11.05.13.
@@ -13,6 +13,11 @@
 #import "QuestionEditSheetController.h"
 #import "Question.h"
 #import "Slide.h"
+#import "Slideshow.h"
+#import "Auditorium.h"
+
+NSString * const QuestionEditSheetWillOpenNotification = @"QuestionEditSheetWillOpenNotification";
+NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidCloseNotification";
 
 @interface SlideQuestionsView ()
 {
@@ -23,7 +28,6 @@
 @implementation SlideQuestionsView
 
 @synthesize questionEditViewControllers;
-@synthesize slide;
 
 - (id)initWithFrame:(NSRect)frame
 {
@@ -91,7 +95,10 @@
 	NSUndoManager *undoManager = context.undoManager;
 	[undoManager beginUndoGrouping];
 
+	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetWillOpenNotification object:self];
+
 	Question *question = [NSEntityDescription insertNewObjectForEntityForName:@"Question" inManagedObjectContext:context];
+	question.event = [Auditorium sharedInstance].event;
 	questionEditSheetController = [[QuestionEditSheetController alloc] initWithQuestion:question delegate:self];
 }
 
@@ -117,17 +124,14 @@
 {
 	Question *question = [sender representedObject];
 	moveQuestionToSlideViewController = [[MoveQuestionToSlideViewController alloc] initWithQuestion:question delegate:self];
-	[moveQuestionToSlideViewController bind:@"slideNumber" toObject:self withKeyPath:@"slide.number" options:nil];
 }
 
 - (void)moveQuestionToSlideDidEnd:(NSInteger)returnCode
 {
 	Question *question = moveQuestionToSlideViewController.representedObject;
-	NSInteger slideNumber = moveQuestionToSlideViewController.slideNumber;
-	if (returnCode == NSOKButton && slideNumber != question.slideIdentifier.integerValue) {
-		question.slideIdentifier = [NSNumber numberWithInteger:slideNumber];
+	if (returnCode == NSOKButton && moveQuestionToSlideViewController.slide.number != question.slideNumber.integerValue) {
+		question.slide = moveQuestionToSlideViewController.slide;
 	}
-	[moveQuestionToSlideViewController unbind:@"slideNumber"];
 	[moveQuestionToSlideViewController release];
 }
 
@@ -148,18 +152,20 @@
 	NSUndoManager *undoManager = question.managedObjectContext.undoManager;
 	[undoManager beginUndoGrouping];
 
+	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetWillOpenNotification object:self];
 	questionEditSheetController = [[QuestionEditSheetController alloc] initWithQuestion:question delegate:self];
 }
 
 - (void)editQuestionDidEnd:(NSInteger)returnCode
 {
 	Question *question = question = questionEditSheetController.representedObject;
-	NSUndoManager *undoManager = question.managedObjectContext.undoManager;
+	NSManagedObjectContext *context = question.managedObjectContext;
+	NSUndoManager *undoManager = context.undoManager;
 
 	switch (returnCode) {
 		case NSOKButton:
-			if (!question.slideIdentifier.integerValue) {
-				question.slideIdentifier = [NSNumber numberWithInteger:self.slide.number];
+			if (!question.slideNumber.integerValue) {
+				question.slide = [Slideshow sharedInstance].currentSlide;
 			}
 			[undoManager endUndoGrouping];
 			break;
@@ -173,6 +179,7 @@
 	}
 
 	[questionEditSheetController release];
+	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetDidCloseNotification object:self];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item {
