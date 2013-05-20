@@ -1,17 +1,17 @@
 //
-//  Answer.h
+//  AuditoriumObject.h
 //  Keynote Auditorium Connector
 //
-//  Created by Matthias Rahne on 19.05.13.
+//  Created by Matthias Rahne on 21.05.13.
 //  Copyright (c) 2013 Matthias Rahne. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import "AuditoriumObject.h"
 
 
-@interface Answer : AuditoriumObject
+@interface AuditoriumObject : NSManagedObject
 
+@property (nonatomic, retain) NSString * uuid;
 
 @end

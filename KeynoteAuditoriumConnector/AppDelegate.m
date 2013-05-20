@@ -23,8 +23,7 @@
 {
 	self = [super init];
 	if (self) {
-		//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contextDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:[self managedObjectContext]];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contextDidChange:) name:NSManagedObjectContextDidSaveNotification object:[self managedObjectContext]];
+		[NSApp setDelegate:self];
 		_auditorium = [Auditorium sharedInstance];
 		_slideshow = [Slideshow sharedInstance];
 	}
@@ -39,15 +38,6 @@
 	[_auditorium release];
 	[_slideshow release];
     [super dealloc];
-}
-
-- (void)contextDidChange:(NSNotification *)notification
-{
-//	return;
-	//	NSLog(@"%@", notification.userInfo);
-	NSLog(@"inserted: %@", [notification.userInfo objectForKey:@"inserted"]);
-	NSLog(@"updated: %@", [notification.userInfo objectForKey:@"updated"]);
-	NSLog(@"deleted: %@", [notification.userInfo objectForKey:@"deleted"]);
 }
 
 // Creates if necessary and returns the managed object model for the application.

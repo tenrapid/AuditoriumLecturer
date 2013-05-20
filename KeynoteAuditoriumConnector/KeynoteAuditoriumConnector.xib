@@ -1353,14 +1353,6 @@
 					<int key="connectionID">142</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">delegate</string>
-						<reference key="source" ref="1021"/>
-						<reference key="destination" ref="976324537"/>
-					</object>
-					<int key="connectionID">686</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">performMiniaturize:</string>
 						<reference key="source" ref="1014"/>
@@ -1645,7 +1637,7 @@
 						<string key="label">content: events.arrangedObjects</string>
 						<reference key="source" ref="378960188"/>
 						<reference key="destination" ref="1006013941"/>
-						<object class="NSNibBindingConnector" key="connector" id="752475934">
+						<object class="NSNibBindingConnector" key="connector" id="554761787">
 							<reference key="NSSource" ref="378960188"/>
 							<reference key="NSDestination" ref="1006013941"/>
 							<string key="NSLabel">content: events.arrangedObjects</string>
@@ -1661,13 +1653,13 @@
 						<string key="label">contentValues: events.arrangedObjects.title</string>
 						<reference key="source" ref="378960188"/>
 						<reference key="destination" ref="1006013941"/>
-						<object class="NSNibBindingConnector" key="connector" id="806575120">
+						<object class="NSNibBindingConnector" key="connector" id="191293514">
 							<reference key="NSSource" ref="378960188"/>
 							<reference key="NSDestination" ref="1006013941"/>
 							<string key="NSLabel">contentValues: events.arrangedObjects.title</string>
 							<string key="NSBinding">contentValues</string>
 							<string key="NSKeyPath">events.arrangedObjects.title</string>
-							<reference key="NSPreviousConnector" ref="752475934"/>
+							<reference key="NSPreviousConnector" ref="554761787"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
@@ -1684,7 +1676,7 @@
 							<string key="NSLabel">selectedIndex: events.selectionIndex</string>
 							<string key="NSBinding">selectedIndex</string>
 							<string key="NSKeyPath">events.selectionIndex</string>
-							<reference key="NSPreviousConnector" ref="806575120"/>
+							<reference key="NSPreviousConnector" ref="191293514"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
@@ -2738,7 +2730,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1123</int>
+			<int key="maxID">1124</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

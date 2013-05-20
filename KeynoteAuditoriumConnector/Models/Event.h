@@ -8,10 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import "AuditoriumObject.h"
 
 @class Question;
 
-@interface Event : NSManagedObject
+@interface Event : AuditoriumObject
 
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSDate * date;

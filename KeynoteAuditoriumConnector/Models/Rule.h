@@ -1,8 +1,8 @@
 //
-//  Answer.h
+//  Rule.h
 //  Keynote Auditorium Connector
 //
-//  Created by Matthias Rahne on 19.05.13.
+//  Created by Matthias Rahne on 21.05.13.
 //  Copyright (c) 2013 Matthias Rahne. All rights reserved.
 //
 
@@ -11,7 +11,7 @@
 #import "AuditoriumObject.h"
 
 
-@interface Answer : AuditoriumObject
+@interface Rule : AuditoriumObject
 
 
 @end

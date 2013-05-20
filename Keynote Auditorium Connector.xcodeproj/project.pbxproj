@@ -42,6 +42,8 @@
 		2BE0F0281734315000BFD776 /* TB3_Record-Active.tif in Resources */ = {isa = PBXBuildFile; fileRef = 2BE0F0261734315000BFD776 /* TB3_Record-Active.tif */; };
 		2BE0F0291734315000BFD776 /* TB3_Record-Pressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = 2BE0F0271734315000BFD776 /* TB3_Record-Pressed.tif */; };
 		2BE7FC30174A5D130004FF7D /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE7FC2F174A5D130004FF7D /* Event.m */; };
+		2BE7FC33174AE2FE0004FF7D /* AuditoriumObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE7FC32174AE2FE0004FF7D /* AuditoriumObject.m */; };
+		2BE7FC36174AE3DE0004FF7D /* Rule.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE7FC35174AE3DD0004FF7D /* Rule.m */; };
 		2BF07095173A409D0071A52F /* TB3_Record-Pressed-Off.png in Resources */ = {isa = PBXBuildFile; fileRef = 2BF07094173A409D0071A52F /* TB3_Record-Pressed-Off.png */; };
 		2BF07098173CDB450071A52F /* QuestionsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BF07097173CDB450071A52F /* QuestionsController.m */; };
 		2BF070A4173CE0F90071A52F /* NSDictionary+SMKeyValueObserving.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BF0709B173CE0F90071A52F /* NSDictionary+SMKeyValueObserving.m */; };
@@ -114,6 +116,10 @@
 		2BE0F0271734315000BFD776 /* TB3_Record-Pressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "TB3_Record-Pressed.tif"; sourceTree = "<group>"; };
 		2BE7FC2E174A5D130004FF7D /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Event.h; path = Models/Event.h; sourceTree = "<group>"; };
 		2BE7FC2F174A5D130004FF7D /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Event.m; path = Models/Event.m; sourceTree = "<group>"; };
+		2BE7FC31174AE2FE0004FF7D /* AuditoriumObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AuditoriumObject.h; path = Models/AuditoriumObject.h; sourceTree = "<group>"; };
+		2BE7FC32174AE2FE0004FF7D /* AuditoriumObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AuditoriumObject.m; path = Models/AuditoriumObject.m; sourceTree = "<group>"; };
+		2BE7FC34174AE3DD0004FF7D /* Rule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Rule.h; path = Models/Rule.h; sourceTree = "<group>"; };
+		2BE7FC35174AE3DD0004FF7D /* Rule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Rule.m; path = Models/Rule.m; sourceTree = "<group>"; };
 		2BF07094173A409D0071A52F /* TB3_Record-Pressed-Off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TB3_Record-Pressed-Off.png"; sourceTree = "<group>"; };
 		2BF07096173CDB450071A52F /* QuestionsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionsController.h; sourceTree = "<group>"; };
 		2BF07097173CDB450071A52F /* QuestionsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionsController.m; sourceTree = "<group>"; };
@@ -175,12 +181,16 @@
 			isa = PBXGroup;
 			children = (
 				2BB4734B174539C600DA6C1F /* Model.xcdatamodeld */,
+				2BE7FC31174AE2FE0004FF7D /* AuditoriumObject.h */,
+				2BE7FC32174AE2FE0004FF7D /* AuditoriumObject.m */,
 				2BE7FC2E174A5D130004FF7D /* Event.h */,
 				2BE7FC2F174A5D130004FF7D /* Event.m */,
 				2BD5D9371748DC09000F69E7 /* Answer.h */,
 				2BD5D9381748DC0A000F69E7 /* Answer.m */,
 				2BB4734E17453B3500DA6C1F /* Question.h */,
 				2BB4734F17453B3500DA6C1F /* Question.m */,
+				2BE7FC34174AE3DD0004FF7D /* Rule.h */,
+				2BE7FC35174AE3DD0004FF7D /* Rule.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -422,6 +432,8 @@
 				2BD5D92D174853AF000F69E7 /* QuestionEditViewController.m in Sources */,
 				2BD5D9391748DC0B000F69E7 /* Answer.m in Sources */,
 				2BE7FC30174A5D130004FF7D /* Event.m in Sources */,
+				2BE7FC33174AE2FE0004FF7D /* AuditoriumObject.m in Sources */,
+				2BE7FC36174AE3DE0004FF7D /* Rule.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

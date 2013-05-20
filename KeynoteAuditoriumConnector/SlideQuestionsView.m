@@ -97,7 +97,7 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 
 	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetWillOpenNotification object:self];
 
-	Question *question = [NSEntityDescription insertNewObjectForEntityForName:@"Question" inManagedObjectContext:context];
+	Question *question = [Auditorium objectForEntityName:@"Question"];
 	question.event = [Auditorium sharedInstance].event;
 	questionEditSheetController = [[QuestionEditSheetController alloc] initWithQuestion:question delegate:self];
 }

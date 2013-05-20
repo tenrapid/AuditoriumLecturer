@@ -7,6 +7,7 @@
 //
 
 #import "Auditorium.h"
+#import "AuditoriumObject.h"
 #import "AuditoriumEvent.h"
 #import "Event.h"
 #import "Question.h"
@@ -17,6 +18,8 @@
 @synthesize loggedIn;
 @synthesize loggedInUser;
 @synthesize saveEnabled;
+@synthesize postEnabled;
+@synthesize context;
 
 @synthesize event;
 
@@ -32,61 +35,117 @@
 	}
 }
 
++ (id)objectForEntityName:(NSString *)entityName
+{
+	AuditoriumObject *object = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self sharedInstance].context];
+	object.uuid = [self UUIDString];
+	return object;
+}
+
++ (NSString*)UUIDString {
+    CFUUIDRef theUUID = CFUUIDCreate(NULL);
+    CFStringRef string = CFUUIDCreateString(NULL, theUUID);
+    CFRelease(theUUID);
+    return [(NSString *)string autorelease];
+}
+
 - (id)init
 {
 	self = [super init];
     if (self) {
+		context = [[NSApp delegate] managedObjectContext];
+
 		NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 		[notificationCenter addObserver:self selector:@selector(disableSave:) name:QuestionEditSheetWillOpenNotification object:nil];
 		[notificationCenter addObserver:self selector:@selector(enableSave:) name:QuestionEditSheetDidCloseNotification object:nil];
+		[notificationCenter addObserver:self selector:@selector(contextDidSave:) name:NSManagedObjectContextDidSaveNotification object:context];
+
+		[self addObserver:self forKeyPath:@"event" options:NSKeyValueObservingOptionNew context:nil];
 
 		[NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(save:) userInfo:nil repeats:YES];
 	}
     return self;
 }
 
-- (void)createTestData
+- (void)contextDidSave:(NSNotification *)notification
 {
-	NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
-	NSError *error;
+	if (self.isPostEnabled) {
+		NSLog(@"inserted: %@", [notification.userInfo objectForKey:@"inserted"]);
+		NSLog(@"updated: %@", [notification.userInfo objectForKey:@"updated"]);
+		NSLog(@"deleted: %@", [notification.userInfo objectForKey:@"deleted"]);
+	}
+}
 
-	Event *event1 = [NSEntityDescription insertNewObjectForEntityForName:@"Event" inManagedObjectContext:context];
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+	if ([keyPath isEqualToString:@"event"]) {
+		if (self.event) {
+			[self performSelector:@selector(createTestQuestions) withObject:nil afterDelay:1];
+		}
+	}
+}
+
+- (void)createTestEvents
+{
+	self.saveEnabled = NO;
+
+	Event *event1 = [Auditorium objectForEntityName:@"Event"];
 	event1.title = @"Rechnernetze – 2. Vorlesung – 24.06.2013";
 	event1.date	= [NSDate dateWithString:@"2013-06-24 10:00:00 +0000"];
 
-	Event *event2 = [NSEntityDescription insertNewObjectForEntityForName:@"Event" inManagedObjectContext:context];
+	Event *event2 = [Auditorium objectForEntityName:@"Event"];
 	event2.title = @"Rechnernetze – 3. Vorlesung – 31.06.2013";
 	event2.date	= [NSDate dateWithString:@"2013-06-31 10:00:00 +0000"];
 
-	event2 = [NSEntityDescription insertNewObjectForEntityForName:@"Event" inManagedObjectContext:context];
+	event2 = [Auditorium objectForEntityName:@"Event"];
 	event2.title = @"Veranstaltung wählen…";
 	event2.date	= [NSDate dateWithString:@"0000-00-00 00:00:00 +0000"];
 
+	self.postEnabled = NO;
+	NSError *error = nil;
+	[context save:&error];
+	if (error) {
+		NSLog(@"%@", error);
+	}
+	self.postEnabled = YES;
+	self.saveEnabled = YES;
+	[context.undoManager performSelector:@selector(removeAllActions) withObject:nil afterDelay:0.0];
+}
+
+- (void)createTestQuestions
+{
+	self.saveEnabled = NO;
+
 	Question *question;
 
-	question = [NSEntityDescription insertNewObjectForEntityForName:@"Question" inManagedObjectContext:context];
-	question.event = event1;
+	question = [Auditorium objectForEntityName:@"Question"];
+	question.event = self.event;
 	question.slideNumber = [NSNumber numberWithInteger:1];
 	question.text = @"Hier könnte Ihre 1. Frage stehen!";
 
-	question = [NSEntityDescription insertNewObjectForEntityForName:@"Question" inManagedObjectContext:context];
-	question.event = event1;
+	question = [Auditorium objectForEntityName:@"Question"];
+	question.event = self.event;
 	question.slideNumber = [NSNumber numberWithInteger:1];
 	question.text = @"Hier könnte Ihre 2. Frage stehen!";
 
-	question = [NSEntityDescription insertNewObjectForEntityForName:@"Question" inManagedObjectContext:context];
-	question.event = event1;
+	question = [Auditorium objectForEntityName:@"Question"];
+	question.event = self.event;
 	question.slideNumber = [NSNumber numberWithInteger:2];
 	question.text = @"Hier könnte Ihre 3. Frage stehen!";
 
+	self.postEnabled = NO;
+	NSError *error = nil;
 	[context save:&error];
+	if (error) {
+		NSLog(@"%@", error);
+	}
+	self.postEnabled = YES;
 	self.saveEnabled = YES;
 	[context.undoManager performSelector:@selector(removeAllActions) withObject:nil afterDelay:0.0];
 }
 
 - (void)save:(NSTimer*)timer
 {
-	NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
 	NSError *error = nil;
 	if (context.hasChanges && self.isSaveEnabled) {
 		[context save:&error];
@@ -120,7 +179,7 @@
 
 - (void)didLogin:(id)delegate
 {
-	[self createTestData];
+	[self performSelector:@selector(createTestEvents) withObject:nil afterDelay:1];
 	self.loggedIn = YES;
 	[delegate performSelector:@selector(didLogin) withObject:nil];
 }
@@ -135,11 +194,20 @@
 {
 	self.loggedInUser = nil;
 	self.loggedIn = NO;
-	NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
+
+	self.saveEnabled = NO;
+	self.postEnabled = NO;
 	for (NSManagedObject *object in [context registeredObjects]) {
 		[context deleteObject:object];
 	}
-	[context processPendingChanges];
+	NSError *error = nil;
+	[context save:&error];
+	if (error) {
+		NSLog(@"%@", error);
+	}
+	self.postEnabled = YES;
+	self.saveEnabled = YES;
+
 	[delegate performSelector:@selector(didLogout) withObject:nil];
 }
 
