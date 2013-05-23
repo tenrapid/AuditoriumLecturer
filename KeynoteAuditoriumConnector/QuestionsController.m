@@ -7,7 +7,6 @@
 //
 
 #import "QuestionsController.h"
-#import "Auditorium.h"
 #import "SMTabBar.h"
 #import "SMTabBarItem.h"
 
@@ -22,7 +21,6 @@
 
 @implementation QuestionsController
 
-@synthesize auditoriumController;
 @synthesize tabBar;
 @synthesize tabView;
 
@@ -33,7 +31,7 @@
         NSImage *image = [NSImage imageNamed:@"TB_Edit.png"];
         [image setTemplate:YES];
         SMTabBarItem *item = [[SMTabBarItem alloc] initWithImage:image tag:0];
-        item.toolTip = NSLocalizedString(@"Tab 1", nil);
+        item.toolTip = NSLocalizedString(@"Fragen bearbeiten", nil);
         item.keyEquivalent = @"1";
         item.keyEquivalentModifierMask = NSCommandKeyMask;
         [tabBarItems addObject:item];
@@ -42,28 +40,19 @@
         NSImage *image = [NSImage imageNamed:@"TB_List.png"];
         [image setTemplate:YES];
         SMTabBarItem *item = [[SMTabBarItem alloc] initWithImage:image tag:1];
-        item.toolTip = NSLocalizedString(@"Tab 2", nil);
+        item.toolTip = NSLocalizedString(@"Fragenliste", nil);
         item.keyEquivalent = @"2";
         item.keyEquivalentModifierMask = NSCommandKeyMask;
         [tabBarItems addObject:item];
     }
     self.tabBar.items = tabBarItems;
-	
-	[auditoriumController addObserver:self forKeyPath:@"currentAuditoriumEvent" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 - (void)dealloc
 {
-	[auditoriumController removeObserver:self forKeyPath:@"currentAuditoriumEvent"];
 	[super dealloc];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-	if ([keyPath isEqualToString:@"currentAuditoriumEvent"]) {
-	}
-}
-	
 - (void)tabBar:(SMTabBar *)tabBar didSelectItem:(SMTabBarItem *)item {
     [self.tabView selectTabViewItemAtIndex:[self.tabBar.items indexOfObject:item]];
 }

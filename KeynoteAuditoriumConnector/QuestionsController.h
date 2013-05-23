@@ -8,10 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@class AuditoriumController;
-
 @interface QuestionsController : NSObject
-
-@property (assign) IBOutlet AuditoriumController *auditoriumController;
 
 @end

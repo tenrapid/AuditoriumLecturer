@@ -90,14 +90,41 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 		[view setFrame:NSMakeRect(0, 0, self.frame.size.width, 100)];
 		[self addSubview:view];
 
-		[notificationCenter addObserver:self selector:@selector(textViewHeightDidChange:) name:NSViewFrameDidChangeNotification object:view];
+		[notificationCenter addObserver:self selector:@selector(questionEditViewHeightDidChange:) name:NSViewFrameDidChangeNotification object:view];
 	}
 
 	[self updateViewHeight];
 	[[self window] recalculateKeyViewLoop];
 }
 
-- (IBAction)addQuestionButtonAction:(id)sender
+- (void)updateViewHeight
+{
+	NSRect frame;
+	float height = 0;
+
+	for (NSViewController *viewController in questionEditViewControllers) {
+		frame = viewController.view.frame;
+		frame.origin.y = height;
+		frame.size.width = self.frame.size.width;
+		[viewController.view setFrame:frame];
+		height += viewController.view.frame.size.height + 30;
+	}
+
+	frame = [self frame];
+	frame.origin.y += frame.size.height - height;
+	frame.size.height = height;
+	[self setFrame:frame];
+
+	[self setNeedsDisplay:YES];
+	[[NSNotificationCenter defaultCenter] postNotificationName:SlideQuestionsViewHeightDidChangeNotification object:self];
+}
+
+- (void)questionEditViewHeightDidChange:(NSNotification *)notification
+{
+	[self updateViewHeight];
+}
+
+- (IBAction)addQuestionAction:(id)sender
 {
 	NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
 	NSUndoManager *undoManager = context.undoManager;
@@ -191,33 +218,6 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
         return NO;
     }
     return YES;
-}
-
-- (void)updateViewHeight
-{
-	NSRect frame;
-	float height = 0;
-
-	for (NSViewController *viewController in questionEditViewControllers) {
-		frame = viewController.view.frame;
-		frame.origin.y = height;
-		frame.size.width = self.frame.size.width;
-		[viewController.view setFrame:frame];
-		height += viewController.view.frame.size.height + 30;
-	}
-	
-	frame = [self frame];
-	frame.origin.y += frame.size.height - height;
-	frame.size.height = height;
-	[self setFrame:frame];
-
-	[self setNeedsDisplay:YES];
-	[[NSNotificationCenter defaultCenter] postNotificationName:SlideQuestionsViewHeightDidChangeNotification object:self];
-}
-
-- (void)textViewHeightDidChange:(NSNotification *)notification
-{
-	[self updateViewHeight];
 }
 
 - (BOOL)isFlipped

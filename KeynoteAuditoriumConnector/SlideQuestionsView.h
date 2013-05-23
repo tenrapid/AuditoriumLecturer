@@ -14,6 +14,6 @@ extern NSString * const SlideQuestionsViewHeightDidChangeNotification;
 
 @interface SlideQuestionsView : NSView
 
-- (IBAction)addQuestionButtonAction:(id)sender;
+- (IBAction)addQuestionAction:(id)sender;
 
 @end
