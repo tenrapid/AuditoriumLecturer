@@ -779,7 +779,6 @@
 								<string key="NSFrame">{{0, 14}, {500, 25}}</string>
 								<reference key="NSSuperview"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSPopUpButtonCell" key="NSCell" id="753843855">
@@ -1637,7 +1636,7 @@
 						<string key="label">content: events.arrangedObjects</string>
 						<reference key="source" ref="378960188"/>
 						<reference key="destination" ref="1006013941"/>
-						<object class="NSNibBindingConnector" key="connector" id="554761787">
+						<object class="NSNibBindingConnector" key="connector" id="205916536">
 							<reference key="NSSource" ref="378960188"/>
 							<reference key="NSDestination" ref="1006013941"/>
 							<string key="NSLabel">content: events.arrangedObjects</string>
@@ -1653,13 +1652,13 @@
 						<string key="label">contentValues: events.arrangedObjects.title</string>
 						<reference key="source" ref="378960188"/>
 						<reference key="destination" ref="1006013941"/>
-						<object class="NSNibBindingConnector" key="connector" id="191293514">
+						<object class="NSNibBindingConnector" key="connector" id="344452579">
 							<reference key="NSSource" ref="378960188"/>
 							<reference key="NSDestination" ref="1006013941"/>
 							<string key="NSLabel">contentValues: events.arrangedObjects.title</string>
 							<string key="NSBinding">contentValues</string>
 							<string key="NSKeyPath">events.arrangedObjects.title</string>
-							<reference key="NSPreviousConnector" ref="554761787"/>
+							<reference key="NSPreviousConnector" ref="205916536"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
@@ -1676,7 +1675,7 @@
 							<string key="NSLabel">selectedIndex: events.selectionIndex</string>
 							<string key="NSBinding">selectedIndex</string>
 							<string key="NSKeyPath">events.selectionIndex</string>
-							<reference key="NSPreviousConnector" ref="191293514"/>
+							<reference key="NSPreviousConnector" ref="344452579"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>

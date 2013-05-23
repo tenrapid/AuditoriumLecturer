@@ -8,10 +8,11 @@
 
 #import "Auditorium.h"
 #import "AuditoriumObject.h"
-#import "AuditoriumEvent.h"
 #import "Event.h"
 #import "Question.h"
 #import "SlideQuestionsView.h"
+
+#define simulatedNetworkDelay 0
 
 @implementation Auditorium
 
@@ -22,6 +23,9 @@
 @synthesize context;
 
 @synthesize event;
+
+
+#pragma mark  Class Methods
 
 + (Auditorium *)sharedInstance
 {
@@ -48,6 +52,9 @@
     CFRelease(theUUID);
     return [(NSString *)string autorelease];
 }
+
+
+#pragma mark  Instance Methods
 
 - (id)init
 {
@@ -80,7 +87,7 @@
 {
 	if ([keyPath isEqualToString:@"event"]) {
 		if (self.event) {
-			[self performSelector:@selector(createTestQuestions) withObject:nil afterDelay:1];
+			[self performSelector:@selector(createTestQuestions) withObject:nil afterDelay:simulatedNetworkDelay];
 		}
 	}
 }
@@ -109,7 +116,7 @@
 	}
 	self.postEnabled = YES;
 	self.saveEnabled = YES;
-	[context.undoManager performSelector:@selector(removeAllActions) withObject:nil afterDelay:0.0];
+	[context.undoManager performSelector:@selector(removeAllActions) withObject:nil afterDelay:simulatedNetworkDelay];
 }
 
 - (void)createTestQuestions
@@ -141,7 +148,7 @@
 	}
 	self.postEnabled = YES;
 	self.saveEnabled = YES;
-	[context.undoManager performSelector:@selector(removeAllActions) withObject:nil afterDelay:0.0];
+	[context.undoManager performSelector:@selector(removeAllActions) withObject:nil afterDelay:simulatedNetworkDelay];
 }
 
 - (void)save:(NSTimer*)timer
@@ -168,18 +175,18 @@
 - (void)loginWithUsername:(NSString *)username password:(NSString *)password delegate:(id)delegate
 {
 	self.loggedInUser = username;
-	[self performSelector:@selector(didLogin:) withObject:delegate afterDelay:0.1];
+	[self performSelector:@selector(didLogin:) withObject:delegate afterDelay:simulatedNetworkDelay];
 }
 
 - (void)logoutWithDelegate:(id)delegate
 {
 	self.event = nil;
-	[self performSelector:@selector(didLogout:) withObject:delegate afterDelay:1];
+	[self performSelector:@selector(didLogout:) withObject:delegate afterDelay:simulatedNetworkDelay];
 }
 
 - (void)didLogin:(id)delegate
 {
-	[self performSelector:@selector(createTestEvents) withObject:nil afterDelay:1];
+	[self performSelector:@selector(createTestEvents) withObject:nil afterDelay:simulatedNetworkDelay];
 	self.loggedIn = YES;
 	[delegate performSelector:@selector(didLogin) withObject:nil];
 }

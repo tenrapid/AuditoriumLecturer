@@ -10,8 +10,11 @@
 #import <CoreData/CoreData.h>
 #import "AuditoriumObject.h"
 
+@class Question;
 
 @interface Answer : AuditoriumObject
 
+@property (nonatomic, assign) Question * question;
+@property (nonatomic, retain) NSString * text;
 
 @end

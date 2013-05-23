@@ -8,7 +8,6 @@
 
 #import "QuestionsController.h"
 #import "Auditorium.h"
-#import "AuditoriumEvent.h"
 #import "SMTabBar.h"
 #import "SMTabBarItem.h"
 

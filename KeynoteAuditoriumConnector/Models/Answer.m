@@ -11,5 +11,7 @@
 
 @implementation Answer
 
+@dynamic question;
+@dynamic text;
 
 @end

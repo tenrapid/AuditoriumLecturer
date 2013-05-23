@@ -18,12 +18,20 @@
 
 NSString * const QuestionEditSheetWillOpenNotification = @"QuestionEditSheetWillOpenNotification";
 NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidCloseNotification";
+NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestionsViewHeightDidChangeNotification";
+
 
 @interface SlideQuestionsView ()
 {
+	NSMutableArray *questions;
 	QuestionEditSheetController *questionEditSheetController;
+	MoveQuestionToSlideViewController *moveQuestionToSlideViewController;
 }
+
+@property (assign) NSMutableArray *questionEditViewControllers;
+
 @end
+
 
 @implementation SlideQuestionsView
 
@@ -34,7 +42,7 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
     self = [super initWithFrame:frame];
     if (self) {
 		questionEditViewControllers = [[NSMutableArray alloc] init];
-		[self calculateViewHeight];
+		[self updateViewHeight];
     }
     return self;
 }
@@ -85,7 +93,7 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 		[notificationCenter addObserver:self selector:@selector(textViewHeightDidChange:) name:NSViewFrameDidChangeNotification object:view];
 	}
 
-	[self calculateViewHeight];
+	[self updateViewHeight];
 	[[self window] recalculateKeyViewLoop];
 }
 
@@ -161,21 +169,13 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 	Question *question = question = questionEditSheetController.representedObject;
 	NSManagedObjectContext *context = question.managedObjectContext;
 	NSUndoManager *undoManager = context.undoManager;
+	[undoManager endUndoGrouping];
 
-	switch (returnCode) {
-		case NSOKButton:
-			if (!question.slideNumber.integerValue) {
-				question.slide = [Slideshow sharedInstance].currentSlide;
-			}
-			[undoManager endUndoGrouping];
-			break;
-		case NSCancelButton:
-			[undoManager endUndoGrouping];
-			[undoManager undo];
-			// clear redo stack by registering fake undo operation
-			[undoManager registerUndoWithTarget:[NSNull null] selector:nil object:nil];
-			[undoManager performSelector:@selector(removeAllActionsWithTarget:) withObject:[NSNull null] afterDelay:0.0];
-			break;
+	if (returnCode == NSCancelButton) {
+		[undoManager undo];
+		// clear redo stack by registering fake undo operation
+		[undoManager registerUndoWithTarget:[NSNull null] selector:nil object:nil];
+		[undoManager performSelector:@selector(removeAllActionsWithTarget:) withObject:[NSNull null] afterDelay:0.0];
 	}
 
 	[questionEditSheetController release];
@@ -193,7 +193,7 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
     return YES;
 }
 
-- (void)calculateViewHeight
+- (void)updateViewHeight
 {
 	NSRect frame;
 	float height = 0;
@@ -212,11 +212,12 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 	[self setFrame:frame];
 
 	[self setNeedsDisplay:YES];
+	[[NSNotificationCenter defaultCenter] postNotificationName:SlideQuestionsViewHeightDidChangeNotification object:self];
 }
 
 - (void)textViewHeightDidChange:(NSNotification *)notification
 {
-	[self calculateViewHeight];
+	[self updateViewHeight];
 }
 
 - (BOOL)isFlipped

@@ -7,7 +7,6 @@
 //
 
 #import "AuditoriumController.h"
-#import "AuditoriumEvent.h"
 #import "Auditorium.h"
 #import "Slideshow.h"
 #import "Event.h"
@@ -47,7 +46,8 @@
 	[notificationCenter addObserver:self selector:@selector(windowDidResignKey:) name:NSWindowDidResignKeyNotification object:[NSApp mainWindow]];
 
 	[self addObserver:self forKeyPath:@"sending" options:NSKeyValueObservingOptionNew context:nil];
-	[self addObserver:self forKeyPath:@"events.selectionIndex" options:NSKeyValueObservingOptionNew context:nil];
+	[self addObserver:self forKeyPath:@"events.selectionIndex" options:0 context:nil];
+	[self addObserver:self forKeyPath:@"events.content" options:0 context:nil];
 
 	self.events = [[NSArrayController alloc] init];
 	[self.events setManagedObjectContext:[[NSApp delegate] managedObjectContext]];
@@ -70,9 +70,11 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	if ([keyPath isEqualToString:@"currentSlide"] && [Slideshow sharedInstance].document && self.isSending) {
-		Slide *currentSlide = [change objectForKey:NSKeyValueChangeNewKey];
-		[[Auditorium sharedInstance] sendSlide:currentSlide];
+	if ([keyPath isEqualToString:@"currentSlide"]) {
+		if ([Slideshow sharedInstance].document && self.isSending) {
+			Slide *currentSlide = [change objectForKey:NSKeyValueChangeNewKey];
+			[[Auditorium sharedInstance] sendSlide:currentSlide];
+		}
 	}
 	else if ([keyPath isEqualToString:@"loggedIn"]) {
 		BOOL loggedInToAuditorium = [[change objectForKey:NSKeyValueChangeNewKey] boolValue];
@@ -102,14 +104,16 @@
 			self.sending = NO;
 		}
 	}
+	else if ([keyPath isEqualToString:@"events.content"]) {
+		[eventPopUpButton setEnabled:[self.events.content count] != 0];
+	}
 	else if ([keyPath isEqualToString:@"events.selectionIndex"]) {
 		NSInteger selectionIndex = self.events.selectionIndex;
-		if (selectionIndex == NSNotFound) {
-			[eventPopUpButton performSelector:@selector(setEnabled:) withObject:nil afterDelay:0.0];
+		if (selectionIndex != 0 && selectionIndex != NSNotFound) {
+			[Auditorium sharedInstance].event = self.events.selectedObjects[0];
 		}
 		else {
-			[eventPopUpButton performSelector:@selector(setEnabled:) withObject:[NSNumber numberWithBool:YES] afterDelay:0.0];
-			[Auditorium sharedInstance].event = selectionIndex != 0 ? self.events.selectedObjects[0] : nil;
+			[Auditorium sharedInstance].event = nil;
 		}
 	}
 }

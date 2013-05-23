@@ -63,9 +63,9 @@
 		[self bind:@"slide" toObject:[Slideshow sharedInstance] withKeyPath:@"currentSlide" options:nil];
 
 		NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-		[notificationCenter addObserver:self selector:@selector(slideQuestionsViewHeightDidChange:) name:NSViewFrameDidChangeNotification object:self.slideQuestionsView];
+		[notificationCenter addObserver:self selector:@selector(slideQuestionsViewHeightDidChange:) name:SlideQuestionsViewHeightDidChangeNotification object:self.slideQuestionsView];
 
-		[self calculateViewHeight];
+		[self updateViewHeight];
 		return;
 	}
 	[NSBundle loadNibNamed:@"SlideQuestions" owner:self];
@@ -93,7 +93,7 @@
 	}
 }
 
-- (void)calculateViewHeight
+- (void)updateViewHeight
 {
 	float height = self.documentView.frame.size.height - self.slideQuestionsView.frame.origin.y;
 	// space for add button
@@ -103,7 +103,7 @@
 
 - (void)slideQuestionsViewHeightDidChange:(NSNotification *)notification
 {
-	[self calculateViewHeight];
+	[self updateViewHeight];
 }
 
 @end

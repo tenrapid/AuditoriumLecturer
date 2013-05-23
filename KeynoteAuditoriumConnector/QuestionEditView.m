@@ -8,6 +8,8 @@
 
 #import "QuestionEditView.h"
 
+NSString * const QuestionEditViewHeightDidChangeNotification = @"QuestionEditViewHeightDidChangeNotification";
+
 @implementation QuestionEditView
 
 @synthesize textView;
@@ -51,7 +53,7 @@
     NSRectFill(bounds);
 }
 
-- (void)calculateViewHeight
+- (void)updateViewHeight
 {
 	NSRect frame;
 	float height = 0;
@@ -69,12 +71,12 @@
 	[self setFrame:frame];
 
 	[self setNeedsDisplay:YES];
+	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditViewHeightDidChangeNotification object:self];
 }
-
 
 - (void)textViewHeightDidChange:(NSNotification *)notification
 {
-	[self calculateViewHeight];
+	[self updateViewHeight];
 }
 
 - (BOOL)textView:(NSTextView *)aTextView doCommandBySelector:(SEL)aSelector {

@@ -8,18 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class Question, Slide, MoveQuestionToSlideViewController;
-
 extern NSString * const QuestionEditSheetWillOpenNotification;
 extern NSString * const QuestionEditSheetDidCloseNotification;
+extern NSString * const SlideQuestionsViewHeightDidChangeNotification;
 
 @interface SlideQuestionsView : NSView
-{
-	NSMutableArray *questions;
-	MoveQuestionToSlideViewController *moveQuestionToSlideViewController;
-}
-
-@property (assign) NSMutableArray *questionEditViewControllers;
 
 - (IBAction)addQuestionButtonAction:(id)sender;
 

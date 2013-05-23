@@ -12,6 +12,16 @@
 
 @class Answer, Slide, Event;
 
+
+enum QuestionType : int16_t {
+	QuestionMessageType,
+	QuestionSingleChoiceType,
+	QuestionMultipleChoiceType
+
+};
+typedef enum QuestionType QuestionType;
+
+
 @interface Question : AuditoriumObject
 
 @property (nonatomic, assign) Event * event;
@@ -20,14 +30,14 @@
 @property (nonatomic, retain) NSNumber * slideNumber;
 @property (nonatomic, retain) NSNumber * slideIdentifier;
 @property (nonatomic, retain) NSString * text;
-@property (nonatomic, retain) NSNumber * type;
+@property (nonatomic, assign) QuestionType type;
 @property (nonatomic, retain) NSSet *answers;
+
++ (NSPredicate *)slideQuestionsPredicate;
 
 @end
 
 @interface Question (CoreDataGeneratedAccessors)
-
-+ (NSPredicate *)slideQuestionsPredicate;
 
 - (void)addAnswersObject:(Answer *)value;
 - (void)removeAnswersObject:(Answer *)value;
