@@ -10,6 +10,12 @@
 
 NSString * const QuestionEditViewHeightDidChangeNotification = @"QuestionEditViewHeightDidChangeNotification";
 
+@interface QuestionEditView ( )
+{
+	float textViewHeight;
+}
+@end
+
 @implementation QuestionEditView
 
 @synthesize textView;
@@ -26,6 +32,7 @@ NSString * const QuestionEditViewHeightDidChangeNotification = @"QuestionEditVie
 		[textView setDelegate:self];
 //		[textView setFont:[NSFont systemFontOfSize:12]];
 		[self addSubview:textView];
+		textViewHeight = textView.frame.size.height;
 
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewHeightDidChange:) name:NSViewFrameDidChangeNotification object:textView];
     }
@@ -38,6 +45,7 @@ NSString * const QuestionEditViewHeightDidChangeNotification = @"QuestionEditVie
 	[notificationCenter removeObserver:self];
 
 	[textView removeFromSuperviewWithoutNeedingDisplay];
+	[textView release];
 
 	[super dealloc];
 }
@@ -76,8 +84,13 @@ NSString * const QuestionEditViewHeightDidChangeNotification = @"QuestionEditVie
 
 - (void)textViewHeightDidChange:(NSNotification *)notification
 {
-	[self updateViewHeight];
+	if (self.textView.frame.size.height != textViewHeight) {
+		textViewHeight = self.textView.frame.size.height;
+		[self updateViewHeight];
+	}
 }
+
+#pragma mark  NSTextViewDelegate
 
 - (BOOL)textView:(NSTextView *)aTextView doCommandBySelector:(SEL)aSelector {
     if (aSelector == @selector(insertTab:)) {

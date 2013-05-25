@@ -97,7 +97,7 @@
 {
 	float height = self.documentView.frame.size.height - self.slideQuestionsView.frame.origin.y;
 	// space for add button
-	height += self.slideQuestionsView.frame.size.height ? 65 : 90;
+	height += self.slideQuestionsView.frame.size.height ? 75 : 90;
 	[self.documentView setFrameSize:NSMakeSize(self.documentView.frame.size.width, height)];
 }
 

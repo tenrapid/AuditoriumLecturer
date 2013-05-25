@@ -41,8 +41,27 @@
 
 + (id)objectForEntityName:(NSString *)entityName
 {
-	AuditoriumObject *object = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self sharedInstance].context];
-	object.uuid = [self UUIDString];
+	NSManagedObjectContext *context = [self sharedInstance].context;
+	NSUndoManager *undoManager = context.undoManager;
+
+	AuditoriumObject *object = nil;
+	
+	if ([undoManager isUndoRegistrationEnabled]) {
+		// in this branch undo registration is disabled to preserve uuids after undoing the creation of an object
+		[context processPendingChanges];
+		[undoManager disableUndoRegistration];
+		object = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:context];
+		object.uuid = [self UUIDString];
+		[context processPendingChanges];
+		[undoManager enableUndoRegistration];
+		[undoManager registerUndoWithTarget:context selector:@selector(deleteObject:) object:object];
+	}
+	else {
+		// undo registration is already disabled if objects from parsed json are inserted into the context
+		object = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:context];
+		object.uuid = [self UUIDString];
+	}
+	
 	return object;
 }
 
@@ -96,6 +115,9 @@
 {
 	self.saveEnabled = NO;
 
+	[context processPendingChanges];
+	[context.undoManager disableUndoRegistration];
+	
 	Event *event1 = [Auditorium objectForEntityName:@"Event"];
 	event1.title = @"Rechnernetze – 2. Vorlesung – 24.06.2013";
 	event1.date	= [NSDate dateWithString:@"2013-06-24 10:00:00 +0000"];
@@ -108,6 +130,9 @@
 	event2.title = @"Veranstaltung wählen…";
 	event2.date	= [NSDate dateWithString:@"0000-00-00 00:00:00 +0000"];
 
+	[context processPendingChanges];
+	[context.undoManager enableUndoRegistration];
+
 	self.postEnabled = NO;
 	NSError *error = nil;
 	[context save:&error];
@@ -116,15 +141,17 @@
 	}
 	self.postEnabled = YES;
 	self.saveEnabled = YES;
-	[context.undoManager performSelector:@selector(removeAllActions) withObject:nil afterDelay:simulatedNetworkDelay];
 }
 
 - (void)createTestQuestions
 {
 	self.saveEnabled = NO;
 
+	[context processPendingChanges];
+	[context.undoManager disableUndoRegistration];
+	
 	Question *question;
-
+	
 	question = [Auditorium objectForEntityName:@"Question"];
 	question.event = self.event;
 	question.slideNumber = [NSNumber numberWithInteger:1];
@@ -140,6 +167,9 @@
 	question.slideNumber = [NSNumber numberWithInteger:2];
 	question.text = @"Hier könnte Ihre 3. Frage stehen!";
 
+	[context processPendingChanges];
+	[context.undoManager enableUndoRegistration];
+	
 	self.postEnabled = NO;
 	NSError *error = nil;
 	[context save:&error];
@@ -148,7 +178,6 @@
 	}
 	self.postEnabled = YES;
 	self.saveEnabled = YES;
-	[context.undoManager performSelector:@selector(removeAllActions) withObject:nil afterDelay:simulatedNetworkDelay];
 }
 
 - (void)save:(NSTimer*)timer

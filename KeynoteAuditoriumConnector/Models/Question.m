@@ -22,32 +22,28 @@
 @dynamic type;
 @dynamic answers;
 
-+ (NSPredicate *)slideQuestionsPredicate
+- (void)removeFromOrderChain
 {
-	static NSPredicate *predicate;
-	if (predicate == nil) {
-		predicate = [NSPredicate predicateWithFormat:@"(slideIdentifier = %@) AND (order > %@)"];
+	NSError *error = nil;
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+	[fetchRequest setEntity:self.entity];
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(event = %@) AND (slideNumber = %@) AND (order > %@)", self.event, self.slideNumber, self.order]];
+	NSArray *questions = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+	for (Question *question in questions) {
+		question.order = [NSNumber numberWithInteger:question.order.integerValue - 1];
 	}
-	return predicate;
 }
 
 - (void)setSlideNumber:(NSNumber *)slideNumber
 {
+	if (self.slideNumber.integerValue != 0) {
+		[self removeFromOrderChain];
+	}
+
 	NSError *error;
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 	[fetchRequest setEntity:self.entity];
-
-	if (self.slideNumber.integerValue != 0) {
-		[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(event = %@) AND (slideNumber = %@) AND (order > %@)", self.event, self.slideNumber, self.order]];
-		NSArray *questions = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-		for (Question *question in questions) {
-			question.order = [NSNumber numberWithInteger:question.order.integerValue - 1];
-		}
-	}
-
 	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(event = %@) AND (slideNumber = %@)", self.event, slideNumber]];
-	[fetchRequest setIncludesPropertyValues:NO];
-	[fetchRequest setIncludesSubentities:NO];
 	NSInteger count = [self.managedObjectContext countForFetchRequest:fetchRequest error:&error];
 	self.order = [NSNumber numberWithInteger:count];
 
@@ -72,6 +68,9 @@
 
 - (void)prepareForDeletion
 {
+	if (self.slideNumber.integerValue != 0) {
+		[self removeFromOrderChain];
+	}
 }
 
 @end

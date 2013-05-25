@@ -107,7 +107,7 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 		frame.origin.y = height;
 		frame.size.width = self.frame.size.width;
 		[viewController.view setFrame:frame];
-		height += viewController.view.frame.size.height + 30;
+		height += viewController.view.frame.size.height + 20;
 	}
 
 	frame = [self frame];
@@ -128,10 +128,10 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 {
 	NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
 	NSUndoManager *undoManager = context.undoManager;
-	[undoManager beginUndoGrouping];
 
 	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetWillOpenNotification object:self];
 
+	[undoManager beginUndoGrouping];
 	Question *question = [Auditorium objectForEntityName:@"Question"];
 	question.event = [Auditorium sharedInstance].event;
 	questionEditSheetController = [[QuestionEditSheetController alloc] initWithQuestion:question delegate:self];
@@ -173,11 +173,7 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 - (void)removeQuestionAction:(id)sender
 {
 	Question *question = [sender representedObject];
-	NSInteger order = question.order.integerValue;
-	[[[self infoForBinding:@"questions"] valueForKey:NSObservedObjectKey] removeObject:question];
-	for (NSInteger i = order; i < questions.count; i++) {
-		[[questions objectAtIndex:i] setOrder:[NSNumber numberWithInteger:i]];
-	}
+	[question.managedObjectContext deleteObject:question];
 }
 
 - (void)editQuestionAction:(id)sender
@@ -208,6 +204,8 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 	[questionEditSheetController release];
 	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetDidCloseNotification object:self];
 }
+
+#pragma mark  NSMenuValidation Protocol
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item {
 	Question *question = [item representedObject];

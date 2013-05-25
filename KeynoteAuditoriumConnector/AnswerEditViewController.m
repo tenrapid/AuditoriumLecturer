@@ -28,7 +28,9 @@
 - (IBAction)addAnswerAction:(id)sender
 {
 	Answer *answer = self.representedObject;
-	[answer.question addAnswersObject:[Auditorium objectForEntityName:@"Answer"]];
+	Answer *newAnswer = [Auditorium objectForEntityName:@"Answer"];
+	newAnswer.order = [NSNumber numberWithInteger:answer.order.integerValue + 1];
+	[answer.question addAnswersObject:newAnswer];
 }
 
 - (IBAction)removeAnswerAction:(id)sender

@@ -99,14 +99,33 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 	frame.size.height = height;
 
 	[self.view setFrame:frame];
-//	NSLog(@"frame %f, %f, %f, %f", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
 	[[NSNotificationCenter defaultCenter] postNotificationName:AnswersEditViewHeightDidChangeNotification object:self];
+//	NSLog(@"frame %f, %f, %f, %f", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
 
-//	[self.view setNeedsDisplay:YES];
+	[self.view setNeedsDisplay:YES];
 }
 
 - (void)answerEditViewHeightDidChange:(NSNotification *)notification
 {
+}
+
+#pragma mark  NSEditor Protocol
+
+- (BOOL)commitEditing
+{
+	BOOL returnValue = [super commitEditing];
+	for (AnswerEditViewController *answerEditViewController in answerEditViewControllers) {
+		returnValue &= [answerEditViewController commitEditing];
+	}
+	return returnValue;
+}
+
+- (void)discardEditing
+{
+	[super discardEditing];
+	for (AnswerEditViewController *answerEditViewController in answerEditViewControllers) {
+		[answerEditViewController discardEditing];
+	}
 }
 
 @end

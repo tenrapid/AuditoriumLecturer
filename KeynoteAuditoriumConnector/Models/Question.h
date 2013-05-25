@@ -33,8 +33,6 @@ typedef enum QuestionType QuestionType;
 @property (nonatomic, assign) QuestionType type;
 @property (nonatomic, retain) NSSet *answers;
 
-+ (NSPredicate *)slideQuestionsPredicate;
-
 @end
 
 @interface Question (CoreDataGeneratedAccessors)

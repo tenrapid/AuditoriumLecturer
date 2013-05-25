@@ -44,6 +44,8 @@
 		sheet = self.view.window;
 
 		answers = [[NSArrayController alloc] init];
+		[answers setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
+		[answers setAutomaticallyRearrangesObjects:YES];
 		[answers bind:@"content" toObject:self.representedObject withKeyPath:@"answers" options:nil];
 		
 		[answersEditViewController bind:@"answers" toObject:self withKeyPath:@"answers.arrangedObjects" options:nil];
@@ -109,12 +111,14 @@
 - (IBAction)cancelButtonAction:(id)sender
 {
 	[self discardEditing];
+	[self.answersEditViewController discardEditing];
 	[NSApp endSheet:sheet returnCode:NSCancelButton];
 }
 
 - (IBAction)saveButtonAction:(id)sender
 {
 	[self commitEditing];
+	[self.answersEditViewController commitEditing];
 	
 	Question *question = self.representedObject;
 	if (!question.slideNumber.integerValue) {
