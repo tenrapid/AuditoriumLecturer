@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "Auditorium.h"
 #import "Slideshow.h"
+#import "NilToEmptyStringTransformer.h"
 
 @implementation AppDelegate
 
@@ -18,6 +19,12 @@
 
 @synthesize auditorium = _auditorium;
 @synthesize slideshow = _slideshow;
+
++ (void)initialize
+{
+	NilToEmptyStringTransformer *emptyStringToNilTransformer = [[[NilToEmptyStringTransformer alloc] init] autorelease];
+	[NSValueTransformer setValueTransformer:emptyStringToNilTransformer forName:@"NilToEmptyStringTransformer"];
+}
 
 - (id)init
 {
@@ -49,6 +56,16 @@
 	
     NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Model" withExtension:@"momd"];
     _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+
+	NSEntityDescription *entity;
+	NSAttributeDescription *textAttribute;
+	entity = [[_managedObjectModel entitiesByName] objectForKey:@"Question"];
+	textAttribute = [[entity attributesByName] objectForKey:@"text"];
+	[textAttribute setDefaultValue:@""];
+	entity = [[_managedObjectModel entitiesByName] objectForKey:@"Answer"];
+	textAttribute = [[entity attributesByName] objectForKey:@"text"];
+	[textAttribute setDefaultValue:@""];
+
     return _managedObjectModel;
 }
 

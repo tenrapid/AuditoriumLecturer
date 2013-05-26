@@ -21,6 +21,7 @@ enum QuestionType : int16_t {
 };
 typedef enum QuestionType QuestionType;
 
+extern const NSString * const QuestionTypeNames[];
 
 @interface Question : AuditoriumObject
 

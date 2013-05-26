@@ -47,6 +47,7 @@
 		2BE7FC3B174D71190004FF7D /* AnswerEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE7FC3A174D71180004FF7D /* AnswerEditViewController.m */; };
 		2BE7FC3E174D743E0004FF7D /* AnswersEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE7FC3D174D743D0004FF7D /* AnswersEditViewController.m */; };
 		2BE7FC41174E51C20004FF7D /* FlippedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE7FC40174E51C10004FF7D /* FlippedView.m */; };
+		2BE7FC44175264FB0004FF7D /* NilToEmptyStringTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE7FC43175264FA0004FF7D /* NilToEmptyStringTransformer.m */; };
 		2BF07095173A409D0071A52F /* TB3_Record-Pressed-Off.png in Resources */ = {isa = PBXBuildFile; fileRef = 2BF07094173A409D0071A52F /* TB3_Record-Pressed-Off.png */; };
 		2BF07098173CDB450071A52F /* QuestionsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BF07097173CDB450071A52F /* QuestionsController.m */; };
 		2BF070A4173CE0F90071A52F /* NSDictionary+SMKeyValueObserving.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BF0709B173CE0F90071A52F /* NSDictionary+SMKeyValueObserving.m */; };
@@ -121,13 +122,15 @@
 		2BE7FC32174AE2FE0004FF7D /* AuditoriumObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AuditoriumObject.m; path = Models/AuditoriumObject.m; sourceTree = "<group>"; };
 		2BE7FC34174AE3DD0004FF7D /* Rule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Rule.h; path = Models/Rule.h; sourceTree = "<group>"; };
 		2BE7FC35174AE3DD0004FF7D /* Rule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Rule.m; path = Models/Rule.m; sourceTree = "<group>"; };
-		2BE7FC37174D6F8F0004FF7D /* AnswerEdit.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AnswerEdit.xib; path = KeynoteAuditoriumConnector/AnswerEdit.xib; sourceTree = "<group>"; };
+		2BE7FC37174D6F8F0004FF7D /* AnswerEdit.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AnswerEdit.xib; sourceTree = "<group>"; };
 		2BE7FC39174D71180004FF7D /* AnswerEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnswerEditViewController.h; sourceTree = "<group>"; };
 		2BE7FC3A174D71180004FF7D /* AnswerEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnswerEditViewController.m; sourceTree = "<group>"; };
 		2BE7FC3C174D743D0004FF7D /* AnswersEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnswersEditViewController.h; sourceTree = "<group>"; };
 		2BE7FC3D174D743D0004FF7D /* AnswersEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnswersEditViewController.m; sourceTree = "<group>"; };
 		2BE7FC3F174E51C00004FF7D /* FlippedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlippedView.h; sourceTree = "<group>"; };
 		2BE7FC40174E51C10004FF7D /* FlippedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlippedView.m; sourceTree = "<group>"; };
+		2BE7FC42175264F90004FF7D /* NilToEmptyStringTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NilToEmptyStringTransformer.h; sourceTree = "<group>"; };
+		2BE7FC43175264FA0004FF7D /* NilToEmptyStringTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NilToEmptyStringTransformer.m; sourceTree = "<group>"; };
 		2BF07094173A409D0071A52F /* TB3_Record-Pressed-Off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TB3_Record-Pressed-Off.png"; sourceTree = "<group>"; };
 		2BF07096173CDB450071A52F /* QuestionsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionsController.h; sourceTree = "<group>"; };
 		2BF07097173CDB450071A52F /* QuestionsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionsController.m; sourceTree = "<group>"; };
@@ -206,7 +209,6 @@
 		2BBE3B5B172A6D4800BCF546 = {
 			isa = PBXGroup;
 			children = (
-				2BE7FC37174D6F8F0004FF7D /* AnswerEdit.xib */,
 				2B733A8717398A0F008FDFBA /* Auditorium.icns */,
 				2BBE3B6D172A6D4800BCF546 /* KeynoteAuditoriumConnector */,
 				2BD5D91A17427D08000F69E7 /* Scripting Definitions */,
@@ -283,12 +285,15 @@
 				2BE7FC3A174D71180004FF7D /* AnswerEditViewController.m */,
 				2BE7FC3C174D743D0004FF7D /* AnswersEditViewController.h */,
 				2BE7FC3D174D743D0004FF7D /* AnswersEditViewController.m */,
+				2BE7FC42175264F90004FF7D /* NilToEmptyStringTransformer.h */,
+				2BE7FC43175264FA0004FF7D /* NilToEmptyStringTransformer.m */,
 				2B777F62172B33D100D1F54F /* KeynoteAuditoriumConnector.xib */,
 				2B4079E917392A3200C09FD4 /* LoginDialog.xib */,
 				2B733A8917399F7D008FDFBA /* SlideQuestions.xib */,
 				2BD5D92317442A25000F69E7 /* MoveQuestionToSlide.xib */,
 				2BC7E9D417403C2800D911AE /* QuestionEdit.xib */,
 				2BD5D92117429096000F69E7 /* QuestionEditSheet.xib */,
+				2BE7FC37174D6F8F0004FF7D /* AnswerEdit.xib */,
 				2BBE3B6E172A6D4800BCF546 /* Supporting Files */,
 			);
 			path = KeynoteAuditoriumConnector;
@@ -450,6 +455,7 @@
 				2BE7FC3B174D71190004FF7D /* AnswerEditViewController.m in Sources */,
 				2BE7FC3E174D743E0004FF7D /* AnswersEditViewController.m in Sources */,
 				2BE7FC41174E51C20004FF7D /* FlippedView.m in Sources */,
+				2BE7FC44175264FB0004FF7D /* NilToEmptyStringTransformer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

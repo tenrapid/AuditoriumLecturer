@@ -155,17 +155,17 @@
 	question = [Auditorium objectForEntityName:@"Question"];
 	question.event = self.event;
 	question.slideNumber = [NSNumber numberWithInteger:1];
-	question.text = @"Hier könnte Ihre 1. Frage stehen!";
+	question.text = @"Hier könnte eine 1. Frage stehen!";
 
 	question = [Auditorium objectForEntityName:@"Question"];
 	question.event = self.event;
 	question.slideNumber = [NSNumber numberWithInteger:1];
-	question.text = @"Hier könnte Ihre 2. Frage stehen!";
+	question.text = @"Hier könnte eine 2. Frage stehen!";
 
 	question = [Auditorium objectForEntityName:@"Question"];
 	question.event = self.event;
 	question.slideNumber = [NSNumber numberWithInteger:2];
-	question.text = @"Hier könnte Ihre 3. Frage stehen!";
+	question.text = @"Hier könnte eine 3. Frage stehen!";
 
 	[context processPendingChanges];
 	[context.undoManager enableUndoRegistration];
@@ -233,6 +233,10 @@
 
 	self.saveEnabled = NO;
 	self.postEnabled = NO;
+
+	[context processPendingChanges];
+	[context.undoManager disableUndoRegistration];
+
 	for (NSManagedObject *object in [context registeredObjects]) {
 		[context deleteObject:object];
 	}
@@ -241,6 +245,9 @@
 	if (error) {
 		NSLog(@"%@", error);
 	}
+
+	[context.undoManager enableUndoRegistration];
+
 	self.postEnabled = YES;
 	self.saveEnabled = YES;
 

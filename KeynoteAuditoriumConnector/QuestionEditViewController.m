@@ -9,6 +9,13 @@
 #import "QuestionEditViewController.h"
 #import "QuestionEditView.h"
 #import "Question.h"
+#import "Answer.h"
+
+@interface QuestionEditViewController ()
+
+@property (assign) NSArrayController *answers;
+
+@end
 
 @implementation QuestionEditViewController
 
@@ -18,17 +25,61 @@
 @synthesize removeQuestionMenuItem;
 @synthesize editQuestionButton;
 
+@synthesize answers;
+
 - (id)initWithQuestion:(Question *)question
 {
     self = [super initWithNibName:@"QuestionEdit" bundle:nil];
     if (self) {
+		answers = [[NSArrayController alloc] init];
+		[answers setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
+		[answers setAutomaticallyRearrangesObjects:YES];
+		[answers bind:@"contentSet" toObject:self withKeyPath:@"representedObject.answers" options:nil];
+		[self addObserver:self forKeyPath:@"representedObject.text" options:NSKeyValueObservingOptionNew context:nil];
+		[self addObserver:self forKeyPath:@"representedObject.type" options:NSKeyValueObservingOptionNew context:nil];
+		[self addObserver:self forKeyPath:@"answers.arrangedObjects.text" options:NSKeyValueObservingOptionNew context:nil];
 		self.representedObject = question;
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+	[self removeObserver:self forKeyPath:@"representedObject.text"];
+	[self removeObserver:self forKeyPath:@"representedObject.type"];
+	[self removeObserver:self forKeyPath:@"answers.arrangedObjects.text"];
+	[answers unbind:@"contentSet"];
+	[answers release];
+	[super dealloc];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+	if ([keyPath isEqualToString:@"representedObject.text"] || [keyPath isEqualToString:@"representedObject.type"] || [keyPath isEqualToString:@"answers.arrangedObjects.text"]) {
+		Question *question = self.representedObject;
+		NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:question.text];
+		
+		if (question.type != QuestionMessageType) {
+			NSString *answersHeader = [NSString stringWithFormat:@"\n\nAntworten (%@):", QuestionTypeNames[question.type]];
+			[text appendAttributedString:[[[NSAttributedString alloc] initWithString:answersHeader attributes:@{NSForegroundColorAttributeName: [NSColor grayColor]}] autorelease]];
+
+			NSMutableParagraphStyle *paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+			NSTextTab *tab1 = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:13] autorelease];
+			NSTextTab *tab2 = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:32] autorelease];
+			[paragraphStyle setTabStops:@[tab1, tab2]];
+			[paragraphStyle setHeadIndent:32];
+			char i = 'a';
+			for (NSString *answer in [self.answers valueForKeyPath:@"arrangedObjects.text"]) {
+				NSString *answerString = [NSString stringWithFormat:@"\n\t%c)\t%@", i, answer];
+				[text appendAttributedString:[[[NSAttributedString alloc] initWithString:answerString attributes:@{NSParagraphStyleAttributeName: paragraphStyle}] autorelease]];
+				i++;
+			}
+		}
 
 		QuestionEditView *questionEditView = (QuestionEditView *)self.view;
-		[questionEditView.textView bind:@"value" toObject:self withKeyPath:@"representedObject.text" options:nil];
-    }
-
-    return self;
+		[questionEditView.textView.textStorage setAttributedString:text];
+		[text release];
+	}
 }
 
 @end

@@ -11,6 +11,11 @@
 #import "Slide.h"
 #import "Auditorium.h"
 
+const NSString * const QuestionTypeNames[] = {
+	@"Nachricht",
+	@"Single Choice",
+	@"Multiple Choice"
+};
 
 @implementation Question
 
