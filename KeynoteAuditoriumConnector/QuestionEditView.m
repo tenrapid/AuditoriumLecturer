@@ -31,6 +31,7 @@ NSString * const QuestionEditViewHeightDidChangeNotification = @"QuestionEditVie
 		[textView setDrawsBackground:YES];
 		[textView setDelegate:self];
 		[textView setEditable:NO];
+		[textView setSelectable:NO];
 //		[textView setFont:[NSFont systemFontOfSize:12]];
 		[self addSubview:textView];
 		textViewHeight = textView.frame.size.height;

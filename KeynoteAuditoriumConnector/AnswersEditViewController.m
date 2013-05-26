@@ -84,7 +84,8 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 - (void)updateViewHeight
 {
 	NSRect frame;
-	float height = 23;
+	// room for "Antworten:" label
+	float height = 26;
 
 	for (NSViewController *viewController in answerEditViewControllers) {
 		frame = viewController.view.frame;
