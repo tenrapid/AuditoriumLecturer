@@ -14,6 +14,7 @@
 @dynamic question;
 @dynamic text;
 @dynamic order;
+@dynamic correct;
 
 - (void)setQuestion:(Question *)question
 {

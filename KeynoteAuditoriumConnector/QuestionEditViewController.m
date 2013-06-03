@@ -38,6 +38,7 @@
 		[self addObserver:self forKeyPath:@"representedObject.text" options:NSKeyValueObservingOptionNew context:nil];
 		[self addObserver:self forKeyPath:@"representedObject.type" options:NSKeyValueObservingOptionNew context:nil];
 		[self addObserver:self forKeyPath:@"answers.arrangedObjects.text" options:NSKeyValueObservingOptionNew context:nil];
+		[self addObserver:self forKeyPath:@"answers.arrangedObjects.correct" options:NSKeyValueObservingOptionNew context:nil];
 		self.representedObject = question;
     }
     return self;
@@ -55,7 +56,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	if ([keyPath isEqualToString:@"representedObject.text"] || [keyPath isEqualToString:@"representedObject.type"] || [keyPath isEqualToString:@"answers.arrangedObjects.text"]) {
+	if ([keyPath isEqualToString:@"representedObject.text"] || [keyPath isEqualToString:@"representedObject.type"] || [keyPath isEqualToString:@"answers.arrangedObjects.text"] || [keyPath isEqualToString:@"answers.arrangedObjects.correct"]) {
 		Question *question = self.representedObject;
 		NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:question.text];
 		
@@ -65,15 +66,18 @@
 
 			NSMutableParagraphStyle *paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 			NSTextTab *tab1 = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:13] autorelease];
-			NSTextTab *tab2 = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:32] autorelease];
+			NSTextTab *tab2 = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:27] autorelease];
 			[paragraphStyle setTabStops:@[tab1, tab2]];
-			[paragraphStyle setHeadIndent:32];
-			char i = 'a';
-			for (NSString *answer in [self.answers valueForKeyPath:@"arrangedObjects.text"]) {
-				NSString *answerString = [NSString stringWithFormat:@"\n\t%c)\t%@", i, answer];
+			[paragraphStyle setHeadIndent:27];
+			NSAttributedString *checkMark = [[NSAttributedString alloc] initWithString:@"  ✔" attributes:@{NSForegroundColorAttributeName: [NSColor colorWithDeviceRed:0.6 green:0.85 blue:0.2 alpha:1]}];
+			for (Answer *answer in [self.answers valueForKeyPath:@"arrangedObjects"]) {
+				NSString *answerString = [NSString stringWithFormat:@"\n\t●\t%@", answer.text];
 				[text appendAttributedString:[[[NSAttributedString alloc] initWithString:answerString attributes:@{NSParagraphStyleAttributeName: paragraphStyle}] autorelease]];
-				i++;
+				if (answer.correct.boolValue) {
+					[text appendAttributedString:checkMark];
+				}
 			}
+			[checkMark release];
 		}
 
 		QuestionEditView *questionEditView = (QuestionEditView *)self.view;
