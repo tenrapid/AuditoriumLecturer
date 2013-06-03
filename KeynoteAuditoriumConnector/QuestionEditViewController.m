@@ -49,6 +49,7 @@
 	[self removeObserver:self forKeyPath:@"representedObject.text"];
 	[self removeObserver:self forKeyPath:@"representedObject.type"];
 	[self removeObserver:self forKeyPath:@"answers.arrangedObjects.text"];
+	[self removeObserver:self forKeyPath:@"answers.arrangedObjects.correct"];
 	[answers unbind:@"contentSet"];
 	[answers release];
 	[super dealloc];
@@ -65,7 +66,7 @@
 			[text appendAttributedString:[[[NSAttributedString alloc] initWithString:answersHeader attributes:@{NSForegroundColorAttributeName: [NSColor grayColor]}] autorelease]];
 
 			NSMutableParagraphStyle *paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-			NSTextTab *tab1 = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:13] autorelease];
+			NSTextTab *tab1 = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:12] autorelease];
 			NSTextTab *tab2 = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:27] autorelease];
 			[paragraphStyle setTabStops:@[tab1, tab2]];
 			[paragraphStyle setHeadIndent:27];
