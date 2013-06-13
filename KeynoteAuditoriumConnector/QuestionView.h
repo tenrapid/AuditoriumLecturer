@@ -8,9 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString * const QuestionEditViewHeightDidChangeNotification;
+extern NSString * const QuestionViewHeightDidChangeNotification;
 
-@interface QuestionEditView : NSView <NSTextViewDelegate>
+@interface QuestionView : NSView <NSTextViewDelegate>
 
 @property (assign) NSTextView *textView;
 

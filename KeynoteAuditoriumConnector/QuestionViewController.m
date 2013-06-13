@@ -6,18 +6,18 @@
 //  Copyright (c) 2013 Matthias Rahne. All rights reserved.
 //
 
-#import "QuestionEditViewController.h"
-#import "QuestionEditView.h"
+#import "QuestionViewController.h"
+#import "QuestionView.h"
 #import "Question.h"
 #import "Answer.h"
 
-@interface QuestionEditViewController ()
+@interface QuestionViewController ()
 
 @property (assign) NSArrayController *answers;
 
 @end
 
-@implementation QuestionEditViewController
+@implementation QuestionViewController
 
 @synthesize moveQuestionUpMenuItem;
 @synthesize moveQuestionDownMenuItem;
@@ -59,31 +59,36 @@
 {
 	if ([keyPath isEqualToString:@"representedObject.text"] || [keyPath isEqualToString:@"representedObject.type"] || [keyPath isEqualToString:@"answers.arrangedObjects.text"] || [keyPath isEqualToString:@"answers.arrangedObjects.correct"]) {
 		Question *question = self.representedObject;
-		NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:question.text];
+
+		NSMutableAttributedString *as = [[[NSMutableAttributedString alloc] initWithString:question.text] autorelease];
 		
 		if (question.type != QuestionMessageType) {
 			NSString *answersHeader = [NSString stringWithFormat:@"\n\nAntworten (%@):", QuestionTypeNames[question.type]];
-			[text appendAttributedString:[[[NSAttributedString alloc] initWithString:answersHeader attributes:@{NSForegroundColorAttributeName: [NSColor grayColor]}] autorelease]];
-
+			NSDictionary *answersHeaderAttributes = @{NSForegroundColorAttributeName: [NSColor grayColor]};
+			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:answersHeader attributes:answersHeaderAttributes] autorelease]];
+			
 			NSMutableParagraphStyle *paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 			NSTextTab *tab1 = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:12] autorelease];
 			NSTextTab *tab2 = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:27] autorelease];
 			[paragraphStyle setTabStops:@[tab1, tab2]];
 			[paragraphStyle setHeadIndent:27];
-			NSAttributedString *checkMark = [[NSAttributedString alloc] initWithString:@"  ✔" attributes:@{NSForegroundColorAttributeName: [NSColor colorWithDeviceRed:0.6 green:0.85 blue:0.2 alpha:1]}];
+			NSDictionary *answerAttributes = @{NSParagraphStyleAttributeName: paragraphStyle};
+			
+			NSColor *checkMarkColor = [NSColor colorWithDeviceRed:0.6 green:0.85 blue:0.2 alpha:1];
+			NSDictionary *checkMarkAttributes = @{NSForegroundColorAttributeName: checkMarkColor};
+			NSAttributedString *checkMark = [[[NSAttributedString alloc] initWithString:@"  ✔" attributes:checkMarkAttributes] autorelease];
+			
 			for (Answer *answer in [self.answers valueForKeyPath:@"arrangedObjects"]) {
 				NSString *answerString = [NSString stringWithFormat:@"\n\t●\t%@", answer.text];
-				[text appendAttributedString:[[[NSAttributedString alloc] initWithString:answerString attributes:@{NSParagraphStyleAttributeName: paragraphStyle}] autorelease]];
+				[as appendAttributedString:[[[NSAttributedString alloc] initWithString:answerString attributes:answerAttributes] autorelease]];
 				if (answer.correct.boolValue) {
-					[text appendAttributedString:checkMark];
+					[as appendAttributedString:checkMark];
 				}
 			}
-			[checkMark release];
 		}
-
-		QuestionEditView *questionEditView = (QuestionEditView *)self.view;
-		[questionEditView.textView.textStorage setAttributedString:text];
-		[text release];
+		
+		QuestionView *questionView = (QuestionView *)self.view;
+		[questionView.textView.textStorage setAttributedString:as];
 	}
 }
 

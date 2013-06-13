@@ -39,7 +39,15 @@
 {
     self = [super initWithNibName:@"QuestionEditSheet" bundle:nil];
     if (self) {
+		NSUndoManager *undoManager = [[[NSApp delegate] managedObjectContext] undoManager];
+		[undoManager beginUndoGrouping];
+
+		if (!aQuestion) {
+			aQuestion = [Auditorium objectForEntityName:@"Question"];
+			aQuestion.event = [Auditorium sharedInstance].event;
+		}
 		self.representedObject = aQuestion;
+
 		delegate = aDelegate;
 		sheet = self.view.window;
 
@@ -121,7 +129,7 @@
 	[self.answersEditViewController commitEditing];
 	
 	Question *question = self.representedObject;
-	if (!question.slideNumber.integerValue) {
+	if (!question.slide) {
 		question.slide = [Slideshow sharedInstance].currentSlide;
 	}
 	if (question.type == QuestionMessageType) {
@@ -136,6 +144,17 @@
 - (void)sheetDidEnd:(NSWindow *)aSheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
 {
 	[sheet orderOut:self];
+
+	NSUndoManager *undoManager = [[[NSApp delegate] managedObjectContext] undoManager];
+	[undoManager endUndoGrouping];
+
+	if (returnCode == NSCancelButton) {
+		[undoManager undo];
+		// clear redo stack by registering fake undo operation
+		[undoManager registerUndoWithTarget:[NSNull null] selector:nil object:nil];
+		[undoManager performSelector:@selector(removeAllActionsWithTarget:) withObject:[NSNull null] afterDelay:0.0];
+	}
+
 	[self invokeDelegateWith:returnCode];
 }
 

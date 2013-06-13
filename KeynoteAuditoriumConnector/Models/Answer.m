@@ -7,6 +7,7 @@
 //
 
 #import "Answer.h"
+#import "AuditoriumObject.h"
 
 
 @implementation Answer
@@ -18,13 +19,10 @@
 
 - (void)setQuestion:(Question *)question
 {
-	NSError *error;
-	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-	[fetchRequest setEntity:self.entity];
 	if (question) {
 		if (self.order.integerValue != 0) {
-			[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(question = %@) AND (order >= %@)", question, self.order]];
-			NSArray *answers = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(question = %@) AND (order >= %@)", question, self.order];
+			NSArray *answers = [self fetchWithPredicate:predicate];
 			for (Answer *answer in answers) {
 				[answer willChangeValueForKey:@"order"];
 				[answer setPrimitiveValue:[NSNumber numberWithInteger:answer.order.integerValue + 1] forKey:@"order"];
@@ -32,23 +30,22 @@
 			}
 		}
 		else {
-			[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(question = %@)", question]];
-			NSInteger count = [self.managedObjectContext countForFetchRequest:fetchRequest error:&error];
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(question = %@)", question];
+			NSInteger count = [self countWithPredicate:predicate];
 			[self willChangeValueForKey:@"order"];
 			[self setPrimitiveValue:[NSNumber numberWithInteger:count] forKey:@"order"];
 			[self didChangeValueForKey:@"order"];
 		}
 	}
 	else {
-		[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(question = %@) AND (order > %@)", self.question, self.order]];
-		NSArray *answers = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(question = %@) AND (order > %@)", self.question, self.order];
+		NSArray *answers = [self fetchWithPredicate:predicate];
 		for (Answer *answer in answers) {
 			[answer willChangeValueForKey:@"order"];
 			[answer setPrimitiveValue:[NSNumber numberWithInteger:answer.order.integerValue - 1] forKey:@"order"];
 			[answer didChangeValueForKey:@"order"];
 		}
 	}
-	[fetchRequest release];
 
 	[self willChangeValueForKey:@"question"];
 	[self setPrimitiveValue:question forKey:@"question"];
@@ -57,20 +54,13 @@
 
 - (void)setOrder:(NSNumber *)order
 {
-	NSError *error;
-	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-	[fetchRequest setEntity:self.entity];
-	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(question = %@) AND (order >= %@)", self.question, order]];
-	NSArray *answers = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(question = %@) AND (order >= %@) AND (SELF != %@)", self.question, order, self];
+	NSArray *answers = [self fetchWithPredicate:predicate];
 	for (Answer *answer in answers) {
-		if (answer == self) {
-			continue;
-		}
 		[answer willChangeValueForKey:@"order"];
 		[answer setPrimitiveValue:[NSNumber numberWithInteger:answer.order.integerValue + 1] forKey:@"order"];
 		[answer didChangeValueForKey:@"order"];
 	}
-	[fetchRequest release];
 	
 	[self willChangeValueForKey:@"order"];
 	[self setPrimitiveValue:order forKey:@"order"];

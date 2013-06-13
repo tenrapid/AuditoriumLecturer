@@ -7,17 +7,25 @@
 //
 
 #import "Slideshow.h"
+#import "SlideshowApp.h"
 #import "Slide.h"
 #import <ScriptingBridge/ScriptingBridge.h>
-#import "SystemEvents.h"
 #import "Keynote.h"
 #import "Powerpoint.h"
+
+@interface Slideshow ()
+{
+	NSTimer *updateSlideIdentifierToSlideNumberMapTimer;
+	NSInteger nextSlideIdentifier;
+}
+@end
 
 @implementation Slideshow
 
 @synthesize document;
 @synthesize currentSlide;
 @synthesize playing;
+@synthesize slideIdentifierToSlideNumberMap;
 
 + (Slideshow *)sharedInstance
 {
@@ -35,136 +43,62 @@
 {
 	self = [super init];
     if (self) {
-		systemEventsApplication = [[SBApplication applicationWithBundleIdentifier:@"com.apple.SystemEvents"] retain];
-		updateTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(update:) userInfo:nil repeats:YES];
-		[self update:updateTimer];
+		SlideshowApp *app = [SlideshowApp sharedInstance];
+		NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+		[notificationCenter addObserver:self selector:@selector(slideshowAppChangeNotification:) name:SlideshowAppDocumentDidChangeNotification object:app];
+		[notificationCenter addObserver:self selector:@selector(slideshowAppChangeNotification:) name:SlideshowAppIsPlayingDidChangeNotification object:app];
+		[notificationCenter addObserver:self selector:@selector(slideshowAppChangeNotification:) name:SlideshowAppCurrentSlideDidChangeNotification object:app];
+		updateSlideIdentifierToSlideNumberMapTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(updateSlideIdentifierToSlideNumberMap:) userInfo:nil repeats:YES];
     }
     return self;
 }
 
 - (void)dealloc
 {
-	[systemEventsApplication release];
-	[updateTimer invalidate];
+	[updateSlideIdentifierToSlideNumberMapTimer invalidate];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
     [super dealloc];
 }
 
-- (void)update:(NSTimer*)myTimer
+- (void)slideshowAppChangeNotification:(NSNotification *)notification
 {
-	SBElementArray *processes = [systemEventsApplication applicationProcesses];
-	BOOL keynoteRunning = [(SystemEventsApplicationProcess *)[processes objectWithName:@"Keynote"] id];
-	BOOL powerpointRunning = [(SystemEventsApplicationProcess *)[processes objectWithName:@"Microsoft PowerPoint"] id];
-
-	NSString *slideshowDocument = nil;
-	Slide *slideshowCurrentSlide = nil;
-	BOOL slideshowPlaying;
-	
-	if (keynoteRunning) {
-		KeynoteApplication *keynote = [SBApplication applicationWithBundleIdentifier:@"com.apple.iWork.Keynote"];
-		
-		if (![keynote respondsToSelector:@selector(slideshows)]) {
-			return;
-		}
-		
-		KeynoteSlideshow *slideshow = [[keynote slideshows] objectAtIndex:0];
-		slideshowDocument = [slideshow path];
-
-		if (slideshowDocument) {
-			KeynoteSlide *slide = [slideshow currentSlide];
-
-			slideshowPlaying = [keynote playing];
-			slideshowCurrentSlide = [[Slide alloc] initWithNumber:[slide slideNumber] identifier:0 title:[slide title] body:[slide body] notes:[slide notes]];
-		}
-		else {
-			slideshowPlaying = NO;
-			slideshowCurrentSlide = nil;
-		}
+	if ([notification.name isEqualToString:SlideshowAppDocumentDidChangeNotification]) {
+		self.document = [SlideshowApp sharedInstance].document;
+		[updateSlideIdentifierToSlideNumberMapTimer fire];
 	}
-	if (powerpointRunning && !slideshowDocument) {
-		PowerpointApplication *powerpoint = [SBApplication applicationWithBundleIdentifier:@"com.microsoft.Powerpoint"];
-
-		if (![powerpoint respondsToSelector:@selector(activePresentation)]) {
-			return;
-		}
-		
-		PowerpointPresentation *presentation = [powerpoint activePresentation];
-		slideshowDocument = presentation.path ? [NSString stringWithFormat:@"%@/%@", presentation.path, presentation.name] : nil;
-
-		if (slideshowDocument) {
-			PowerpointSlideShowView *slideshowView = [[presentation slideShowWindow] slideshowView];
-			slideshowPlaying = [slideshowView currentShowPosition] > 0;
-
-			PowerpointSlide *slide = nil;
-			NSInteger slideNumber = 0;
-			NSInteger slideID = 0;
-			NSString *slideNotes = nil;
-
-			if (slideshowPlaying) {
-				slideNumber = [slideshowView currentShowPosition];
-				slide = [[presentation slides] objectAtIndex:slideNumber - 1];
-			}
-			else {
-				// geht nicht wenn slideminiaturen aktiv
-				slide = [[(PowerpointDocumentWindow *)[[presentation documentWindows] objectAtIndex:0] view] slide];
-				slideNumber = [slide slideNumber];
-			}
-
-			if (slideNumber) {
-				slideID = [slide slideID];
-				slideNotes = [[[[[[slide notesPage] shapes] objectAtIndex:1] textFrame] textRange] content];
-				slideshowCurrentSlide = [[Slide alloc] initWithNumber:slideNumber identifier:slideID title:nil body:nil notes:slideNotes];
-			}
-			else {
-				slideshowCurrentSlide = nil;
-			}
-		}
-		else {
-			slideshowCurrentSlide = nil;
-			slideshowPlaying = NO;
-		}
+	else if ([notification.name isEqualToString:SlideshowAppIsPlayingDidChangeNotification]) {
+		self.playing = [SlideshowApp sharedInstance].isPlaying;
 	}
-
-	if ((![slideshowDocument isEqualToString:self.document] && !(slideshowDocument == nil && self.document == nil))
-		|| (slideshowDocument && slideshowCurrentSlide && slideshowCurrentSlide.number != self.currentSlide.number)) {
-		self.document = slideshowDocument;
-		self.playing = slideshowPlaying;
-		self.currentSlide = slideshowCurrentSlide;
-	}
-	else {
-		[slideshowCurrentSlide release];
+	else if ([notification.name isEqualToString:SlideshowAppCurrentSlideDidChangeNotification]) {
+		self.currentSlide = [SlideshowApp sharedInstance].currentSlide;
 	}
 }
 
-- (void)start
+- (void)updateSlideIdentifierToSlideNumberMap:(NSTimer*)timer
 {
-	SBElementArray *processes = [systemEventsApplication applicationProcesses];
-	BOOL keynoteRunning = [(SystemEventsApplicationProcess *)[processes objectWithName:@"Keynote"] id];
-	BOOL powerpointRunning = [(SystemEventsApplicationProcess *)[processes objectWithName:@"Microsoft PowerPoint"] id];
+	self.slideIdentifierToSlideNumberMap = [[SlideshowApp sharedInstance] slideIdentifierToSlideNumberMap];
+	nextSlideIdentifier = [[[self.slideIdentifierToSlideNumberMap allValues] valueForKeyPath:@"@max.self"] integerValue] + 1;
+}
 
-	if (keynoteRunning) {
-		KeynoteApplication *keynote = [SBApplication applicationWithBundleIdentifier:@"com.apple.iWork.Keynote"];
+- (Slide *)slideForSlideNumber:(NSInteger)number
+{
+	return [[SlideshowApp sharedInstance] slideForSlideNumber:number];
+}
 
-		if (![keynote respondsToSelector:@selector(slideshows)]) {
-			return;
-		}
+- (NSInteger)addIdentifierToSlideWithNumber:(NSInteger)number
+{
+	NSInteger identifier = nextSlideIdentifier++;
+	[[SlideshowApp sharedInstance] addIdentifier:identifier toSlideWithNumber:number];
+	[self.slideIdentifierToSlideNumberMap setObject:[NSNumber numberWithInteger:number] forKey:[NSNumber numberWithInteger:identifier]];
+	return identifier;
+}
 
-		KeynoteSlideshow *slideShow = [[keynote slideshows] objectAtIndex:0];
-		if ([slideShow respondsToSelector:@selector(start)]) {
-			[slideShow start];
-		}
-	}
-	else if (powerpointRunning) {
-		PowerpointApplication *powerpoint = [SBApplication applicationWithBundleIdentifier:@"com.microsoft.Powerpoint"];
-
-		if (![powerpoint respondsToSelector:@selector(activePresentation)]) {
-			return;
-		}
-
-		PowerpointPresentation *presentation = [powerpoint activePresentation];
-		if ([presentation respondsToSelector:@selector(start)]) {
-//			[presentation ];
-		}
-	}
+- (void)removeIdentifierFromSlide:(NSInteger)identifier
+{
+	NSNumber *key = [NSNumber numberWithInteger:identifier];
+	NSInteger number = ((NSNumber *)[self.slideIdentifierToSlideNumberMap objectForKey:key]).integerValue;
+	[[SlideshowApp sharedInstance] removeIdentifierFromSlideWithNumber:number];
+	[self.slideIdentifierToSlideNumberMap removeObjectForKey:key];
 }
 
 @end

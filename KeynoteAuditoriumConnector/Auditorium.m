@@ -88,13 +88,14 @@
 
 		[self addObserver:self forKeyPath:@"event" options:NSKeyValueObservingOptionNew context:nil];
 
-		[NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(save:) userInfo:nil repeats:YES];
+		[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(save:) userInfo:nil repeats:YES];
 	}
     return self;
 }
 
 - (void)contextDidSave:(NSNotification *)notification
 {
+	return;
 	if (self.isPostEnabled) {
 		NSLog(@"inserted: %@", [notification.userInfo objectForKey:@"inserted"]);
 		NSLog(@"updated: %@", [notification.userInfo objectForKey:@"updated"]);
@@ -154,17 +155,17 @@
 	
 	question = [Auditorium objectForEntityName:@"Question"];
 	question.event = self.event;
-	question.slideNumber = [NSNumber numberWithInteger:1];
+	question.slideIdentifier = [NSNumber numberWithInteger:1];
 	question.text = @"Hier könnte eine 1. Frage stehen!";
 
 	question = [Auditorium objectForEntityName:@"Question"];
 	question.event = self.event;
-	question.slideNumber = [NSNumber numberWithInteger:1];
+	question.slideIdentifier = [NSNumber numberWithInteger:1];
 	question.text = @"Hier könnte eine 2. Frage stehen!";
 
 	question = [Auditorium objectForEntityName:@"Question"];
 	question.event = self.event;
-	question.slideNumber = [NSNumber numberWithInteger:2];
+	question.slideIdentifier = [NSNumber numberWithInteger:2];
 	question.text = @"Hier könnte eine 3. Frage stehen!";
 
 	[context processPendingChanges];

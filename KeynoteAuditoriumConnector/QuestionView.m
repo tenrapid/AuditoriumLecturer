@@ -6,17 +6,17 @@
 //  Copyright (c) 2013 Matthias Rahne. All rights reserved.
 //
 
-#import "QuestionEditView.h"
+#import "QuestionView.h"
 
-NSString * const QuestionEditViewHeightDidChangeNotification = @"QuestionEditViewHeightDidChangeNotification";
+NSString * const QuestionViewHeightDidChangeNotification = @"QuestionViewHeightDidChangeNotification";
 
-@interface QuestionEditView ( )
+@interface QuestionView ( )
 {
 	float textViewHeight;
 }
 @end
 
-@implementation QuestionEditView
+@implementation QuestionView
 
 @synthesize textView;
 
@@ -81,7 +81,7 @@ NSString * const QuestionEditViewHeightDidChangeNotification = @"QuestionEditVie
 	[self setFrame:frame];
 
 	[self setNeedsDisplay:YES];
-	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditViewHeightDidChangeNotification object:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionViewHeightDidChangeNotification object:self];
 }
 
 - (void)textViewHeightDidChange:(NSNotification *)notification

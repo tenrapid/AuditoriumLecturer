@@ -13,4 +13,22 @@
 
 @dynamic uuid;
 
+- (NSArray *)fetchWithPredicate:(NSPredicate *)predicate
+{
+	NSError *error;
+	NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
+	[fetchRequest setEntity:self.entity];
+	[fetchRequest setPredicate:predicate];
+	return [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+}
+
+- (NSInteger)countWithPredicate:(NSPredicate *)predicate
+{
+	NSError *error;
+	NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
+	[fetchRequest setEntity:self.entity];
+	[fetchRequest setPredicate:predicate];
+	return [self.managedObjectContext countForFetchRequest:fetchRequest error:&error];
+}
+
 @end

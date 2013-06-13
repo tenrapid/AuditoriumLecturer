@@ -9,6 +9,7 @@
 #import "MoveQuestionToSlideViewController.h"
 #import "Slideshow.h"
 #import	"Slide.h"
+#import "Question.h"
 
 
 @implementation MoveQuestionToSlideViewController
@@ -33,12 +34,6 @@
 	[super dealloc];
 }
 
-- (void)sheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
-{
-	[sheet orderOut:self];
-	[self invokeDelegateWith:returnCode];
-}
-
 - (IBAction)cancelButtonAction:(id)sender
 {
 	[NSApp endSheet:self.view.window returnCode:NSCancelButton];
@@ -46,7 +41,18 @@
 
 - (IBAction)saveButtonAction:(id)sender
 {
+	Question *question = self.representedObject;
+	Slide *newSlide = [[Slideshow sharedInstance] slideForSlideNumber:self.slide.number];
+	if (newSlide.identifier != question.slideIdentifier.integerValue) {
+		question.slide = newSlide;
+	}
 	[NSApp endSheet:self.view.window returnCode:NSOKButton];
+}
+
+- (void)sheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
+{
+	[sheet orderOut:self];
+	[self invokeDelegateWith:returnCode];
 }
 
 - (void)invokeDelegateWith:(NSInteger)returnCode

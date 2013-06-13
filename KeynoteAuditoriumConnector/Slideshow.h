@@ -8,21 +8,19 @@
 
 #import <Foundation/Foundation.h>
 
-@class SystemEventsApplication;
 @class Slide;
 
 @interface Slideshow : NSObject
-{
-	NSTimer *updateTimer;
-	SystemEventsApplication *systemEventsApplication;
-}
 
-@property (retain) NSString *document;
+@property (copy) NSString *document;
 @property (retain) Slide *currentSlide;
 @property (getter=isPlaying) BOOL playing;
+@property (retain) NSMutableDictionary *slideIdentifierToSlideNumberMap;
 
 + (Slideshow *)sharedInstance;
 
-- (void)update:(NSTimer*)myTimer;
+- (Slide *)slideForSlideNumber:(NSInteger)number;
+- (NSInteger)addIdentifierToSlideWithNumber:(NSInteger)number;
+- (void)removeIdentifierFromSlide:(NSInteger)identifier;
 
 @end

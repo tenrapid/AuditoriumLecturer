@@ -7,6 +7,7 @@
 //
 
 #import "Question.h"
+#import "AuditoriumObject.h"
 #import "Answer.h"
 #import "Slide.h"
 #import "Auditorium.h"
@@ -27,54 +28,62 @@ const NSString * const QuestionTypeNames[] = {
 @dynamic type;
 @dynamic answers;
 
+- (void)setSlideIdentifier:(NSNumber *)slideIdentifier
+{
+	if (self.slideIdentifier.integerValue != 0) {
+		[self removeFromOrderChain];
+	}
+	self.order = [NSNumber numberWithInteger:[self countWithPredicate:[NSPredicate predicateWithFormat:@"(event = %@) AND (slideIdentifier = %@)", self.event, slideIdentifier]]];
+
+	[self willChangeValueForKey:@"slideIdentifier"];
+	[self setPrimitiveValue:slideIdentifier forKey:@"slideIdentifier"];
+	[self didChangeValueForKey:@"slideIdentifier"];
+}
+
+- (void)setSlide:(Slide *)slide
+{
+	if (self.slideIdentifier.integerValue != 0) {
+		[self removeSlideIdentifierFromSlideshowIfNotUsed];
+	}
+
+	self.slideNumber = [NSNumber numberWithInteger:slide.number];
+	NSInteger identifier = slide.identifier;
+	if (!identifier) {
+		identifier = [[Slideshow sharedInstance] addIdentifierToSlideWithNumber:slide.number];
+	}
+	self.slideIdentifier = [NSNumber numberWithInteger:identifier];
+}
+
+- (Slide *)slide
+{
+	Slide *slide = nil;
+	if (self.slideIdentifier.integerValue) {
+		slide = [[[Slide alloc] initWithNumber:self.slideNumber.integerValue identifier:self.slideIdentifier.integerValue title:nil body:nil notes:nil] autorelease];
+	}
+	return slide;
+}
+
+- (void)willBeDeleted
+{
+	if (self.slideIdentifier.integerValue != 0) {
+		[self removeFromOrderChain];
+		[self removeSlideIdentifierFromSlideshowIfNotUsed];
+	}
+}
+
 - (void)removeFromOrderChain
 {
-	NSError *error = nil;
-	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-	[fetchRequest setEntity:self.entity];
-	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(event = %@) AND (slideNumber = %@) AND (order > %@)", self.event, self.slideNumber, self.order]];
-	NSArray *questions = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+	NSArray *questions = [self fetchWithPredicate:[NSPredicate predicateWithFormat:@"(event = %@) AND (slideIdentifier = %@) AND (order > %@)", self.event, self.slideIdentifier, self.order]];
 	for (Question *question in questions) {
 		question.order = [NSNumber numberWithInteger:question.order.integerValue - 1];
 	}
 }
 
-- (void)setSlideNumber:(NSNumber *)slideNumber
+- (void)removeSlideIdentifierFromSlideshowIfNotUsed
 {
-	if (self.slideNumber.integerValue != 0) {
-		[self removeFromOrderChain];
-	}
-
-	NSError *error;
-	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-	[fetchRequest setEntity:self.entity];
-	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(event = %@) AND (slideNumber = %@)", self.event, slideNumber]];
-	NSInteger count = [self.managedObjectContext countForFetchRequest:fetchRequest error:&error];
-	self.order = [NSNumber numberWithInteger:count];
-
-	[self willChangeValueForKey:@"slideNumber"];
-	[self setPrimitiveValue:slideNumber forKey:@"slideNumber"];
-	[self didChangeValueForKey:@"slideNumber"];
-
-	[fetchRequest release];
-}
-
-- (void)setSlide:(Slide *)slide
-{
-	self.slideNumber = [NSNumber numberWithInteger:slide.number];
-	self.slideIdentifier = [NSNumber numberWithInteger:slide.identifier];
-}
-
-- (Slide *)slide
-{
-	Slide *slide = [[[Slide alloc] initWithNumber:self.slideNumber.integerValue identifier:self.slideIdentifier.integerValue title:nil body:nil notes:nil] autorelease];
-	return slide;
-}
-
-- (void)prepareForDeletion
-{
-	if (self.slideNumber.integerValue != 0) {
-		[self removeFromOrderChain];
+	NSInteger count = [self countWithPredicate:[NSPredicate predicateWithFormat:@"(event = %@) AND (slideIdentifier = %@) AND (SELF != %@)", self.event, self.slideIdentifier, self]];
+	if (count == 0) {
+		[[Slideshow sharedInstance] removeIdentifierFromSlide:self.slideIdentifier.integerValue];
 	}
 }
 

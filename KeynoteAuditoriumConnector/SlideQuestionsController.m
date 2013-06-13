@@ -8,7 +8,6 @@
 
 #import "SlideQuestionsController.h"
 #import "SlideQuestionsView.h"
-#import "QuestionEditView.h"
 #import "Question.h"
 #import "Auditorium.h"
 #import "Slideshow.h"
@@ -88,7 +87,7 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
 	if ([keyPath isEqualToString:@"event"] || [keyPath isEqualToString:@"slide"]) {
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"event = %@ AND slideNumber = %@", self.event, [NSNumber numberWithInteger:self.slide.number]];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"event = %@ AND slideIdentifier = %@ AND slideIdentifier != 0", self.event, [NSNumber numberWithInteger:self.slide.identifier]];
 		[self.questions setFilterPredicate:predicate];
 	}
 }

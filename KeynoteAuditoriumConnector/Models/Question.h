@@ -34,6 +34,8 @@ extern const NSString * const QuestionTypeNames[];
 @property (nonatomic, assign) QuestionType type;
 @property (nonatomic, retain) NSSet *answers;
 
+- (void)willBeDeleted;
+
 @end
 
 @interface Question (CoreDataGeneratedAccessors)

@@ -7,8 +7,8 @@
 //
 
 #import "SlideQuestionsView.h"
-#import "QuestionEditViewController.h"
-#import "QuestionEditView.h"
+#import "QuestionViewController.h"
+#import "QuestionView.h"
 #import "MoveQuestionToSlideViewController.h"
 #import "QuestionEditSheetController.h"
 #import "Question.h"
@@ -28,20 +28,20 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 	MoveQuestionToSlideViewController *moveQuestionToSlideViewController;
 }
 
-@property (assign) NSMutableArray *questionEditViewControllers;
+@property (assign) NSMutableArray *questionViewControllers;
 
 @end
 
 
 @implementation SlideQuestionsView
 
-@synthesize questionEditViewControllers;
+@synthesize questionViewControllers;
 
 - (id)initWithFrame:(NSRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-		questionEditViewControllers = [[NSMutableArray alloc] init];
+		questionViewControllers = [[NSMutableArray alloc] init];
 		[self updateViewHeight];
     }
     return self;
@@ -58,16 +58,16 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 {
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 
-	for (NSViewController *viewController in questionEditViewControllers) {
+	for (NSViewController *viewController in questionViewControllers) {
 		[notificationCenter removeObserver:self name:NSViewFrameDidChangeNotification object:[viewController view]];
 		[viewController commitEditing];
 		[[viewController view] removeFromSuperview];
 	}
-	[questionEditViewControllers removeAllObjects];
+	[questionViewControllers removeAllObjects];
 
 	for (Question *question in questions) {
-		QuestionEditViewController *viewController = [[QuestionEditViewController alloc] initWithQuestion:question];
-		[questionEditViewControllers addObject:viewController];
+		QuestionViewController *viewController = [[QuestionViewController alloc] initWithQuestion:question];
+		[questionViewControllers addObject:viewController];
 		[viewController release];
 
 		[viewController.moveQuestionUpMenuItem setTarget:self];
@@ -102,7 +102,7 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 	NSRect frame;
 	float height = 0;
 
-	for (NSViewController *viewController in questionEditViewControllers) {
+	for (NSViewController *viewController in questionViewControllers) {
 		frame = viewController.view.frame;
 		frame.origin.y = height;
 		frame.size.width = self.frame.size.width;
@@ -126,15 +126,8 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 
 - (IBAction)addQuestionAction:(id)sender
 {
-	NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
-	NSUndoManager *undoManager = context.undoManager;
-
 	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetWillOpenNotification object:self];
-
-	[undoManager beginUndoGrouping];
-	Question *question = [Auditorium objectForEntityName:@"Question"];
-	question.event = [Auditorium sharedInstance].event;
-	questionEditSheetController = [[QuestionEditSheetController alloc] initWithQuestion:question delegate:self];
+	questionEditSheetController = [[QuestionEditSheetController alloc] initWithQuestion:nil delegate:self];
 }
 
 - (void)moveQuestionUpAction:(id)sender
@@ -163,44 +156,25 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 
 - (void)moveQuestionToSlideDidEnd:(NSInteger)returnCode
 {
-	Question *question = moveQuestionToSlideViewController.representedObject;
-	if (returnCode == NSOKButton && moveQuestionToSlideViewController.slide.number != question.slideNumber.integerValue) {
-		question.slide = moveQuestionToSlideViewController.slide;
-	}
 	[moveQuestionToSlideViewController release];
 }
 
 - (void)removeQuestionAction:(id)sender
 {
 	Question *question = [sender representedObject];
+	[question willBeDeleted];
 	[question.managedObjectContext deleteObject:question];
 }
 
 - (void)editQuestionAction:(id)sender
 {
-	Question *question = [[sender cell ]representedObject];
-
-	NSUndoManager *undoManager = question.managedObjectContext.undoManager;
-	[undoManager beginUndoGrouping];
-
+	Question *question = [[sender cell]representedObject];
 	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetWillOpenNotification object:self];
 	questionEditSheetController = [[QuestionEditSheetController alloc] initWithQuestion:question delegate:self];
 }
 
 - (void)editQuestionDidEnd:(NSInteger)returnCode
 {
-	Question *question = question = questionEditSheetController.representedObject;
-	NSManagedObjectContext *context = question.managedObjectContext;
-	NSUndoManager *undoManager = context.undoManager;
-	[undoManager endUndoGrouping];
-
-	if (returnCode == NSCancelButton) {
-		[undoManager undo];
-		// clear redo stack by registering fake undo operation
-		[undoManager registerUndoWithTarget:[NSNull null] selector:nil object:nil];
-		[undoManager performSelector:@selector(removeAllActionsWithTarget:) withObject:[NSNull null] afterDelay:0.0];
-	}
-
 	[questionEditSheetController release];
 	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetDidCloseNotification object:self];
 }

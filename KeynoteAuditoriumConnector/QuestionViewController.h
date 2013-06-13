@@ -10,7 +10,7 @@
 
 @class Question;
 
-@interface QuestionEditViewController : NSViewController
+@interface QuestionViewController : NSViewController
 
 @property (assign) IBOutlet NSMenuItem *moveQuestionUpMenuItem;
 @property (assign) IBOutlet NSMenuItem *moveQuestionDownMenuItem;

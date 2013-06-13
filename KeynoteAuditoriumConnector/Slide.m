@@ -22,9 +22,9 @@
     if (self) {
 		number = slideNumber;
 		identifier = slideIdentifier;
-		title = slideTitle;
-		body = slideBody;
-		notes = slideNotes;
+		title = [slideTitle copy];
+		body = [slideBody copy];
+		notes = [slideNotes copy];
     }
     return self;
 }

@@ -14,4 +14,7 @@
 
 @property (nonatomic, retain) NSString * uuid;
 
+- (NSArray *)fetchWithPredicate:(NSPredicate *)predicate;
+- (NSInteger)countWithPredicate:(NSPredicate *)predicate;
+
 @end

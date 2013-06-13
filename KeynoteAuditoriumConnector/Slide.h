@@ -7,14 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Slideshow.h"
 
 @interface Slide : NSObject
 
 @property (assign) NSInteger number;
 @property (assign) NSInteger identifier;
-@property (retain) NSString *title;
-@property (retain) NSString *body;
-@property (retain) NSString *notes;
+@property (copy) NSString *title;
+@property (copy) NSString *body;
+@property (copy) NSString *notes;
 
 - (id)initWithNumber:(NSInteger)number identifier:(NSInteger)identifier title:(NSString *)title body:(NSString *)body notes:(NSString *)notes;
 
