@@ -12,7 +12,7 @@
 		2B4588F5176759C000418050 /* SlideshowApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B4588F4176759BF00418050 /* SlideshowApp.m */; };
 		2B733A8817398A0F008FDFBA /* Auditorium.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2B733A8717398A0F008FDFBA /* Auditorium.icns */; };
 		2B733A8A17399F7D008FDFBA /* SlideQuestions.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B733A8917399F7D008FDFBA /* SlideQuestions.xib */; };
-		2B777F63172B33D100D1F54F /* KeynoteAuditoriumConnector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B777F62172B33D100D1F54F /* KeynoteAuditoriumConnector.xib */; };
+		2B777F63172B33D100D1F54F /* AuditoriumLecturer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B777F62172B33D100D1F54F /* AuditoriumLecturer.xib */; };
 		2B777F69172BFCF600D1F54F /* Auditorium.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B777F68172BFCF600D1F54F /* Auditorium.m */; };
 		2B777F6C172C65CC00D1F54F /* AuditoriumController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B777F6B172C65CC00D1F54F /* AuditoriumController.m */; };
 		2BB4734A174538CC00DA6C1F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BBE3B6B172A6D4800BCF546 /* CoreData.framework */; };
@@ -71,23 +71,23 @@
 		2B5CFFF7172B109E00B5D1C5 /* Powerpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Powerpoint.h; sourceTree = "<group>"; };
 		2B733A8717398A0F008FDFBA /* Auditorium.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Auditorium.icns; sourceTree = "<group>"; };
 		2B733A8917399F7D008FDFBA /* SlideQuestions.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SlideQuestions.xib; sourceTree = "<group>"; };
-		2B777F62172B33D100D1F54F /* KeynoteAuditoriumConnector.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = KeynoteAuditoriumConnector.xib; sourceTree = "<group>"; };
+		2B777F62172B33D100D1F54F /* AuditoriumLecturer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AuditoriumLecturer.xib; sourceTree = "<group>"; };
 		2B777F67172BFCF600D1F54F /* Auditorium.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Auditorium.h; sourceTree = "<group>"; };
 		2B777F68172BFCF600D1F54F /* Auditorium.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Auditorium.m; sourceTree = "<group>"; };
 		2B777F6A172C65CB00D1F54F /* AuditoriumController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuditoriumController.h; sourceTree = "<group>"; };
 		2B777F6B172C65CC00D1F54F /* AuditoriumController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuditoriumController.m; sourceTree = "<group>"; };
 		2BB4734C174539C600DA6C1F /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
-		2BB4734E17453B3500DA6C1F /* Question.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Question.h; path = Models/Question.h; sourceTree = "<group>"; };
-		2BB4734F17453B3500DA6C1F /* Question.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Question.m; path = Models/Question.m; sourceTree = "<group>"; };
-		2BBE3B64172A6D4800BCF546 /* Keynote Auditorium Connector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Keynote Auditorium Connector.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2BB4734E17453B3500DA6C1F /* Question.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Question.h; sourceTree = "<group>"; };
+		2BB4734F17453B3500DA6C1F /* Question.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Question.m; sourceTree = "<group>"; };
+		2BBE3B64172A6D4800BCF546 /* AuditoriumLecturer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AuditoriumLecturer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2BBE3B67172A6D4800BCF546 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		2BBE3B6A172A6D4800BCF546 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		2BBE3B6B172A6D4800BCF546 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		2BBE3B6C172A6D4800BCF546 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		2BBE3B6F172A6D4800BCF546 /* Keynote Auditorium Connector-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Keynote Auditorium Connector-Info.plist"; sourceTree = "<group>"; };
+		2BBE3B6F172A6D4800BCF546 /* AuditoriumLecturer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AuditoriumLecturer-Info.plist"; sourceTree = "<group>"; };
 		2BBE3B71172A6D4800BCF546 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2BBE3B73172A6D4800BCF546 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		2BBE3B75172A6D4800BCF546 /* Keynote Auditorium Connector-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Keynote Auditorium Connector-Prefix.pch"; sourceTree = "<group>"; };
+		2BBE3B75172A6D4800BCF546 /* AuditoriumLecturer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AuditoriumLecturer-Prefix.pch"; sourceTree = "<group>"; };
 		2BBE3B77172A6D4800BCF546 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		2BBE3B79172A6D4800BCF546 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		2BBE3B7A172A6D4800BCF546 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -115,16 +115,16 @@
 		2BD5D9291744BFE8000F69E7 /* QuestionEditSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionEditSheetController.m; sourceTree = "<group>"; };
 		2BD5D92B174853A6000F69E7 /* QuestionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionViewController.h; sourceTree = "<group>"; };
 		2BD5D92C174853A9000F69E7 /* QuestionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionViewController.m; sourceTree = "<group>"; };
-		2BD5D9371748DC09000F69E7 /* Answer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Answer.h; path = Models/Answer.h; sourceTree = "<group>"; };
-		2BD5D9381748DC0A000F69E7 /* Answer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Answer.m; path = Models/Answer.m; sourceTree = "<group>"; };
+		2BD5D9371748DC09000F69E7 /* Answer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Answer.h; sourceTree = "<group>"; };
+		2BD5D9381748DC0A000F69E7 /* Answer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Answer.m; sourceTree = "<group>"; };
 		2BE0F0261734315000BFD776 /* TB3_Record-Active.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "TB3_Record-Active.tif"; sourceTree = "<group>"; };
 		2BE0F0271734315000BFD776 /* TB3_Record-Pressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "TB3_Record-Pressed.tif"; sourceTree = "<group>"; };
-		2BE7FC2E174A5D130004FF7D /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Event.h; path = Models/Event.h; sourceTree = "<group>"; };
-		2BE7FC2F174A5D130004FF7D /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Event.m; path = Models/Event.m; sourceTree = "<group>"; };
-		2BE7FC31174AE2FE0004FF7D /* AuditoriumObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AuditoriumObject.h; path = Models/AuditoriumObject.h; sourceTree = "<group>"; };
-		2BE7FC32174AE2FE0004FF7D /* AuditoriumObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AuditoriumObject.m; path = Models/AuditoriumObject.m; sourceTree = "<group>"; };
-		2BE7FC34174AE3DD0004FF7D /* Rule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Rule.h; path = Models/Rule.h; sourceTree = "<group>"; };
-		2BE7FC35174AE3DD0004FF7D /* Rule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Rule.m; path = Models/Rule.m; sourceTree = "<group>"; };
+		2BE7FC2E174A5D130004FF7D /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
+		2BE7FC2F174A5D130004FF7D /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
+		2BE7FC31174AE2FE0004FF7D /* AuditoriumObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuditoriumObject.h; sourceTree = "<group>"; };
+		2BE7FC32174AE2FE0004FF7D /* AuditoriumObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuditoriumObject.m; sourceTree = "<group>"; };
+		2BE7FC34174AE3DD0004FF7D /* Rule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rule.h; sourceTree = "<group>"; };
+		2BE7FC35174AE3DD0004FF7D /* Rule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Rule.m; sourceTree = "<group>"; };
 		2BE7FC37174D6F8F0004FF7D /* AnswerEdit.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AnswerEdit.xib; sourceTree = "<group>"; };
 		2BE7FC39174D71180004FF7D /* AnswerEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnswerEditViewController.h; sourceTree = "<group>"; };
 		2BE7FC3A174D71180004FF7D /* AnswerEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnswerEditViewController.m; sourceTree = "<group>"; };
@@ -167,6 +167,55 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2B42FB50176A54AC001BAF1B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				2BB4734B174539C600DA6C1F /* Model.xcdatamodeld */,
+				2BE7FC31174AE2FE0004FF7D /* AuditoriumObject.h */,
+				2BE7FC32174AE2FE0004FF7D /* AuditoriumObject.m */,
+				2BE7FC2E174A5D130004FF7D /* Event.h */,
+				2BE7FC2F174A5D130004FF7D /* Event.m */,
+				2BD5D9371748DC09000F69E7 /* Answer.h */,
+				2BD5D9381748DC0A000F69E7 /* Answer.m */,
+				2BB4734E17453B3500DA6C1F /* Question.h */,
+				2BB4734F17453B3500DA6C1F /* Question.m */,
+				2BE7FC34174AE3DD0004FF7D /* Rule.h */,
+				2BE7FC35174AE3DD0004FF7D /* Rule.m */,
+				2B3820841737057D00822217 /* Slide.h */,
+				2B3820851737057D00822217 /* Slide.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		2B42FB51176A54D0001BAF1B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2BC7E9CE173F252D00D911AE /* FlippedBox.h */,
+				2BC7E9CF173F252D00D911AE /* FlippedBox.m */,
+				2BE7FC3F174E51C00004FF7D /* FlippedView.h */,
+				2BE7FC40174E51C10004FF7D /* FlippedView.m */,
+				2BF07096173CDB450071A52F /* QuestionsController.h */,
+				2BF07097173CDB450071A52F /* QuestionsController.m */,
+				2BF070AD173D292C0071A52F /* SlideQuestionsController.h */,
+				2BF070AE173D292C0071A52F /* SlideQuestionsController.m */,
+				2BC7E9CB173EDF3500D911AE /* SlideQuestionsView.h */,
+				2BC7E9CC173EDF3500D911AE /* SlideQuestionsView.m */,
+				2BC7E9D11740301D00D911AE /* QuestionView.h */,
+				2BC7E9D21740301D00D911AE /* QuestionView.m */,
+				2BD5D92B174853A6000F69E7 /* QuestionViewController.h */,
+				2BD5D92C174853A9000F69E7 /* QuestionViewController.m */,
+				2BD5D92517442C49000F69E7 /* MoveQuestionToSlideViewController.h */,
+				2BD5D92617442C49000F69E7 /* MoveQuestionToSlideViewController.m */,
+				2BD5D9281744BFE7000F69E7 /* QuestionEditSheetController.h */,
+				2BD5D9291744BFE8000F69E7 /* QuestionEditSheetController.m */,
+				2BE7FC39174D71180004FF7D /* AnswerEditViewController.h */,
+				2BE7FC3A174D71180004FF7D /* AnswerEditViewController.m */,
+				2BE7FC3C174D743D0004FF7D /* AnswersEditViewController.h */,
+				2BE7FC3D174D743D0004FF7D /* AnswersEditViewController.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		2B733A80173909AC008FDFBA /* Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -188,32 +237,13 @@
 				2BF07099173CE0F90071A52F /* InspectorTabBar */,
 			);
 			name = Libraries;
-			path = KeynoteAuditoriumConnector;
-			sourceTree = "<group>";
-		};
-		2BB4735117453B6F00DA6C1F /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				2BB4734B174539C600DA6C1F /* Model.xcdatamodeld */,
-				2BE7FC31174AE2FE0004FF7D /* AuditoriumObject.h */,
-				2BE7FC32174AE2FE0004FF7D /* AuditoriumObject.m */,
-				2BE7FC2E174A5D130004FF7D /* Event.h */,
-				2BE7FC2F174A5D130004FF7D /* Event.m */,
-				2BD5D9371748DC09000F69E7 /* Answer.h */,
-				2BD5D9381748DC0A000F69E7 /* Answer.m */,
-				2BB4734E17453B3500DA6C1F /* Question.h */,
-				2BB4734F17453B3500DA6C1F /* Question.m */,
-				2BE7FC34174AE3DD0004FF7D /* Rule.h */,
-				2BE7FC35174AE3DD0004FF7D /* Rule.m */,
-			);
-			name = Model;
+			path = AuditoriumLecturer;
 			sourceTree = "<group>";
 		};
 		2BBE3B5B172A6D4800BCF546 = {
 			isa = PBXGroup;
 			children = (
-				2B733A8717398A0F008FDFBA /* Auditorium.icns */,
-				2BBE3B6D172A6D4800BCF546 /* KeynoteAuditoriumConnector */,
+				2BBE3B6D172A6D4800BCF546 /* AuditoriumLecturer */,
 				2BD5D91A17427D08000F69E7 /* Scripting Definitions */,
 				2B733A8D173C5003008FDFBA /* Libraries */,
 				2BBE3B66172A6D4800BCF546 /* Frameworks */,
@@ -224,7 +254,7 @@
 		2BBE3B65172A6D4800BCF546 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2BBE3B64172A6D4800BCF546 /* Keynote Auditorium Connector.app */,
+				2BBE3B64172A6D4800BCF546 /* AuditoriumLecturer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -249,11 +279,11 @@
 			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
-		2BBE3B6D172A6D4800BCF546 /* KeynoteAuditoriumConnector */ = {
+		2BBE3B6D172A6D4800BCF546 /* AuditoriumLecturer */ = {
 			isa = PBXGroup;
 			children = (
-				2BB4735117453B6F00DA6C1F /* Model */,
-				2BCA20BF1730306D00C9415E /* Resources */,
+				2B42FB50176A54AC001BAF1B /* Models */,
+				2B42FB51176A54D0001BAF1B /* Views */,
 				2BBE3B79172A6D4800BCF546 /* AppDelegate.h */,
 				2BBE3B7A172A6D4800BCF546 /* AppDelegate.m */,
 				2B777F67172BFCF600D1F54F /* Auditorium.h */,
@@ -262,55 +292,32 @@
 				2B777F6B172C65CC00D1F54F /* AuditoriumController.m */,
 				2BCA20DA173068CD00C9415E /* LoginController.h */,
 				2BCA20DB173068CD00C9415E /* LoginController.m */,
-				2B3820841737057D00822217 /* Slide.h */,
-				2B3820851737057D00822217 /* Slide.m */,
 				2BBE3B84172A700900BCF546 /* Slideshow.h */,
 				2BBE3B85172A700900BCF546 /* Slideshow.m */,
 				2B4588F3176759BE00418050 /* SlideshowApp.h */,
 				2B4588F4176759BF00418050 /* SlideshowApp.m */,
-				2BC7E9CE173F252D00D911AE /* FlippedBox.h */,
-				2BC7E9CF173F252D00D911AE /* FlippedBox.m */,
-				2BE7FC3F174E51C00004FF7D /* FlippedView.h */,
-				2BE7FC40174E51C10004FF7D /* FlippedView.m */,
-				2BF07096173CDB450071A52F /* QuestionsController.h */,
-				2BF07097173CDB450071A52F /* QuestionsController.m */,
-				2BF070AD173D292C0071A52F /* SlideQuestionsController.h */,
-				2BF070AE173D292C0071A52F /* SlideQuestionsController.m */,
-				2BC7E9CB173EDF3500D911AE /* SlideQuestionsView.h */,
-				2BC7E9CC173EDF3500D911AE /* SlideQuestionsView.m */,
-				2BC7E9D11740301D00D911AE /* QuestionView.h */,
-				2BC7E9D21740301D00D911AE /* QuestionView.m */,
-				2BD5D92B174853A6000F69E7 /* QuestionViewController.h */,
-				2BD5D92C174853A9000F69E7 /* QuestionViewController.m */,
-				2BD5D92517442C49000F69E7 /* MoveQuestionToSlideViewController.h */,
-				2BD5D92617442C49000F69E7 /* MoveQuestionToSlideViewController.m */,
-				2BD5D9281744BFE7000F69E7 /* QuestionEditSheetController.h */,
-				2BD5D9291744BFE8000F69E7 /* QuestionEditSheetController.m */,
-				2BE7FC39174D71180004FF7D /* AnswerEditViewController.h */,
-				2BE7FC3A174D71180004FF7D /* AnswerEditViewController.m */,
-				2BE7FC3C174D743D0004FF7D /* AnswersEditViewController.h */,
-				2BE7FC3D174D743D0004FF7D /* AnswersEditViewController.m */,
 				2BE7FC42175264F90004FF7D /* NilToEmptyStringTransformer.h */,
 				2BE7FC43175264FA0004FF7D /* NilToEmptyStringTransformer.m */,
-				2B777F62172B33D100D1F54F /* KeynoteAuditoriumConnector.xib */,
+				2B777F62172B33D100D1F54F /* AuditoriumLecturer.xib */,
 				2B4079E917392A3200C09FD4 /* LoginDialog.xib */,
 				2B733A8917399F7D008FDFBA /* SlideQuestions.xib */,
 				2BD5D92317442A25000F69E7 /* MoveQuestionToSlide.xib */,
 				2BC7E9D417403C2800D911AE /* QuestionEdit.xib */,
 				2BD5D92117429096000F69E7 /* QuestionEditSheet.xib */,
 				2BE7FC37174D6F8F0004FF7D /* AnswerEdit.xib */,
+				2BCA20BF1730306D00C9415E /* Resources */,
 				2BBE3B6E172A6D4800BCF546 /* Supporting Files */,
 			);
-			path = KeynoteAuditoriumConnector;
+			path = AuditoriumLecturer;
 			sourceTree = "<group>";
 		};
 		2BBE3B6E172A6D4800BCF546 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				2BBE3B6F172A6D4800BCF546 /* Keynote Auditorium Connector-Info.plist */,
+				2BBE3B6F172A6D4800BCF546 /* AuditoriumLecturer-Info.plist */,
 				2BBE3B70172A6D4800BCF546 /* InfoPlist.strings */,
 				2BBE3B73172A6D4800BCF546 /* main.m */,
-				2BBE3B75172A6D4800BCF546 /* Keynote Auditorium Connector-Prefix.pch */,
+				2BBE3B75172A6D4800BCF546 /* AuditoriumLecturer-Prefix.pch */,
 				2BBE3B76172A6D4800BCF546 /* Credits.rtf */,
 			);
 			name = "Supporting Files";
@@ -319,6 +326,7 @@
 		2BCA20BF1730306D00C9415E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2B733A8717398A0F008FDFBA /* Auditorium.icns */,
 				2B733A80173909AC008FDFBA /* Images */,
 			);
 			path = Resources;
@@ -349,15 +357,16 @@
 				2BF070A2173CE0F90071A52F /* SMTabBarItem.h */,
 				2BF070A3173CE0F90071A52F /* SMTabBarItem.m */,
 			);
-			path = InspectorTabBar;
+			name = InspectorTabBar;
+			path = ../AuditoriumLecturer/InspectorTabBar;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2BBE3B63172A6D4800BCF546 /* Keynote Auditorium Connector */ = {
+		2BBE3B63172A6D4800BCF546 /* AuditoriumLecturer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2BBE3B81172A6D4900BCF546 /* Build configuration list for PBXNativeTarget "Keynote Auditorium Connector" */;
+			buildConfigurationList = 2BBE3B81172A6D4900BCF546 /* Build configuration list for PBXNativeTarget "AuditoriumLecturer" */;
 			buildPhases = (
 				2BBE3B60172A6D4800BCF546 /* Sources */,
 				2BBE3B61172A6D4800BCF546 /* Frameworks */,
@@ -367,9 +376,9 @@
 			);
 			dependencies = (
 			);
-			name = "Keynote Auditorium Connector";
+			name = AuditoriumLecturer;
 			productName = KeynoteAuditoriumConnector;
-			productReference = 2BBE3B64172A6D4800BCF546 /* Keynote Auditorium Connector.app */;
+			productReference = 2BBE3B64172A6D4800BCF546 /* AuditoriumLecturer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -381,7 +390,7 @@
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Matthias Rahne";
 			};
-			buildConfigurationList = 2BBE3B5F172A6D4800BCF546 /* Build configuration list for PBXProject "Keynote Auditorium Connector" */;
+			buildConfigurationList = 2BBE3B5F172A6D4800BCF546 /* Build configuration list for PBXProject "AuditoriumLecturer" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -393,7 +402,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2BBE3B63172A6D4800BCF546 /* Keynote Auditorium Connector */,
+				2BBE3B63172A6D4800BCF546 /* AuditoriumLecturer */,
 			);
 		};
 /* End PBXProject section */
@@ -405,7 +414,7 @@
 			files = (
 				2BBE3B72172A6D4800BCF546 /* InfoPlist.strings in Resources */,
 				2BBE3B78172A6D4800BCF546 /* Credits.rtf in Resources */,
-				2B777F63172B33D100D1F54F /* KeynoteAuditoriumConnector.xib in Resources */,
+				2B777F63172B33D100D1F54F /* AuditoriumLecturer.xib in Resources */,
 				2BCA20E0173151DE00C9415E /* slide.png in Resources */,
 				2BE0F0281734315000BFD776 /* TB3_Record-Active.tif in Resources */,
 				2BE0F0291734315000BFD776 /* TB3_Record-Pressed.tif in Resources */,
@@ -549,9 +558,9 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "KeynoteAuditoriumConnector/Keynote Auditorium Connector-Prefix.pch";
-				INFOPLIST_FILE = "KeynoteAuditoriumConnector/Keynote Auditorium Connector-Info.plist";
-				PRODUCT_NAME = "Keynote Auditorium Connector";
+				GCC_PREFIX_HEADER = "AuditoriumLecturer/AuditoriumLecturer-Prefix.pch";
+				INFOPLIST_FILE = "AuditoriumLecturer/AuditoriumLecturer-Info.plist";
+				PRODUCT_NAME = AuditoriumLecturer;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -561,9 +570,9 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "KeynoteAuditoriumConnector/Keynote Auditorium Connector-Prefix.pch";
-				INFOPLIST_FILE = "KeynoteAuditoriumConnector/Keynote Auditorium Connector-Info.plist";
-				PRODUCT_NAME = "Keynote Auditorium Connector";
+				GCC_PREFIX_HEADER = "AuditoriumLecturer/AuditoriumLecturer-Prefix.pch";
+				INFOPLIST_FILE = "AuditoriumLecturer/AuditoriumLecturer-Info.plist";
+				PRODUCT_NAME = AuditoriumLecturer;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -571,7 +580,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2BBE3B5F172A6D4800BCF546 /* Build configuration list for PBXProject "Keynote Auditorium Connector" */ = {
+		2BBE3B5F172A6D4800BCF546 /* Build configuration list for PBXProject "AuditoriumLecturer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2BBE3B7F172A6D4900BCF546 /* Debug */,
@@ -580,7 +589,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2BBE3B81172A6D4900BCF546 /* Build configuration list for PBXNativeTarget "Keynote Auditorium Connector" */ = {
+		2BBE3B81172A6D4900BCF546 /* Build configuration list for PBXNativeTarget "AuditoriumLecturer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2BBE3B82172A6D4900BCF546 /* Debug */,

@@ -16,8 +16,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2BBE3B63172A6D4800BCF546"
                BuildableName = "Keynote Auditorium Connector.app"
-               BlueprintName = "Keynote Auditorium Connector"
-               ReferencedContainer = "container:Keynote Auditorium Connector.xcodeproj">
+               BlueprintName = "AuditoriumLecturer"
+               ReferencedContainer = "container:AuditoriumLecturer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,8 +34,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2BBE3B63172A6D4800BCF546"
             BuildableName = "Keynote Auditorium Connector.app"
-            BlueprintName = "Keynote Auditorium Connector"
-            ReferencedContainer = "container:Keynote Auditorium Connector.xcodeproj">
+            BlueprintName = "AuditoriumLecturer"
+            ReferencedContainer = "container:AuditoriumLecturer.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -53,8 +53,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2BBE3B63172A6D4800BCF546"
             BuildableName = "Keynote Auditorium Connector.app"
-            BlueprintName = "Keynote Auditorium Connector"
-            ReferencedContainer = "container:Keynote Auditorium Connector.xcodeproj">
+            BlueprintName = "AuditoriumLecturer"
+            ReferencedContainer = "container:AuditoriumLecturer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -76,8 +76,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2BBE3B63172A6D4800BCF546"
             BuildableName = "Keynote Auditorium Connector.app"
-            BlueprintName = "Keynote Auditorium Connector"
-            ReferencedContainer = "container:Keynote Auditorium Connector.xcodeproj">
+            BlueprintName = "AuditoriumLecturer"
+            ReferencedContainer = "container:AuditoriumLecturer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

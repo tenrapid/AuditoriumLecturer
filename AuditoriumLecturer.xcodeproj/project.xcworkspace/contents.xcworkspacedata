@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:Keynote Auditorium Connector.xcodeproj">
+      location = "self:AuditoriumLecturer.xcodeproj">
    </FileRef>
 </Workspace>
