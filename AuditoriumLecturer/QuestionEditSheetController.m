@@ -85,6 +85,7 @@
 		if (question.type != QuestionMessageType && ![question.answers count]) {
 			[question addAnswersObject:[Auditorium objectForEntityName:@"Answer"]];
 			[question addAnswersObject:[Auditorium objectForEntityName:@"Answer"]];
+			[question addAnswersObject:[Auditorium objectForEntityName:@"Answer"]];
 		}
 		[self updateViewHeight];
 	}
