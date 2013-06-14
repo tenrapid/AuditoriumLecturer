@@ -19,6 +19,7 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 	NSArray *answers;
 	NSMutableArray *answerEditViewControllers;
 	IBOutlet NSMatrix *correctAnswerMatrix;
+	IBOutlet NSView *correctAnswerLabel;
 }
 
 @property (assign) Question *question;
@@ -88,14 +89,18 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
+	// question message type did change
+	
 	if (self.question.type == QuestionMessageType) {
 		return;
 	}
 
+	// unbind first to prevent ugly things heppening
 	if ([correctAnswerMatrix infoForBinding:@"content"]) {
 		[correctAnswerMatrix unbind:@"content"];
 	}
 
+	// set new prototype cell
 	NSButtonCell *prototypeCell = [[NSButtonCell alloc] init];
 	if (self.question.type == QuestionSingleChoiceType) {
 		[correctAnswerMatrix setMode:NSRadioModeMatrix];
@@ -107,16 +112,19 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 		[prototypeCell setButtonType:NSSwitchButton];
 		[correctAnswerMatrix setPrototype:prototypeCell];
 	}
+	// remove all existing cells (NSMatrix does not delete once created cells)
+	// and bind again
 	[correctAnswerMatrix removeColumn:0];
 	[correctAnswerMatrix renewRows:1 columns:1];
 	[correctAnswerMatrix bind:@"content" toObject:self withKeyPath:@"answers" options:nil];
 
-	
 	if (self.question.type == QuestionSingleChoiceType) {
 		if ([answers count] && ![[answers valueForKeyPath:@"@max.correct"] integerValue]) {
+			// mark first answers as correct if no answer is marked as correct
 			((Answer *)answers[0]).correct = [NSNumber numberWithBool:YES];
 		}
 		else {
+			// only mark one answers as correct if multiple answers are marked as correct
 			BOOL yesFound = NO;
 			for (Answer *answer in answers) {
 				if (!yesFound) {
@@ -128,7 +136,17 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 			}
 		}
 	}
+	else if (self.question.type == QuestionMultipleChoiceType) {
+		for (Answer *answer in answers) {
+			answer.correct = [NSNumber numberWithBool:NO];
+		}
+	}
+
+	[correctAnswerLabel setHidden:self.question.type != QuestionSingleChoiceType];
+	[correctAnswerMatrix setHidden:self.question.type != QuestionSingleChoiceType];
+
 	[self updateCellStateFromAnswerCorrectness];
+	[self updateViewHeight];
 }
 
 - (void)update
@@ -170,17 +188,18 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 	// room for "Antworten:" label
 	float height = 26;
 
+	float correctAnswerMatrixWidth = self.question.type == QuestionSingleChoiceType ? 22 : 0;
 	for (NSViewController *viewController in answerEditViewControllers) {
 		frame = viewController.view.frame;
 		frame.origin.y = height;
-		frame.origin.x = 22;
-		frame.size.width = self.view.frame.size.width - 22;
+		frame.origin.x = correctAnswerMatrixWidth;
+		frame.size.width = self.view.frame.size.width - correctAnswerMatrixWidth;
 		[viewController.view setFrame:frame];
 		height += viewController.view.frame.size.height + 5;
 	}
 
 	// room for "korrekte Antwort" label
-	height += 18;
+	height += self.question.type == QuestionSingleChoiceType ? 18 : 0;
 
 	frame = [self.view frame];
 	frame.origin.y += frame.size.height - height;
