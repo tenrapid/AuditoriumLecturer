@@ -83,10 +83,12 @@
 	if ([keyPath isEqualToString:@"representedObject.type"]) {
 		Question *question = self.representedObject;
 		if (question.type != QuestionMessageType && ![question.answers count]) {
-			[question addAnswersObject:[Auditorium objectForEntityName:@"Answer"]];
-			[question addAnswersObject:[Auditorium objectForEntityName:@"Answer"]];
+			NSSet *newAnswers = [NSSet setWithObjects:
+							  [Auditorium objectForEntityName:@"Answer"],
+							  [Auditorium objectForEntityName:@"Answer"],
+							  [Auditorium objectForEntityName:@"Answer"], nil];
+			[question addAnswers:newAnswers];
 		}
-		[self updateViewHeight];
 	}
 }
 
@@ -96,7 +98,7 @@
 	if (question.type == QuestionMessageType) {
 		[answersEditViewController.view setHidden:YES];
 	}
-	NSInteger staticHeight = 328 + ([self.view.window isSheet] ? 0 : 22);
+	NSInteger staticHeight = (question.type == QuestionMessageType ? 328 : 242) + ([self.view.window isSheet] ? 0 : 22);
 	NSInteger dynamicHeight = question.type == QuestionMessageType ? -6 : answersEditViewController.view.frame.size.height;
 	NSRect frame = sheet.frame;
 	frame.origin.y += (frame.size.height - staticHeight) - dynamicHeight;
@@ -133,7 +135,9 @@
 		question.slide = [Slideshow sharedInstance].currentSlide;
 	}
 	if (question.type == QuestionMessageType) {
-		for (Answer *answer in question.answers) {
+		NSSet *answersToRemove = [NSSet setWithSet:question.answers];
+		[question removeAnswers:answersToRemove];
+		for (Answer *answer in answersToRemove) {
 			[answer.managedObjectContext deleteObject:answer];
 		}
 	}

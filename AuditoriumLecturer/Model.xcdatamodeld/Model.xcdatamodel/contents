@@ -2,6 +2,7 @@
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2061" systemVersion="11G63" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Answer" representedClassName="Answer" parentEntity="AuditoriumObject" syncable="YES">
         <attribute name="correct" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="feedback" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="order" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="question" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Question" inverseName="answers" inverseEntity="Question" syncable="YES"/>
@@ -26,7 +27,7 @@
     </entity>
     <entity name="Rule" representedClassName="Rule" parentEntity="AuditoriumObject" syncable="YES"/>
     <elements>
-        <element name="Answer" positionX="270" positionY="0" width="128" height="105"/>
+        <element name="Answer" positionX="270" positionY="0" width="128" height="120"/>
         <element name="AuditoriumObject" positionX="18" positionY="270" width="128" height="60"/>
         <element name="Event" positionX="-173" positionY="0" width="128" height="90"/>
         <element name="Question" positionX="43" positionY="-75" width="128" height="165"/>
