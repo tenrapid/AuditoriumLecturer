@@ -20,7 +20,7 @@
 - (void)setQuestion:(Question *)question
 {
 	if (question) {
-		if (self.order.integerValue != 0) {
+		if (self.order) {
 			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(question = %@) AND (order >= %@)", question, self.order];
 			NSArray *answers = [self fetchWithPredicate:predicate];
 			for (Answer *answer in answers) {
