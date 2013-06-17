@@ -83,11 +83,12 @@
 	if ([keyPath isEqualToString:@"representedObject.type"]) {
 		Question *question = self.representedObject;
 		if (question.type != QuestionMessageType && ![question.answers count]) {
-			[question addAnswersObject:[Auditorium objectForEntityName:@"Answer"]];
-			[question addAnswersObject:[Auditorium objectForEntityName:@"Answer"]];
-			[question addAnswersObject:[Auditorium objectForEntityName:@"Answer"]];
+			NSSet *newAnswers = [NSSet setWithObjects:
+							  [Auditorium objectForEntityName:@"Answer"],
+							  [Auditorium objectForEntityName:@"Answer"],
+							  [Auditorium objectForEntityName:@"Answer"], nil];
+			[question addAnswers:newAnswers];
 		}
-		[self updateViewHeight];
 	}
 }
 
@@ -134,7 +135,9 @@
 		question.slide = [Slideshow sharedInstance].currentSlide;
 	}
 	if (question.type == QuestionMessageType) {
-		for (Answer *answer in question.answers) {
+		NSSet *answersToRemove = [NSSet setWithSet:question.answers];
+		[question removeAnswers:answersToRemove];
+		for (Answer *answer in answersToRemove) {
 			[answer.managedObjectContext deleteObject:answer];
 		}
 	}

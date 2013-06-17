@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString * const AnswerEditViewHeightDidChangeNotification;
+
 @class Answer;
 
 @interface AnswerEditViewController : NSViewController
@@ -18,5 +20,7 @@
 - (AnswerEditViewController *)initWithAnswer:(Answer *)answer;
 - (IBAction)addAnswerAction:(id)sender;
 - (IBAction)removeAnswerAction:(id)sender;
+
+- (void)updateViewHeight;
 
 @end

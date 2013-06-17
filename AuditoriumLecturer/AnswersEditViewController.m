@@ -48,7 +48,7 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 	[correctAnswerMatrix unbind:@"content"];
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	for (NSViewController *viewController in answerEditViewControllers) {
-		[notificationCenter removeObserver:self name:NSViewFrameDidChangeNotification object:[viewController view]];
+		[notificationCenter removeObserver:self name:AnswerEditViewHeightDidChangeNotification object:[viewController view]];
 		[[viewController view] removeFromSuperview];
 	}
 	[answerEditViewControllers release];
@@ -57,13 +57,40 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 }
 
 - (void)setAnswers:(NSArray *)_answers
-{
+{	
+	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+	
+	for (NSViewController *viewController in answerEditViewControllers) {
+		[notificationCenter removeObserver:self name:AnswerEditViewHeightDidChangeNotification object:viewController];
+		[viewController commitEditing];
+		[[viewController view] removeFromSuperview];
+	}
+	[answerEditViewControllers removeAllObjects];
+	
 	[answers release];
 	answers = [_answers mutableCopy];
-	if ([answers count]) {
-		self.question = [answers[0] question];
+
+	for (Answer *answer in answers) {
+		AnswerEditViewController *viewController = [[AnswerEditViewController alloc] initWithAnswer:answer];
+		[answerEditViewControllers addObject:viewController];
+
+		NSView *view = [viewController view];
+		[view setFrame:NSMakeRect(0, 0, self.view.frame.size.width, view.frame.size.height)];
+		[self.view addSubview:view];
+		
+		[notificationCenter addObserver:self selector:@selector(answerEditViewHeightDidChange:) name:AnswerEditViewHeightDidChangeNotification object:viewController];
+		[viewController release];
 	}
-	[self update];
+	
+	if ([answers count]) {
+		// set the answers' question and implicitly update the view height
+		self.question = [answers[0] question];
+		// hide minus button if there is only one answer
+		AnswerEditViewController *answerEditViewController = answerEditViewControllers[0];
+		[answerEditViewController.minusButton setHidden:[answers count] == 1];
+	}
+
+	[[self.view window] recalculateKeyViewLoop];
 }
 
 - (IBAction)correctAnswerSelectAction:(id)sender
@@ -89,97 +116,32 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	// question message type did change
-	
-	if (self.question.type == QuestionMessageType) {
-		return;
-	}
-
-	// unbind first to prevent ugly things heppening
-	if ([correctAnswerMatrix infoForBinding:@"content"]) {
-		[correctAnswerMatrix unbind:@"content"];
-	}
-
-	// set new prototype cell
-	NSButtonCell *prototypeCell = [[NSButtonCell alloc] init];
-	if (self.question.type == QuestionSingleChoiceType) {
-		[correctAnswerMatrix setMode:NSRadioModeMatrix];
-		[prototypeCell setButtonType:NSRadioButton];
-		[correctAnswerMatrix setPrototype:prototypeCell];
-	}
-	else if (self.question.type == QuestionMultipleChoiceType) {
-		[correctAnswerMatrix setMode:NSHighlightModeMatrix];
-		[prototypeCell setButtonType:NSSwitchButton];
-		[correctAnswerMatrix setPrototype:prototypeCell];
-	}
-	// remove all existing cells (NSMatrix does not delete once created cells)
-	// and bind again
-	[correctAnswerMatrix removeColumn:0];
-	[correctAnswerMatrix renewRows:1 columns:1];
-	[correctAnswerMatrix bind:@"content" toObject:self withKeyPath:@"answers" options:nil];
-
-	if (self.question.type == QuestionSingleChoiceType) {
-		if ([answers count] && ![[answers valueForKeyPath:@"@max.correct"] integerValue]) {
-			// mark first answers as correct if no answer is marked as correct
-			((Answer *)answers[0]).correct = [NSNumber numberWithBool:YES];
+	if ([keyPath isEqualToString:@"question.type"]) {
+		// We have some binding problems here. NSMatrix probably needs to be bound to
+		// a NSArrayController?
+		if ([correctAnswerMatrix infoForBinding:@"content"]) {
+			[correctAnswerMatrix unbind:@"content"];
 		}
-		else {
-			// only mark one answers as correct if multiple answers are marked as correct
-			BOOL yesFound = NO;
-			for (Answer *answer in answers) {
-				if (!yesFound) {
-					yesFound = answer.correct.boolValue;
-				}
-				else {
-					answer.correct = [NSNumber numberWithBool:NO];
-				}
+		[correctAnswerMatrix removeColumn:0];
+		[correctAnswerMatrix renewRows:1 columns:1];
+		[correctAnswerMatrix bind:@"content" toObject:self withKeyPath:@"answers" options:nil];
+
+		if (self.question.type == QuestionSingleChoiceType) {
+			if ([answers count] && ![[answers valueForKeyPath:@"@max.correct"] integerValue]) {
+				// mark first answers as correct if no answer is marked as correct
+				((Answer *)answers[0]).correct = [NSNumber numberWithBool:YES];
 			}
+			[self updateCellStateFromAnswerCorrectness];
 		}
-	}
-	else if (self.question.type == QuestionMultipleChoiceType) {
-		for (Answer *answer in answers) {
-			answer.correct = [NSNumber numberWithBool:NO];
+
+		[correctAnswerLabel setHidden:self.question.type != QuestionSingleChoiceType];
+		[correctAnswerMatrix setHidden:self.question.type != QuestionSingleChoiceType];
+
+		for (AnswerEditViewController *viewController in answerEditViewControllers) {
+			[viewController updateViewHeight];
 		}
+		[self updateViewHeight];
 	}
-
-	[correctAnswerLabel setHidden:self.question.type != QuestionSingleChoiceType];
-	[correctAnswerMatrix setHidden:self.question.type != QuestionSingleChoiceType];
-
-	[self updateCellStateFromAnswerCorrectness];
-	[self updateViewHeight];
-}
-
-- (void)update
-{
-	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-
-	for (NSViewController *viewController in answerEditViewControllers) {
-		[notificationCenter removeObserver:self name:NSViewFrameDidChangeNotification object:[viewController view]];
-		[viewController commitEditing];
-		[[viewController view] removeFromSuperview];
-	}
-	[answerEditViewControllers removeAllObjects];
-
-	for (Answer *answer in answers) {
-		AnswerEditViewController *viewController = [[AnswerEditViewController alloc] initWithAnswer:answer];
-		[answerEditViewControllers addObject:viewController];
-		[viewController release];
-
-		NSView *view = [viewController view];
-		[view setFrame:NSMakeRect(0, 0, self.view.frame.size.width, view.frame.size.height)];
-		[self.view addSubview:view];
-
-		[notificationCenter addObserver:self selector:@selector(answerEditViewHeightDidChange:) name:NSViewFrameDidChangeNotification object:view];
-	}
-	[self updateCellStateFromAnswerCorrectness];
-
-	if ([answers count]) {
-		AnswerEditViewController *answerEditViewController = answerEditViewControllers[0];
-		[answerEditViewController.minusButton setHidden:[answers count] == 1];
-	}
-
-	[self updateViewHeight];
-	[[self.view window] recalculateKeyViewLoop];
 }
 
 - (void)updateViewHeight
@@ -187,6 +149,16 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 	NSRect frame;
 	// room for "Antworten:" label
 	float height = 26;
+
+	if (self.question.type == QuestionSingleChoiceType && answerEditViewControllers.count) {
+		NSSize cellSize = [correctAnswerMatrix cellSize];
+		NSRect frame = [correctAnswerMatrix frame];
+		cellSize.height = ((AnswerEditViewController *)answerEditViewControllers[0]).view.frame.size.height + 5;
+		frame.origin.y = floor(-(cellSize.height / 2) + 38);
+		frame.size.height = answerEditViewControllers.count * cellSize.height;
+		[correctAnswerMatrix setFrame:frame];
+		[correctAnswerMatrix setCellSize:cellSize];
+	}
 
 	float correctAnswerMatrixWidth = self.question.type == QuestionSingleChoiceType ? 22 : 0;
 	for (NSViewController *viewController in answerEditViewControllers) {
@@ -214,6 +186,7 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 
 - (void)answerEditViewHeightDidChange:(NSNotification *)notification
 {
+	[self updateViewHeight];
 }
 
 #pragma mark  NSEditor Protocol
@@ -223,6 +196,11 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 	BOOL returnValue = [super commitEditing];
 	for (AnswerEditViewController *answerEditViewController in answerEditViewControllers) {
 		returnValue &= [answerEditViewController commitEditing];
+	}
+	if (self.question.type == QuestionMultipleChoiceType) {
+		for (Answer *answer in answers) {
+			answer.correct = [NSNumber numberWithBool:NO];
+		}
 	}
 	return returnValue;
 }
