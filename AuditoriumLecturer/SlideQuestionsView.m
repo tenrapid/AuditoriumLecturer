@@ -16,10 +16,7 @@
 #import "Slideshow.h"
 #import "Auditorium.h"
 
-NSString * const QuestionEditSheetWillOpenNotification = @"QuestionEditSheetWillOpenNotification";
-NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidCloseNotification";
 NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestionsViewHeightDidChangeNotification";
-
 
 @interface SlideQuestionsView ()
 {
@@ -31,7 +28,6 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 @property (assign) NSMutableArray *questionViewControllers;
 
 @end
-
 
 @implementation SlideQuestionsView
 
@@ -126,8 +122,25 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 
 - (IBAction)addQuestionAction:(id)sender
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetWillOpenNotification object:self];
 	questionEditSheetController = [[QuestionEditSheetController alloc] initWithQuestion:nil delegate:self];
+}
+
+- (void)editQuestionAction:(id)sender
+{
+	Question *question = [[sender cell]representedObject];
+	questionEditSheetController = [[QuestionEditSheetController alloc] initWithQuestion:question delegate:self];
+}
+
+- (void)editQuestionDidEnd:(NSInteger)returnCode
+{
+	[questionEditSheetController release];
+}
+
+- (void)removeQuestionAction:(id)sender
+{
+	Question *question = [sender representedObject];
+	[question willBeDeleted];
+	[question.managedObjectContext deleteObject:question];
 }
 
 - (void)moveQuestionUpAction:(id)sender
@@ -157,26 +170,6 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 - (void)moveQuestionToSlideDidEnd:(NSInteger)returnCode
 {
 	[moveQuestionToSlideViewController release];
-}
-
-- (void)removeQuestionAction:(id)sender
-{
-	Question *question = [sender representedObject];
-	[question willBeDeleted];
-	[question.managedObjectContext deleteObject:question];
-}
-
-- (void)editQuestionAction:(id)sender
-{
-	Question *question = [[sender cell]representedObject];
-	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetWillOpenNotification object:self];
-	questionEditSheetController = [[QuestionEditSheetController alloc] initWithQuestion:question delegate:self];
-}
-
-- (void)editQuestionDidEnd:(NSInteger)returnCode
-{
-	[questionEditSheetController release];
-	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetDidCloseNotification object:self];
 }
 
 #pragma mark  NSMenuValidation Protocol

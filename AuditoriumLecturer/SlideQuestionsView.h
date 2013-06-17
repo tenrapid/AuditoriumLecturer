@@ -8,8 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString * const QuestionEditSheetWillOpenNotification;
-extern NSString * const QuestionEditSheetDidCloseNotification;
 extern NSString * const SlideQuestionsViewHeightDidChangeNotification;
 
 @interface SlideQuestionsView : NSView

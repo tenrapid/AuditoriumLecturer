@@ -10,6 +10,9 @@
 
 @class Question;
 
+extern NSString * const QuestionEditSheetWillOpenNotification;
+extern NSString * const QuestionEditSheetDidCloseNotification;
+
 @interface QuestionEditSheetController : NSViewController <NSControlTextEditingDelegate>
 
 - (id)initWithQuestion:(Question *)question delegate:(id)delegate;

@@ -13,6 +13,9 @@
 #import "Auditorium.h"
 #import "Slideshow.h"
 
+NSString * const QuestionEditSheetWillOpenNotification = @"QuestionEditSheetWillOpenNotification";
+NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidCloseNotification";
+
 @interface QuestionEditSheetController ()
 {
 	NSWindow *sheet;
@@ -63,6 +66,8 @@
 
 		[self updateViewWidth];
 		[self updateViewHeight];
+
+		[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetWillOpenNotification object:self];
 		[NSApp beginSheet:sheet modalForWindow:[NSApp mainWindow] modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
 	}
     return self;
@@ -159,6 +164,7 @@
 		[undoManager performSelector:@selector(removeAllActionsWithTarget:) withObject:[NSNull null] afterDelay:0.0];
 	}
 
+	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetDidCloseNotification object:self];
 	[self invokeDelegateWith:returnCode];
 }
 

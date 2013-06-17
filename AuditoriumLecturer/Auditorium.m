@@ -10,7 +10,7 @@
 #import "AuditoriumObject.h"
 #import "Event.h"
 #import "Question.h"
-#import "SlideQuestionsView.h"
+#import "QuestionEditSheetController.h"
 
 #define simulatedNetworkDelay 0
 
