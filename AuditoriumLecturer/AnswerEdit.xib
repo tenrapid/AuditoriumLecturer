@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">11G63</string>
+		<string key="IBDocument.SystemVersion">11G63b</string>
 		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
 		<string key="IBDocument.AppKitVersion">1138.51</string>
 		<string key="IBDocument.HIToolboxVersion">569.00</string>
@@ -78,7 +78,7 @@
 							</object>
 							<object class="NSTextField" id="812239579">
 								<reference key="NSNextResponder" ref="235121802"/>
-								<int key="NSvFlags">266</int>
+								<int key="NSvFlags">258</int>
 								<string key="NSFrame">{{0, 27}, {304, 22}}</string>
 								<reference key="NSSuperview" ref="235121802"/>
 								<reference key="NSWindow"/>
@@ -86,13 +86,13 @@
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSTextFieldCell" key="NSCell" id="241008201">
-									<int key="NSCellFlags">-1804599231</int>
-									<int key="NSCellFlags2">272630784</int>
+									<int key="NSCellFlags">-1805647871</int>
+									<int key="NSCellFlags2">272629760</int>
 									<string key="NSContents"/>
-									<object class="NSFont" key="NSSupport" id="1070565434">
+									<object class="NSFont" key="NSSupport" id="52306568">
 										<string key="NSName">LucidaGrande</string>
 										<double key="NSSize">13</double>
-										<int key="NSfFlags">1044</int>
+										<int key="NSfFlags">16</int>
 									</object>
 									<string key="NSPlaceholderString">Antwort</string>
 									<string key="NSCellIdentifier">_NS:9</string>
@@ -120,7 +120,7 @@
 							</object>
 							<object class="NSTextField" id="778327151">
 								<reference key="NSNextResponder" ref="235121802"/>
-								<int key="NSvFlags">266</int>
+								<int key="NSvFlags">258</int>
 								<string key="NSFrameSize">{304, 22}</string>
 								<reference key="NSSuperview" ref="235121802"/>
 								<reference key="NSWindow"/>
@@ -128,10 +128,10 @@
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSTextFieldCell" key="NSCell" id="146218529">
-									<int key="NSCellFlags">-1804599231</int>
-									<int key="NSCellFlags2">272630784</int>
+									<int key="NSCellFlags">-1805647871</int>
+									<int key="NSCellFlags2">272629760</int>
 									<string key="NSContents"/>
-									<reference key="NSSupport" ref="1070565434"/>
+									<reference key="NSSupport" ref="52306568"/>
 									<string key="NSPlaceholderString">Feedback</string>
 									<string key="NSCellIdentifier">_NS:9</string>
 									<reference key="NSControlView" ref="778327151"/>
@@ -250,6 +250,22 @@
 					<int key="connectionID">23</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">answerTextField</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="812239579"/>
+					</object>
+					<int key="connectionID">43</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">feedbackTextField</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="778327151"/>
+					</object>
+					<int key="connectionID">44</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: self.representedObject.text</string>
 						<reference key="source" ref="812239579"/>
@@ -270,6 +286,14 @@
 					<int key="connectionID">31</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="812239579"/>
+						<reference key="destination" ref="1001"/>
+					</object>
+					<int key="connectionID">41</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: self.representedObject.feedback</string>
 						<reference key="source" ref="778327151"/>
@@ -288,6 +312,14 @@
 						</object>
 					</object>
 					<int key="connectionID">40</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="778327151"/>
+						<reference key="destination" ref="1001"/>
+					</object>
+					<int key="connectionID">42</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -405,7 +437,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">40</int>
+			<int key="maxID">44</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -427,10 +459,20 @@
 						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="answerTextField">NSTextField</string>
+						<string key="feedbackTextField">NSTextField</string>
 						<string key="minusButton">NSButton</string>
 						<string key="plusButton">NSButton</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="answerTextField">
+							<string key="name">answerTextField</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="feedbackTextField">
+							<string key="name">feedbackTextField</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="minusButton">
 							<string key="name">minusButton</string>
 							<string key="candidateClassName">NSButton</string>
