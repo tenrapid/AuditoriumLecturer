@@ -10,13 +10,14 @@
 #import "Question.h"
 #import "Answer.h"
 #import "Auditorium.h"
+#import "AutoGrowTextField.h"
 
 NSString * const AnswerEditViewHeightDidChangeNotification = @"AnswerEditViewHeightDidChangeNotification";
 
 @interface AnswerEditViewController ()
 
-@property (assign) IBOutlet NSTextField *answerTextField;
-@property (assign) IBOutlet NSTextField *feedbackTextField;
+@property (assign) IBOutlet AutoGrowTextField *answerTextField;
+@property (assign) IBOutlet AutoGrowTextField *feedbackTextField;
 
 @end
 
@@ -34,30 +35,16 @@ NSString * const AnswerEditViewHeightDidChangeNotification = @"AnswerEditViewHei
         self.representedObject = answer;
 		[self view];
 		
-		NSRect frame, bounds;
-		float height;
-		
-		frame = [answerTextField frame];
-		bounds = frame;
-		bounds.size.height = CGFLOAT_MAX;
-		height = [answerTextField.cell cellSizeForBounds: bounds].height;
-		frame.size.height = height;
-		[answerTextField setFrame:frame];
-		
-		frame = [feedbackTextField frame];
-		bounds = frame;
-		bounds.size.height = CGFLOAT_MAX;
-		height = [feedbackTextField.cell cellSizeForBounds: bounds].height;
-		frame.size.height = height;
-		[feedbackTextField setFrame:frame];
-
-		[self updateViewHeight];
+		NSNotificationCenter *notficationCenter = [NSNotificationCenter defaultCenter];
+		[notficationCenter addObserver:self selector:@selector(textFieldHeightDidChange:) name:AutoGrowTextFieldHeightDidChangeNotification object:answerTextField];
+		[notficationCenter addObserver:self selector:@selector(textFieldHeightDidChange:) name:AutoGrowTextFieldHeightDidChangeNotification object:feedbackTextField];
     }
     return self;
 }
 
 - (void)dealloc
 {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
 }
 
@@ -65,6 +52,9 @@ NSString * const AnswerEditViewHeightDidChangeNotification = @"AnswerEditViewHei
 {
 	Answer *answer = self.representedObject;
 	Question *question = answer.question;
+	
+	[answerTextField sizeFrameHeightToFit];
+	[feedbackTextField sizeFrameHeightToFit];
 	
 	float height = 0;
 
@@ -107,14 +97,8 @@ NSString * const AnswerEditViewHeightDidChangeNotification = @"AnswerEditViewHei
 	[answer.managedObjectContext deleteObject:answer];
 }
 
-- (void)controlTextDidChange:(NSNotification *)notification
+- (void)textFieldHeightDidChange:(NSNotification *)notification
 {
-	NSTextField *textField = notification.object;
-	NSTextView *textView = [notification.userInfo objectForKey:@"NSFieldEditor"];
-	NSRect textFieldFrame = textField.frame;
-	NSRect textViewFrame = [textView.textContainer.layoutManager usedRectForTextContainer:textView.textContainer];
-	textFieldFrame.size.height = textViewFrame.size.height + 5;
-	[textField setFrame:textFieldFrame];
 	[self updateViewHeight];
 	[[NSNotificationCenter defaultCenter] postNotificationName:AnswerEditViewHeightDidChangeNotification object:self];
 }
