@@ -18,7 +18,7 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 {
 	NSArray *answers;
 	NSMutableArray *answerEditViewControllers;
-	IBOutlet NSMatrix *correctAnswerMatrix;
+	NSMutableDictionary *correctAnswerRadios;
 	IBOutlet NSView *correctAnswerLabel;
 }
 
@@ -36,6 +36,7 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
 		answerEditViewControllers = [[NSMutableArray alloc] init];
+		correctAnswerRadios = [[NSMutableDictionary alloc] init];
 		[self addObserver:self forKeyPath:@"question.type" options:0 context:nil];
     }
     
@@ -45,12 +46,12 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 - (void)dealloc
 {
 	[self removeObserver:self forKeyPath:@"question.type"];
-	[correctAnswerMatrix unbind:@"content"];
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	for (NSViewController *viewController in answerEditViewControllers) {
 		[notificationCenter removeObserver:self name:AnswerEditViewHeightDidChangeNotification object:[viewController view]];
 		[[viewController view] removeFromSuperview];
 	}
+	[correctAnswerRadios release];
 	[answerEditViewControllers release];
 	[answers release];
 	[super dealloc];
@@ -60,6 +61,10 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 {	
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	
+	for (NSButton *radio in [correctAnswerRadios allValues]) {
+		[radio removeFromSuperview];
+	}
+	[correctAnswerRadios removeAllObjects];
 	for (NSViewController *viewController in answerEditViewControllers) {
 		[notificationCenter removeObserver:self name:AnswerEditViewHeightDidChangeNotification object:viewController];
 		[viewController commitEditing];
@@ -95,12 +100,18 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 
 - (IBAction)correctAnswerSelectAction:(id)sender
 {
-	[self performSelector:@selector(updateAnswerCorrectnessFromCellState) withObject:self afterDelay:0];
+	for (NSButton *radio in [correctAnswerRadios allValues]) {
+		if (radio != sender) {
+			[radio.cell setState:0];
+		}
+	}
+	[self updateAnswerCorrectnessFromCellState];
 }
 
 - (void)updateAnswerCorrectnessFromCellState
 {
-	for (NSButtonCell *cell in [correctAnswerMatrix cells]) {
+	for (NSButton *radio in [correctAnswerRadios allValues]) {
+		NSButtonCell *cell = radio.cell;
 		Answer *answer = cell.representedObject;
 		answer.correct = [NSNumber numberWithBool:cell.state];
 	}
@@ -108,7 +119,8 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 
 - (void)updateCellStateFromAnswerCorrectness
 {
-	for (NSButtonCell *cell in [correctAnswerMatrix cells]) {
+	for (NSButton *radio in [correctAnswerRadios allValues]) {
+		NSButtonCell *cell = radio.cell;
 		Answer *answer = cell.representedObject;
 		[cell setState:answer.correct.integerValue];
 	}
@@ -117,25 +129,33 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
 	if ([keyPath isEqualToString:@"question.type"]) {
-		// We have some binding problems here. NSMatrix probably needs to be bound to
-		// a NSArrayController?
-		if ([correctAnswerMatrix infoForBinding:@"content"]) {
-			[correctAnswerMatrix unbind:@"content"];
-		}
-		[correctAnswerMatrix removeColumn:0];
-		[correctAnswerMatrix renewRows:1 columns:1];
-		[correctAnswerMatrix bind:@"content" toObject:self withKeyPath:@"answers" options:nil];
-
 		if (self.question.type == QuestionSingleChoiceType) {
+			for (AnswerEditViewController *answerEditViewController in answerEditViewControllers) {
+				Answer *answer = answerEditViewController.representedObject;
+				NSButton *radio = [[NSButton alloc] init];
+				[radio setButtonType:NSRadioButton];
+				[radio setTitle:@""];
+				[radio setTarget:self];
+				[radio setAction:@selector(correctAnswerSelectAction:)];
+				[radio.cell setRepresentedObject:answer];
+				[radio sizeToFit];
+				[self.view addSubview:radio];
+				[correctAnswerRadios setObject:radio forKey:answer.uuid];
+			}
 			if ([answers count] && ![[answers valueForKeyPath:@"@max.correct"] integerValue]) {
 				// mark first answers as correct if no answer is marked as correct
 				((Answer *)answers[0]).correct = [NSNumber numberWithBool:YES];
 			}
 			[self updateCellStateFromAnswerCorrectness];
 		}
+		else {
+			for (NSButton *radio in [correctAnswerRadios allValues]) {
+				[radio removeFromSuperview];
+			}
+			[correctAnswerRadios removeAllObjects];
+		}
 
 		[correctAnswerLabel setHidden:self.question.type != QuestionSingleChoiceType];
-		[correctAnswerMatrix setHidden:self.question.type != QuestionSingleChoiceType];
 
 		[self updateViewHeight];
 	}
@@ -147,27 +167,26 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 	// room for "Antworten:" label
 	float height = 26;
 
-	if (self.question.type == QuestionSingleChoiceType && answerEditViewControllers.count) {
-		NSSize cellSize = [correctAnswerMatrix cellSize];
-		NSRect frame = [correctAnswerMatrix frame];
-		cellSize.height = ((AnswerEditViewController *)answerEditViewControllers[0]).view.frame.size.height + 5;
-		frame.origin.y = floor(-(cellSize.height / 2) + 38);
-		frame.size.height = answerEditViewControllers.count * cellSize.height;
-		[correctAnswerMatrix setFrame:frame];
-		[correctAnswerMatrix setCellSize:cellSize];
-	}
-
-	float correctAnswerMatrixWidth = self.question.type == QuestionSingleChoiceType ? 22 : 0;
+	float originX = self.question.type == QuestionSingleChoiceType ? 22 : 0;
 	for (AnswerEditViewController *viewController in answerEditViewControllers) {
 		frame = viewController.view.frame;
 		frame.origin.y = height;
-		frame.origin.x = correctAnswerMatrixWidth;
-		frame.size.width = self.view.frame.size.width - correctAnswerMatrixWidth;
+		frame.origin.x = originX;
+		frame.size.width = self.view.frame.size.width - originX;
 		[viewController.view setFrame:frame];
+
+		if (self.question.type == QuestionSingleChoiceType) {
+			Answer *answer = viewController.representedObject;
+			NSButton *radio = [correctAnswerRadios objectForKey:answer.uuid];
+			NSRect radioFrame = radio.frame;
+			radioFrame.origin.y = height + 2;
+			[radio setFrame:radioFrame];
+		}
+		
 		[viewController updateViewHeight];
 		height += viewController.view.frame.size.height + 5;
 	}
-
+	
 	// room for "korrekte Antwort" label
 	height += self.question.type == QuestionSingleChoiceType ? 18 : 0;
 
