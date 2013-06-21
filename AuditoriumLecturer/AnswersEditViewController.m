@@ -137,9 +137,6 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 		[correctAnswerLabel setHidden:self.question.type != QuestionSingleChoiceType];
 		[correctAnswerMatrix setHidden:self.question.type != QuestionSingleChoiceType];
 
-		for (AnswerEditViewController *viewController in answerEditViewControllers) {
-			[viewController updateViewHeight];
-		}
 		[self updateViewHeight];
 	}
 }
@@ -161,12 +158,13 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 	}
 
 	float correctAnswerMatrixWidth = self.question.type == QuestionSingleChoiceType ? 22 : 0;
-	for (NSViewController *viewController in answerEditViewControllers) {
+	for (AnswerEditViewController *viewController in answerEditViewControllers) {
 		frame = viewController.view.frame;
 		frame.origin.y = height;
 		frame.origin.x = correctAnswerMatrixWidth;
 		frame.size.width = self.view.frame.size.width - correctAnswerMatrixWidth;
 		[viewController.view setFrame:frame];
+		[viewController updateViewHeight];
 		height += viewController.view.frame.size.height + 5;
 	}
 

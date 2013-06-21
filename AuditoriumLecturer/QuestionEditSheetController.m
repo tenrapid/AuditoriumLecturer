@@ -54,6 +54,8 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 		delegate = aDelegate;
 		sheet = self.view.window;
 
+		[self updateViewWidth];
+		
 		answers = [[NSArrayController alloc] init];
 		[answers setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
 		[answers setAutomaticallyRearrangesObjects:YES];
@@ -64,7 +66,6 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 
 		[self addObserver:self forKeyPath:@"representedObject.type" options:NSKeyValueObservingOptionNew context:nil];
 
-		[self updateViewWidth];
 		[self updateViewHeight];
 
 		[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetWillOpenNotification object:self];

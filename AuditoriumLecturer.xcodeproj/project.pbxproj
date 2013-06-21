@@ -29,6 +29,7 @@
 		2BC7E9D0173F252E00D911AE /* FlippedBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BC7E9CF173F252D00D911AE /* FlippedBox.m */; };
 		2BC7E9D31740301D00D911AE /* QuestionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BC7E9D21740301D00D911AE /* QuestionView.m */; };
 		2BC7E9D517403C2800D911AE /* QuestionEdit.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2BC7E9D417403C2800D911AE /* QuestionEdit.xib */; };
+		2BC955081771C6E000E5BFEF /* AutoGrowTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BC955071771C6E000E5BFEF /* AutoGrowTextField.m */; };
 		2BCA20DC173068CD00C9415E /* LoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BCA20DB173068CD00C9415E /* LoginController.m */; };
 		2BCA20E0173151DE00C9415E /* slide.png in Resources */ = {isa = PBXBuildFile; fileRef = 2BCA20DF173151DE00C9415E /* slide.png */; };
 		2BD5D91D17428EF1000F69E7 /* Minus.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 2BD5D91B17428EF1000F69E7 /* Minus.tiff */; };
@@ -102,6 +103,8 @@
 		2BC7E9D11740301D00D911AE /* QuestionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionView.h; sourceTree = "<group>"; };
 		2BC7E9D21740301D00D911AE /* QuestionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionView.m; sourceTree = "<group>"; };
 		2BC7E9D417403C2800D911AE /* QuestionEdit.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuestionEdit.xib; sourceTree = "<group>"; };
+		2BC955061771C6DF00E5BFEF /* AutoGrowTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoGrowTextField.h; sourceTree = "<group>"; };
+		2BC955071771C6E000E5BFEF /* AutoGrowTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoGrowTextField.m; sourceTree = "<group>"; };
 		2BCA20DA173068CD00C9415E /* LoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginController.h; sourceTree = "<group>"; };
 		2BCA20DB173068CD00C9415E /* LoginController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginController.m; sourceTree = "<group>"; };
 		2BCA20DF173151DE00C9415E /* slide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = slide.png; sourceTree = "<group>"; };
@@ -210,6 +213,8 @@
 				2BD5D9291744BFE8000F69E7 /* QuestionEditSheetController.m */,
 				2BE7FC39174D71180004FF7D /* AnswerEditViewController.h */,
 				2BE7FC3A174D71180004FF7D /* AnswerEditViewController.m */,
+				2BC955061771C6DF00E5BFEF /* AutoGrowTextField.h */,
+				2BC955071771C6E000E5BFEF /* AutoGrowTextField.m */,
 				2BE7FC3C174D743D0004FF7D /* AnswersEditViewController.h */,
 				2BE7FC3D174D743D0004FF7D /* AnswersEditViewController.m */,
 			);
@@ -471,6 +476,7 @@
 				2BE7FC41174E51C20004FF7D /* FlippedView.m in Sources */,
 				2BE7FC44175264FB0004FF7D /* NilToEmptyStringTransformer.m in Sources */,
 				2B4588F5176759C000418050 /* SlideshowApp.m in Sources */,
+				2BC955081771C6E000E5BFEF /* AutoGrowTextField.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
