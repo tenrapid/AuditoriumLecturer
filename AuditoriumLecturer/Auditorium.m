@@ -10,6 +10,7 @@
 #import "AuditoriumObject.h"
 #import "Event.h"
 #import "Question.h"
+#import "Answer.h"
 #import "QuestionEditSheetController.h"
 
 #define simulatedNetworkDelay 0
@@ -152,11 +153,38 @@
 	[context.undoManager disableUndoRegistration];
 	
 	Question *question;
+	Answer *answer;
 	
 	question = [Auditorium objectForEntityName:@"Question"];
 	question.event = self.event;
 	question.slideIdentifier = [NSNumber numberWithInteger:1];
-	question.text = @"Hier könnte eine 1. Frage stehen!";
+	question.text = @"Warum sind Modelle des selbstgesteuerten bzw. selbstregulierten Lernens für computergestützte Lehr-Lernszenarien von Bedeutung?";
+	question.type = QuestionSingleChoiceType;
+
+	answer = [Auditorium objectForEntityName:@"Answer"];
+	answer.correct = [NSNumber numberWithBool:YES];
+	answer.text = @"Das Konzept legt Anforderungen offen, bei denen der Lerner durch den Computer unterstützt werden kann.";
+	answer.feedback = @"Der Computer eignet sich um dem Lerner adaptiv Unterstützung zu geben.";
+	answer.order = [NSNumber numberWithInteger:0];
+	[question addAnswersObject:answer];
+	answer = [Auditorium objectForEntityName:@"Answer"];
+	answer.correct = [NSNumber numberWithBool:NO];
+	answer.text = @"Das Konzept legt Anforderungen offen, bei denen der Computer durch den Lerner unterstützt werden kann.";
+	answer.feedback = @"Es geht primär um die Unterstützung des Lerners, nicht um die Unterstützung eines selbstreguliert lernenden Computers.";
+	answer.order = [NSNumber numberWithInteger:1];
+	[question addAnswersObject:answer];
+	answer = [Auditorium objectForEntityName:@"Answer"];
+	answer.correct = [NSNumber numberWithBool:NO];
+	answer.text = @"Das Konzept trifft Aussagen über Lehr-Lernprozesse beim computergestützten Lernen.";
+	answer.feedback = @"Das computergestützte Lernen wird nicht direkt thematisiert, es ist lediglich eine von vielen Anwendungssituationen, da Lernen am Computer zu einem großen Teil selbstgesteuert ist.";
+	answer.order = [NSNumber numberWithInteger:2];
+	[question addAnswersObject:answer];
+	answer = [Auditorium objectForEntityName:@"Answer"];
+	answer.correct = [NSNumber numberWithBool:NO];
+	answer.text = @"Das Konzept trifft Aussagen über volitionale Prozesse beim computergestützten Lernen.";
+	answer.feedback = @"Volitionale Prozesse werden thematisiert, allerdings nicht explizit in Bezug auf das computergestützte Lernen.";
+	answer.order = [NSNumber numberWithInteger:3];
+	[question addAnswersObject:answer];
 
 	question = [Auditorium objectForEntityName:@"Question"];
 	question.event = self.event;
