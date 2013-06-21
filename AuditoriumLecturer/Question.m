@@ -14,8 +14,8 @@
 
 const NSString * const QuestionTypeNames[] = {
 	@"Nachricht",
-	@"Single Choice",
-	@"Multiple Choice"
+	@"Lernaufgabe",
+	@"Umfrage"
 };
 
 @implementation Question

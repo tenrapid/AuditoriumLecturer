@@ -100,34 +100,41 @@
 	if (!question.text) {
 		return;
 	}
+	NSDictionary *attributes;
 
 	NSMutableParagraphStyle *paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-	[paragraphStyle setLineSpacing:1];
+	[paragraphStyle setLineSpacing:0.f];
 
-	NSMutableAttributedString *as = [[[NSMutableAttributedString alloc] initWithString:question.text attributes:@{NSParagraphStyleAttributeName: paragraphStyle}] autorelease];
+	NSMutableAttributedString *as = [[[NSMutableAttributedString alloc] init] autorelease];
+	
+	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [NSColor grayColor], NSKernAttributeName: @2.f, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
+	[as appendAttributedString:[[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:@"\n%@\n", QuestionTypeNames[question.type]] uppercaseString] attributes:attributes] autorelease]];
+	
+	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:12.f]};
+	[as appendAttributedString:[[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", question.text] attributes:attributes] autorelease]];
 	
 	if (question.type != QuestionMessageType) {
-		NSString *answersHeader = [NSString stringWithFormat:@"\n\nAntworten (%@):", QuestionTypeNames[question.type]];
-		NSDictionary *answersHeaderAttributes = @{NSForegroundColorAttributeName: [NSColor grayColor], NSParagraphStyleAttributeName: paragraphStyle};
-		[as appendAttributedString:[[[NSAttributedString alloc] initWithString:answersHeader attributes:answersHeaderAttributes] autorelease]];
-		
 		NSMutableParagraphStyle *answerParagraphStyle = [[paragraphStyle mutableCopy] autorelease];
-		NSTextTab *tab1 = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:12] autorelease];
-		NSTextTab *tab2 = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:27] autorelease];
-		[answerParagraphStyle setTabStops:@[tab1, tab2]];
-		[answerParagraphStyle setHeadIndent:27];
-		[answerParagraphStyle setParagraphSpacingBefore:6];
+		NSTextTab *tab = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:14] autorelease];
+		answerParagraphStyle.tabStops = @[tab];
+		answerParagraphStyle.headIndent = 14;
+		answerParagraphStyle.paragraphSpacingBefore = 6;
 		NSMutableParagraphStyle *feedbackParagraphStyle = [[answerParagraphStyle mutableCopy] autorelease];
-		NSDictionary *answerAttributes = @{NSParagraphStyleAttributeName: answerParagraphStyle};
-		
+		feedbackParagraphStyle.paragraphSpacingBefore = 3.f;
+		NSDictionary *answerAttributes = @{NSParagraphStyleAttributeName: answerParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:12.f]};
+
 		NSColor *greenColor = [NSColor colorWithDeviceRed:0.6 green:0.85 blue:0.2 alpha:1];
+		NSColor *greenTextColor = [NSColor colorWithDeviceRed:0.4 green:0.65 blue:0 alpha:1];
 		NSColor *redColor = [NSColor colorWithDeviceRed:0.8 green:0.2 blue:0.2 alpha:1];
 		NSDictionary *checkMarkAttributes = @{NSForegroundColorAttributeName: greenColor};
 		NSAttributedString *checkMark = [[[NSAttributedString alloc] initWithString:@"  ✔" attributes:checkMarkAttributes] autorelease];
 		
+		attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName:[NSFont boldSystemFontOfSize:12.f]};
+		[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n\nAntworten" attributes:attributes] autorelease]];
+
 		for (Answer *answer in [self.answers valueForKeyPath:@"arrangedObjects"]) {
 			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
-			NSString *answerString = [NSString stringWithFormat:@"\t●\t%@", answer.text];
+			NSString *answerString = [NSString stringWithFormat:@"●\t%@", answer.text];
 			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:answerString attributes:answerAttributes] autorelease]];
 			if (question.type == QuestionSingleChoiceType) {
 				if (answer.correct.boolValue) {
@@ -136,17 +143,22 @@
 				if (answer.feedback && ![answer.feedback isEqualToString:@""]) {
 					[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
 					if (answer.correct.boolValue) {
-						[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\t\tRichtig: " attributes:@{NSForegroundColorAttributeName: greenColor, NSParagraphStyleAttributeName: feedbackParagraphStyle}] autorelease]];
+						attributes = @{NSForegroundColorAttributeName: greenTextColor, NSParagraphStyleAttributeName: feedbackParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
+						[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\tRichtig: " attributes:attributes] autorelease]];
 					}
 					else {
-						[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\t\tFalsch: " attributes:@{NSForegroundColorAttributeName: redColor, NSParagraphStyleAttributeName: feedbackParagraphStyle}] autorelease]];
+						attributes = @{NSForegroundColorAttributeName: redColor, NSParagraphStyleAttributeName: feedbackParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
+						[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\tFalsch: " attributes:attributes] autorelease]];
 					}
-					[as appendAttributedString:[[[NSAttributedString alloc] initWithString:answer.feedback] autorelease]];
+					attributes = @{NSFontAttributeName:[NSFont systemFontOfSize:11.f], NSForegroundColorAttributeName: [NSColor grayColor]};
+					[as appendAttributedString:[[[NSAttributedString alloc] initWithString:answer.feedback attributes:attributes] autorelease]];
 				}
 			}
 		}
 	}
-	
+	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:14.f]};
+	[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes] autorelease]];
+
 	QuestionView *questionView = (QuestionView *)self.view;
 	[questionView.textView.textStorage setAttributedString:as];
 }
