@@ -50,6 +50,7 @@
 		2BE7FC3E174D743E0004FF7D /* AnswersEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE7FC3D174D743D0004FF7D /* AnswersEditViewController.m */; };
 		2BE7FC41174E51C20004FF7D /* FlippedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE7FC40174E51C10004FF7D /* FlippedView.m */; };
 		2BE7FC44175264FB0004FF7D /* NilToEmptyStringTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE7FC43175264FA0004FF7D /* NilToEmptyStringTransformer.m */; };
+		2BEA9F8B1774E7D700030877 /* ClickActionTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BEA9F8A1774E7D600030877 /* ClickActionTextView.m */; };
 		2BF07095173A409D0071A52F /* TB3_Record-Pressed-Off.png in Resources */ = {isa = PBXBuildFile; fileRef = 2BF07094173A409D0071A52F /* TB3_Record-Pressed-Off.png */; };
 		2BF07098173CDB450071A52F /* QuestionsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BF07097173CDB450071A52F /* QuestionsController.m */; };
 		2BF070A4173CE0F90071A52F /* NSDictionary+SMKeyValueObserving.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BF0709B173CE0F90071A52F /* NSDictionary+SMKeyValueObserving.m */; };
@@ -137,6 +138,8 @@
 		2BE7FC40174E51C10004FF7D /* FlippedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlippedView.m; sourceTree = "<group>"; };
 		2BE7FC42175264F90004FF7D /* NilToEmptyStringTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NilToEmptyStringTransformer.h; sourceTree = "<group>"; };
 		2BE7FC43175264FA0004FF7D /* NilToEmptyStringTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NilToEmptyStringTransformer.m; sourceTree = "<group>"; };
+		2BEA9F891774E7D600030877 /* ClickActionTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClickActionTextView.h; sourceTree = "<group>"; };
+		2BEA9F8A1774E7D600030877 /* ClickActionTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClickActionTextView.m; sourceTree = "<group>"; };
 		2BF07094173A409D0071A52F /* TB3_Record-Pressed-Off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TB3_Record-Pressed-Off.png"; sourceTree = "<group>"; };
 		2BF07096173CDB450071A52F /* QuestionsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionsController.h; sourceTree = "<group>"; };
 		2BF07097173CDB450071A52F /* QuestionsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionsController.m; sourceTree = "<group>"; };
@@ -213,8 +216,6 @@
 				2BD5D9291744BFE8000F69E7 /* QuestionEditSheetController.m */,
 				2BE7FC39174D71180004FF7D /* AnswerEditViewController.h */,
 				2BE7FC3A174D71180004FF7D /* AnswerEditViewController.m */,
-				2BC955061771C6DF00E5BFEF /* AutoGrowTextField.h */,
-				2BC955071771C6E000E5BFEF /* AutoGrowTextField.m */,
 				2BE7FC3C174D743D0004FF7D /* AnswersEditViewController.h */,
 				2BE7FC3D174D743D0004FF7D /* AnswersEditViewController.m */,
 			);
@@ -301,6 +302,10 @@
 				2BBE3B85172A700900BCF546 /* Slideshow.m */,
 				2B4588F3176759BE00418050 /* SlideshowApp.h */,
 				2B4588F4176759BF00418050 /* SlideshowApp.m */,
+				2BEA9F891774E7D600030877 /* ClickActionTextView.h */,
+				2BEA9F8A1774E7D600030877 /* ClickActionTextView.m */,
+				2BC955061771C6DF00E5BFEF /* AutoGrowTextField.h */,
+				2BC955071771C6E000E5BFEF /* AutoGrowTextField.m */,
 				2BE7FC42175264F90004FF7D /* NilToEmptyStringTransformer.h */,
 				2BE7FC43175264FA0004FF7D /* NilToEmptyStringTransformer.m */,
 				2B777F62172B33D100D1F54F /* AuditoriumLecturer.xib */,
@@ -477,6 +482,7 @@
 				2BE7FC44175264FB0004FF7D /* NilToEmptyStringTransformer.m in Sources */,
 				2B4588F5176759C000418050 /* SlideshowApp.m in Sources */,
 				2BC955081771C6E000E5BFEF /* AutoGrowTextField.m in Sources */,
+				2BEA9F8B1774E7D700030877 /* ClickActionTextView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

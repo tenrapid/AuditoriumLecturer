@@ -10,8 +10,10 @@
 
 extern NSString * const QuestionViewHeightDidChangeNotification;
 
+@class ClickActionTextView;
+
 @interface QuestionView : NSView <NSTextViewDelegate>
 
-@property (assign) NSTextView *textView;
+@property (assign) ClickActionTextView *textView;
 
 @end

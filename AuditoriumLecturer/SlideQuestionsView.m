@@ -15,6 +15,7 @@
 #import "Slide.h"
 #import "Slideshow.h"
 #import "Auditorium.h"
+#import "ClickActionTextView.h"
 
 NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestionsViewHeightDidChangeNotification";
 
@@ -81,6 +82,10 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 		[viewController.editQuestionButton setTarget:self];
 		[viewController.editQuestionButton setAction:@selector(editQuestionAction:)];
 		[[viewController.editQuestionButton cell] setRepresentedObject:question];
+		QuestionView *questionView = (QuestionView *)viewController.view;
+		[questionView.textView setTarget:self];
+		[questionView.textView setAction:@selector(editQuestionAction:)];
+		[questionView.textView setRepresentedObject:question];
 
 		NSView *view = [viewController view];
 		[view setFrame:NSMakeRect(0, 0, self.frame.size.width, 100)];
@@ -103,7 +108,7 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 		frame.origin.y = height;
 		frame.size.width = self.frame.size.width;
 		[viewController.view setFrame:frame];
-		height += viewController.view.frame.size.height + 20;
+		height += viewController.view.frame.size.height + 10;
 	}
 
 	frame = [self frame];
@@ -127,7 +132,7 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 
 - (void)editQuestionAction:(id)sender
 {
-	Question *question = [[sender cell]representedObject];
+	Question *question = [sender representedObject];
 	questionEditSheetController = [[QuestionEditSheetController alloc] initWithQuestion:question delegate:self];
 }
 
