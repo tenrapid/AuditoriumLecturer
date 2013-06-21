@@ -16,6 +16,7 @@
 
 @property (nonatomic, assign) Question * question;
 @property (nonatomic, retain) NSString * text;
+@property (nonatomic, retain) NSString * feedback;
 @property (nonatomic, retain) NSNumber * order;
 @property (nonatomic, retain) NSNumber * correct;
 

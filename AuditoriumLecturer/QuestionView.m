@@ -26,7 +26,7 @@ NSString * const QuestionViewHeightDidChangeNotification = @"QuestionViewHeightD
     if (self) {
 		textView = [[NSTextView alloc] initWithFrame:NSMakeRect(0, 0, self.frame.size.width, 75)];
 		[textView setAutoresizingMask:NSViewWidthSizable];
-		[textView setTextContainerInset:NSMakeSize(12, 16)];
+		[textView setTextContainerInset:NSMakeSize(12, 17)];
 		[textView setRichText:YES];
 		[textView setDrawsBackground:YES];
 		[textView setDelegate:self];

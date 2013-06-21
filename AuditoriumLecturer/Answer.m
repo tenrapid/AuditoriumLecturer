@@ -14,6 +14,7 @@
 
 @dynamic question;
 @dynamic text;
+@dynamic feedback;
 @dynamic order;
 @dynamic correct;
 
