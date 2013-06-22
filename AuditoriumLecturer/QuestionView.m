@@ -27,7 +27,7 @@ NSString * const QuestionViewHeightDidChangeNotification = @"QuestionViewHeightD
     if (self) {
 		textView = [[ClickActionTextView alloc] initWithFrame:NSMakeRect(16, 3, self.frame.size.width - 32, 75)];
 		[textView setAutoresizingMask:NSViewWidthSizable];
-		[textView setTextContainerInset:NSMakeSize(10, 1)];
+		[textView setTextContainerInset:NSMakeSize(14, 2)];
 		[textView setRichText:YES];
 		[textView setDrawsBackground:NO];
 		[textView setDelegate:self];
@@ -36,7 +36,7 @@ NSString * const QuestionViewHeightDidChangeNotification = @"QuestionViewHeightD
 		[self addSubview:textView];
 		textViewHeight = textView.frame.size.height;
 
-		NSBox *box = [[NSBox alloc] initWithFrame:NSMakeRect(30, 37, self.frame.size.width - 60, 1)];
+		NSBox *box = [[NSBox alloc] initWithFrame:NSMakeRect(32, 38, self.frame.size.width - 64, 1)];
 		[box setAutoresizingMask:NSViewWidthSizable];
 		[box setBoxType:NSBoxCustom];
 		[box setBorderColor:[NSColor colorWithDeviceWhite:0.92f alpha:1.f]];
@@ -63,7 +63,7 @@ NSString * const QuestionViewHeightDidChangeNotification = @"QuestionViewHeightD
 	[super drawRect:dirtyRect];
 
 	NSShadow *theShadow = [[NSShadow alloc] init];
-	[theShadow setShadowOffset:NSMakeSize(1.0, -1.0)];
+	[theShadow setShadowOffset:NSMakeSize(0.0, -2.0)];
 	[theShadow setShadowBlurRadius:3.0];
 	[theShadow setShadowColor:[[NSColor blackColor] colorWithAlphaComponent:0.2]];
 	[theShadow set];
@@ -74,7 +74,7 @@ NSString * const QuestionViewHeightDidChangeNotification = @"QuestionViewHeightD
 	rect.origin.y = 3;
 	rect.size.height -= 6;
 	rect.size.width -= 32;
-	NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:2.f yRadius:2.f];
+	NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:4.f yRadius:4.f];
 	[path fill];
 
 	[theShadow release];

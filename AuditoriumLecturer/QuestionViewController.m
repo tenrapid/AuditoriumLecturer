@@ -104,11 +104,11 @@
 	NSDictionary *attributes;
 
 	NSMutableParagraphStyle *paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-	[paragraphStyle setLineSpacing:0.f];
+	paragraphStyle.lineSpacing = 0.f;
 
 	NSMutableAttributedString *as = [[[NSMutableAttributedString alloc] init] autorelease];
 	
-	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [NSColor grayColor], NSKernAttributeName: @1.f, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
+	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [NSColor colorWithDeviceWhite:0.6f alpha:1.f], NSKernAttributeName: @1.f, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
 	[as appendAttributedString:[[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:@"\n%@\n\n\n", QuestionTypeNames[question.type]] uppercaseString] attributes:attributes] autorelease]];
 
 	NSMutableParagraphStyle *questionParagraphStyle = [[paragraphStyle mutableCopy] autorelease];
