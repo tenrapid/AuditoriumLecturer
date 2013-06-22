@@ -108,13 +108,21 @@
 {
 	if ([keyPath isEqualToString:@"event"]) {
 		if (self.event) {
-			[self performSelector:@selector(createTestQuestions) withObject:nil afterDelay:simulatedNetworkDelay];
+//			[self performSelector:@selector(createTestQuestions) withObject:nil afterDelay:simulatedNetworkDelay];
 		}
 	}
 }
 
 - (void)createTestEvents
 {
+	NSError *error = nil;
+
+	NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
+	[fetchRequest setEntity:[NSEntityDescription entityForName:@"Event" inManagedObjectContext:context]];
+	if ([context countForFetchRequest:fetchRequest error:&error]) {
+		return;
+	}
+
 	self.saveEnabled = NO;
 
 	[context processPendingChanges];
@@ -136,7 +144,7 @@
 	[context.undoManager enableUndoRegistration];
 
 	self.postEnabled = NO;
-	NSError *error = nil;
+	error = nil;
 	[context save:&error];
 	if (error) {
 		NSLog(@"%@", error);

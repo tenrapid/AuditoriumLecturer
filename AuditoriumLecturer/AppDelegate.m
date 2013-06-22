@@ -47,6 +47,14 @@
     [super dealloc];
 }
 
+// Returns the directory the application uses to store the Core Data store file. This code uses a directory named "AuditoriumLecturer" in the user's Application Support directory.
+- (NSURL *)applicationFilesDirectory
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *appSupportURL = [[fileManager URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
+    return [appSupportURL URLByAppendingPathComponent:@"AuditoriumLecturer"];
+}
+
 // Creates if necessary and returns the managed object model for the application.
 - (NSManagedObjectModel *)managedObjectModel
 {
@@ -65,6 +73,8 @@
 	entity = [[_managedObjectModel entitiesByName] objectForKey:@"Answer"];
 	textAttribute = [[entity attributesByName] objectForKey:@"text"];
 	[textAttribute setDefaultValue:@""];
+	textAttribute = [[entity attributesByName] objectForKey:@"feedback"];
+	[textAttribute setDefaultValue:@""];
 
     return _managedObjectModel;
 }
@@ -82,10 +92,38 @@
         return nil;
     }
     
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *applicationFilesDirectory = [self applicationFilesDirectory];
     NSError *error = nil;
         
+    NSDictionary *properties = [applicationFilesDirectory resourceValuesForKeys:@[NSURLIsDirectoryKey] error:&error];
+
+    if (!properties) {
+        BOOL ok = NO;
+        if ([error code] == NSFileReadNoSuchFileError) {
+            ok = [fileManager createDirectoryAtPath:[applicationFilesDirectory path] withIntermediateDirectories:YES attributes:nil error:&error];
+        }
+        if (!ok) {
+            [[NSApplication sharedApplication] presentError:error];
+            return nil;
+        }
+    } else {
+        if (![properties[NSURLIsDirectoryKey] boolValue]) {
+            // Customize and localize this error.
+            NSString *failureDescription = [NSString stringWithFormat:@"Expected a folder to store application data, found a file (%@).", [applicationFilesDirectory path]];
+
+            NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+            [dict setValue:failureDescription forKey:NSLocalizedDescriptionKey];
+            error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:101 userInfo:dict];
+
+            [[NSApplication sharedApplication] presentError:error];
+            return nil;
+        }
+    }
+
+    NSURL *url = [applicationFilesDirectory URLByAppendingPathComponent:@"AuditoriumLecturer.storedata"];
     NSPersistentStoreCoordinator *coordinator = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom] autorelease];
-	if (![coordinator addPersistentStoreWithType:NSInMemoryStoreType configuration:nil URL:nil options:nil error:&error]) {
+	if (![coordinator addPersistentStoreWithType:NSXMLStoreType configuration:nil URL:url options:nil error:&error]) {
         [[NSApplication sharedApplication] presentError:error];
         return nil;
 	}
@@ -129,6 +167,52 @@
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
 {
 	return YES;
+}
+
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
+{
+    // Save changes in the application's managed object context before the application terminates.
+
+    if (!_managedObjectContext) {
+        return NSTerminateNow;
+    }
+
+    if (![[self managedObjectContext] commitEditing]) {
+        NSLog(@"%@:%@ unable to commit editing to terminate", [self class], NSStringFromSelector(_cmd));
+        return NSTerminateCancel;
+    }
+
+    if (![[self managedObjectContext] hasChanges]) {
+        return NSTerminateNow;
+    }
+
+    NSError *error = nil;
+    if (![[self managedObjectContext] save:&error]) {
+
+        // Customize this code block to include application-specific recovery steps.
+        BOOL result = [sender presentError:error];
+        if (result) {
+            return NSTerminateCancel;
+        }
+
+        NSString *question = NSLocalizedString(@"Could not save changes while quitting. Quit anyway?", @"Quit without saves error question message");
+        NSString *info = NSLocalizedString(@"Quitting now will lose any changes you have made since the last successful save", @"Quit without saves error question info");
+        NSString *quitButton = NSLocalizedString(@"Quit anyway", @"Quit anyway button title");
+        NSString *cancelButton = NSLocalizedString(@"Cancel", @"Cancel button title");
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert setMessageText:question];
+        [alert setInformativeText:info];
+        [alert addButtonWithTitle:quitButton];
+        [alert addButtonWithTitle:cancelButton];
+
+        NSInteger answer = [alert runModal];
+
+        if (answer == NSAlertAlternateReturn) {
+            return NSTerminateCancel;
+        }
+    }
+
+    return NSTerminateNow;
 }
 
 @end
