@@ -16,4 +16,6 @@ extern NSString * const QuestionViewHeightDidChangeNotification;
 
 @property (assign) ClickActionTextView *textView;
 
+- (void)updateViewHeight;
+
 @end

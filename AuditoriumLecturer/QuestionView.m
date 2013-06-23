@@ -93,19 +93,17 @@ NSString * const QuestionViewHeightDidChangeNotification = @"QuestionViewHeightD
 	height += 3;
 
 	frame = [self frame];
-	frame.origin.y += frame.size.height - height;
 	frame.size.height = height;
 	[self setFrame:frame];
 
 	[self setNeedsDisplay:YES];
-	[[NSNotificationCenter defaultCenter] postNotificationName:QuestionViewHeightDidChangeNotification object:self];
 }
 
 - (void)textViewHeightDidChange:(NSNotification *)notification
 {
 	if (self.textView.frame.size.height != textViewHeight) {
 		textViewHeight = self.textView.frame.size.height;
-		[self updateViewHeight];
+		[[NSNotificationCenter defaultCenter] postNotificationName:QuestionViewHeightDidChangeNotification object:self];
 	}
 }
 

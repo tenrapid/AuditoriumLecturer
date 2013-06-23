@@ -46,21 +46,17 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 
 - (void)setQuestions:(NSArray *)_questions
 {
-	[questions release];
-	questions = [_questions mutableCopy];
-	[self update];
-}
-
-- (void)update
-{
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 
 	for (NSViewController *viewController in questionViewControllers) {
-		[notificationCenter removeObserver:self name:NSViewFrameDidChangeNotification object:[viewController view]];
+		[notificationCenter removeObserver:self name:QuestionViewHeightDidChangeNotification object:[viewController view]];
 		[viewController commitEditing];
 		[[viewController view] removeFromSuperview];
 	}
 	[questionViewControllers removeAllObjects];
+
+	[questions release];
+	questions = [_questions mutableCopy];
 
 	for (Question *question in questions) {
 		QuestionViewController *viewController = [[QuestionViewController alloc] initWithQuestion:question];
@@ -90,11 +86,14 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 		NSView *view = [viewController view];
 		[view setFrame:NSMakeRect(0, 0, self.frame.size.width, 100)];
 		[self addSubview:view];
-
-		[notificationCenter addObserver:self selector:@selector(questionEditViewHeightDidChange:) name:NSViewFrameDidChangeNotification object:view];
 	}
 
 	[self updateViewHeight];
+
+	for (QuestionViewController *questionViewController in questionViewControllers) {
+		[notificationCenter addObserver:self selector:@selector(questionViewHeightDidChange:) name:QuestionViewHeightDidChangeNotification object:questionViewController.view];
+	}
+	
 	[[self window] recalculateKeyViewLoop];
 }
 
@@ -103,11 +102,13 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 	NSRect frame;
 	float height = 0;
 
-	for (NSViewController *viewController in questionViewControllers) {
+	for (QuestionViewController *viewController in questionViewControllers) {
 		frame = viewController.view.frame;
 		frame.origin.y = height;
 		frame.size.width = self.frame.size.width;
 		[viewController.view setFrame:frame];
+
+		[(QuestionView *)viewController.view updateViewHeight];
 		height += viewController.view.frame.size.height + 10;
 	}
 
@@ -120,7 +121,7 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 	[[NSNotificationCenter defaultCenter] postNotificationName:SlideQuestionsViewHeightDidChangeNotification object:self];
 }
 
-- (void)questionEditViewHeightDidChange:(NSNotification *)notification
+- (void)questionViewHeightDidChange:(NSNotification *)notification
 {
 	[self updateViewHeight];
 }
