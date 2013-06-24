@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class Slide, AuditoriumObject, AuditoriumEvent, Event;
+@class Slide, AuditoriumNetworkManager, AuditoriumObject, AuditoriumEvent, Event;
 
 @interface Auditorium : NSObject
 
@@ -17,6 +17,7 @@
 @property (getter = isSaveEnabled) BOOL saveEnabled;
 @property (getter = isPostEnabled) BOOL postEnabled;
 @property (assign) NSManagedObjectContext *context;
+@property (retain) AuditoriumNetworkManager *networkManager;
 
 @property (assign) Event *event;
 

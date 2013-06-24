@@ -7,6 +7,7 @@
 //
 
 #import "Auditorium.h"
+#import "AuditoriumNetworkManager.h"
 #import "AuditoriumObject.h"
 #import "Event.h"
 #import "Question.h"
@@ -22,6 +23,7 @@
 @synthesize saveEnabled;
 @synthesize postEnabled;
 @synthesize context;
+@synthesize networkManager;
 
 @synthesize event;
 
@@ -81,6 +83,7 @@
 	self = [super init];
     if (self) {
 		context = [[NSApp delegate] managedObjectContext];
+		networkManager = [[AuditoriumNetworkManager alloc] init];
 
 		NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 		[notificationCenter addObserver:self selector:@selector(disableSave:) name:QuestionEditSheetWillOpenNotification object:nil];
