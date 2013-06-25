@@ -81,7 +81,7 @@
 		self.sending = NO;
 		if (!loggedInToAuditorium) {
 			[sendToolbarItem setEnabled:NO];
-			[eventPopUpButton setEnabled:NO];
+//			[eventPopUpButton setEnabled:NO];
 		}
 	}
 	else if ([keyPath isEqualToString:@"sending"]) {
@@ -99,7 +99,7 @@
 	}
 	else if ([keyPath isEqualToString:@"event"]) {
 		Event *event = [change objectForKey:NSKeyValueChangeNewKey];
-		[sendToolbarItem setEnabled:![event isEqual:[NSNull null]]];
+		[sendToolbarItem setEnabled:[Auditorium sharedInstance].loggedIn && ![event isEqual:[NSNull null]]];
 		if ([event isEqual:[NSNull null]]) {
 			self.sending = NO;
 		}

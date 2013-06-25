@@ -7,24 +7,32 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "AuditoriumNetworkManager.h"
 
-@class Slide, AuditoriumNetworkManager, AuditoriumObject, AuditoriumEvent, Event;
+@class Slide, AuditoriumNetworkManager, AuditoriumNetworkManagerDelegateProtocol, AuditoriumObject, AuditoriumEvent, Event;
 
-@interface Auditorium : NSObject
+
+@interface LoggedInUser : NSObject
+
+@property (copy) NSString *email;
+@property (copy) NSString *userName;
+@property (copy) NSString *firstName;
+@property (copy) NSString *lastName;
+@property (copy) NSString *authToken;
+
+@end
+
+
+@interface Auditorium : NSObject <AuditoriumNetworkManagerDelegateProtocol>
 
 @property BOOL loggedIn;
-@property (retain) NSString *loggedInUser;
-@property (getter = isSaveEnabled) BOOL saveEnabled;
-@property (getter = isPostEnabled) BOOL postEnabled;
-@property (assign) NSManagedObjectContext *context;
-@property (retain) AuditoriumNetworkManager *networkManager;
-
+@property (retain) LoggedInUser *loggedInUser;
 @property (assign) Event *event;
 
 + (Auditorium *)sharedInstance;
 + (id)objectForEntityName:(NSString *)entityName;
 
-- (void)loginWithUsername:(NSString *)username password:(NSString *)password delegate:(id)delegate;
+- (void)loginWithEmail:(NSString *)email password:(NSString *)password delegate:(id)delegate;
 - (void)logoutWithDelegate:(id)delegate;
 
 - (void)sendSlide:(Slide *)slide;

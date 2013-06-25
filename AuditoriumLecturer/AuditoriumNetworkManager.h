@@ -8,8 +8,27 @@
 
 #import <Foundation/Foundation.h>
 
+#ifdef DEBUG
 #define AUDITORIUM_URL @"http://localhost:3000/"
+#else
+#define AUDITORIUM_URL @"http://auditorium.inf.tu-dresden.de/"
+#endif
+
+@class LoggedInUser;
+
+@protocol AuditoriumNetworkManagerDelegateProtocol <NSObject>
+
+- (void)didLogin:(LoggedInUser *)user;
+- (void)didFailLogin:(NSString *)error;
+- (void)didLogout;
+
+@end
 
 @interface AuditoriumNetworkManager : NSObject
+
+@property (retain) id<AuditoriumNetworkManagerDelegateProtocol> delegate;
+
+- (void)loginWithEmail:(NSString *)email password:(NSString *)password;
+- (void)logout:(LoggedInUser *)user;
 
 @end

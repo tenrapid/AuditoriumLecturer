@@ -12,7 +12,7 @@
 
 @interface LoginController : NSObject
 {
-	IBOutlet NSTextField *username;
+	IBOutlet NSTextField *email;
 	IBOutlet NSTextField *password;
 	IBOutlet NSWindow *loginDialog;
 	IBOutlet NSButton *loginDialogLoginButton;

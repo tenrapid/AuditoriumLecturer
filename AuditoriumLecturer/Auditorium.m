@@ -16,6 +16,39 @@
 
 #define simulatedNetworkDelay 0
 
+
+@implementation LoggedInUser
+
+@synthesize userName;
+@synthesize firstName;
+@synthesize lastName;
+@synthesize email;
+@synthesize authToken;
+
+- (void)dealloc
+{
+	[self.userName release];
+	[self.firstName release];
+	[self.lastName release];
+	[self.email release];
+	[self.authToken release];
+	[super dealloc];
+}
+
+@end
+
+
+@interface Auditorium ()
+
+@property (assign) NSManagedObjectContext *context;
+@property (retain) AuditoriumNetworkManager *networkManager;
+@property (getter = isSaveEnabled) BOOL saveEnabled;
+@property (getter = isPostEnabled) BOOL postEnabled;
+@property (retain) id loginDelegate;
+@property (retain) id logoutDelegate;
+
+@end
+
 @implementation Auditorium
 
 @synthesize loggedIn;
@@ -84,6 +117,7 @@
     if (self) {
 		context = [[NSApp delegate] managedObjectContext];
 		networkManager = [[AuditoriumNetworkManager alloc] init];
+		networkManager.delegate = self;
 
 		NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 		[notificationCenter addObserver:self selector:@selector(disableSave:) name:QuestionEditSheetWillOpenNotification object:nil];
@@ -197,16 +231,6 @@
 	answer.order = [NSNumber numberWithInteger:3];
 	[question addAnswersObject:answer];
 
-	question = [Auditorium objectForEntityName:@"Question"];
-	question.event = self.event;
-	question.slideIdentifier = [NSNumber numberWithInteger:1];
-	question.text = @"Hier könnte eine 2. Frage stehen!";
-
-	question = [Auditorium objectForEntityName:@"Question"];
-	question.event = self.event;
-	question.slideIdentifier = [NSNumber numberWithInteger:2];
-	question.text = @"Hier könnte eine 3. Frage stehen!";
-
 	[context processPendingChanges];
 	[context.undoManager enableUndoRegistration];
 	
@@ -241,57 +265,46 @@
 	self.saveEnabled = YES;
 }
 
-- (void)loginWithUsername:(NSString *)username password:(NSString *)password delegate:(id)delegate
+
+#pragma mark Login/Logout
+
+- (void)loginWithEmail:(NSString *)email password:(NSString *)password delegate:(id)delegate
 {
-	self.loggedInUser = username;
-	[self performSelector:@selector(didLogin:) withObject:delegate afterDelay:simulatedNetworkDelay];
+	self.loginDelegate = delegate;
+	[self.networkManager loginWithEmail:email password:password];
 }
 
 - (void)logoutWithDelegate:(id)delegate
 {
-	self.event = nil;
-	[self performSelector:@selector(didLogout:) withObject:delegate afterDelay:simulatedNetworkDelay];
+	self.logoutDelegate = delegate;
+	[self.networkManager logout:self.loggedInUser];
 }
 
-- (void)didLogin:(id)delegate
+- (void)didLogin:(LoggedInUser *)user
 {
 	[self performSelector:@selector(createTestEvents) withObject:nil afterDelay:simulatedNetworkDelay];
+	self.loggedInUser = user;
 	self.loggedIn = YES;
-	[delegate performSelector:@selector(didLogin) withObject:nil];
+	
+	[self.loginDelegate performSelector:@selector(didLogin) withObject:nil];
+	self.loginDelegate = nil;
 }
 
-- (void)didFailLogin:(id)delegate
+- (void)didFailLogin:(NSString *)error
 {
 	self.loggedIn = NO;
-	[delegate performSelector:@selector(didFailWithError:context:) withObject:@"Benutzername/Passwort falsch" withObject:@"login"];
+	
+	[self.loginDelegate performSelector:@selector(didFailLogin:) withObject:error];
+	self.loginDelegate = nil;
 }
 
-- (void)didLogout:(id)delegate
+- (void)didLogout
 {
 	self.loggedInUser = nil;
 	self.loggedIn = NO;
 
-	self.saveEnabled = NO;
-	self.postEnabled = NO;
-
-	[context processPendingChanges];
-	[context.undoManager disableUndoRegistration];
-
-	for (NSManagedObject *object in [context registeredObjects]) {
-		[context deleteObject:object];
-	}
-	NSError *error = nil;
-	[context save:&error];
-	if (error) {
-		NSLog(@"%@", error);
-	}
-
-	[context.undoManager enableUndoRegistration];
-
-	self.postEnabled = YES;
-	self.saveEnabled = YES;
-
-	[delegate performSelector:@selector(didLogout) withObject:nil];
+	[self.logoutDelegate performSelector:@selector(didLogout) withObject:nil];
+	self.logoutDelegate = nil;
 }
 
 - (void)sendSlide:(Slide *)slide

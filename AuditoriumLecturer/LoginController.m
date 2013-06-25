@@ -8,6 +8,7 @@
 
 #import "LoginController.h"
 #import "Auditorium.h"
+#import "AuditoriumNetworkManager.h"
 
 @interface LoginController ()
 {
@@ -39,27 +40,30 @@
 	[loggedInBox setFrame:notLoggedInBox.frame];
 	[loggedInBox setHidden:YES];
 
-	//credential found in keychain
-	if (YES) {
+	NSURL *url = [NSURL URLWithString:AUDITORIUM_URL];
+	NSURLProtectionSpace *protectionSpace = [[[NSURLProtectionSpace alloc] initWithHost:url.host port:url.port.intValue protocol:url.scheme realm:nil authenticationMethod:NSURLAuthenticationMethodDefault] autorelease];
+	NSURLCredential *credentials = [[NSURLCredentialStorage sharedCredentialStorage] defaultCredentialForProtectionSpace:protectionSpace];
+	if (credentials) {
+		//credential found in keychain
 		[notLoggedInBoxSpinner setHidden:NO];
 		[notLoggedInBoxSpinner startAnimation:self];
 		[notLoggedInBoxLoginButton setEnabled:NO];
-		username.stringValue = @"abc";
-		password.stringValue = @"abc";
-		[[Auditorium sharedInstance] loginWithUsername:@"abc" password:@"" delegate:self];
+		email.stringValue = credentials.user;
+		password.stringValue = credentials.password;
+		[[Auditorium sharedInstance] loginWithEmail:credentials.user password:credentials.password delegate:self];
 	}
 }
 
 - (void)controlTextDidChange:(NSNotification *)obj
 {
-	[loginDialogLoginButton setEnabled:(![username.stringValue isEqualToString:@""] && ![password.stringValue isEqualToString:@""])];
+	[loginDialogLoginButton setEnabled:(![email.stringValue isEqualToString:@""] && ![password.stringValue isEqualToString:@""])];
 }
 
 - (IBAction)loginButtonPressed:(id)sender
 {
-	[username setEnabled:YES];
+	[email setEnabled:YES];
 	[password setEnabled:YES];
-	[username selectText:self];
+	[email selectText:self];
 	[loginDialogErrorMessage setHidden:YES];
 	[self controlTextDidChange:nil];
 	[NSApp beginSheet:loginDialog modalForWindow:[NSApp mainWindow] modalDelegate:self didEndSelector:@selector(loginDialogDidEnd:returnCode:contextInfo:) contextInfo:nil];
@@ -67,13 +71,13 @@
 
 - (IBAction)loginDialogLoginButtonPressed:(id)sender
 {
-	[username setEnabled:NO];
+	[email setEnabled:NO];
 	[password setEnabled:NO];
 	[loginDialogLoginButton setEnabled:NO];
 	[loginDialogErrorMessage setHidden:YES];
 	[loginDialogSpinner setHidden:NO];
 	[loginDialogSpinner startAnimation:self];
-	[[Auditorium sharedInstance] loginWithUsername:username.stringValue password:password.stringValue delegate:self];
+	[[Auditorium sharedInstance] loginWithEmail:email.stringValue password:password.stringValue delegate:self];
 }
 
 - (IBAction)loginDialogCancelButtonPressed:(id)sender
@@ -103,10 +107,31 @@
 	[notLoggedInBox setHidden:YES];
 	
 	[loggedInBox setHidden:NO];
-	loggedInUser.stringValue = [Auditorium sharedInstance].loggedInUser;
+	loggedInUser.stringValue = [Auditorium sharedInstance].loggedInUser.userName;
 	
+	NSURL *url = [NSURL URLWithString:AUDITORIUM_URL];
+	NSURLCredential *credentials = [NSURLCredential credentialWithUser:email.stringValue password:password.stringValue persistence:NSURLCredentialPersistencePermanent];
+	NSURLProtectionSpace *protectionSpace = [[[NSURLProtectionSpace alloc] initWithHost:url.host port:url.port.intValue protocol:url.scheme realm:nil authenticationMethod:NSURLAuthenticationMethodDefault] autorelease];
+	[[NSURLCredentialStorage sharedCredentialStorage] setDefaultCredential:credentials forProtectionSpace:protectionSpace];
+
 	if ([loginDialog isSheet]) {
 		[NSApp endSheet:loginDialog returnCode:NSOKButton];
+	}
+}
+
+- (void)didFailLogin:(NSString *)error
+{
+	if ([loginDialog isSheet]) {
+		[email setEnabled:YES];
+		[password setEnabled:YES];
+		[loginDialogSpinner setHidden:YES];
+		[loginDialogSpinner stopAnimation:self];
+		[loginDialogLoginButton setEnabled:YES];
+		[loginDialogErrorMessage setHidden:NO];
+		loginDialogErrorMessage.stringValue = error;
+	}
+	else {
+		[self didLogout];
 	}
 }
 
@@ -122,26 +147,9 @@
 	[notLoggedInBox setHidden:NO];
 }
 
-- (void)didFailWithError:(NSString *)error context:(NSString *)context
+- (void)didFailLogout:(NSString *)error
 {
-	if ([context isEqualToString:@"login"]) {
-		if ([loginDialog isSheet]) {
-			[username setEnabled:YES];
-			[password setEnabled:YES];
-			[loginDialogSpinner setHidden:YES];
-			[loginDialogSpinner stopAnimation:self];
-			[loginDialogLoginButton setEnabled:YES];
-			[loginDialogErrorMessage setHidden:NO];
-			loginDialogErrorMessage.stringValue = error;
-		}
-		else {
-			[self didLogout];
-		}
-		
-	}
-	else if ([context isEqualToString:@"logout"]) {
-		[self didLogout];
-	}
+	[self didLogout];
 }
 
 @end
