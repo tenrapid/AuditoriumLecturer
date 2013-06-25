@@ -8,6 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface QuestionListView : NSTextView
+@class Question;
+
+@interface QuestionListView : NSView
+
+@property (retain) Question *question;
 
 @end

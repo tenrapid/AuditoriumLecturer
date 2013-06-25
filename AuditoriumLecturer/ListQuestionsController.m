@@ -8,18 +8,23 @@
 
 #import "ListQuestionsController.h"
 #import "QuestionListViewController.h"
+#import "QuestionListGroupHeaderView.h"
+#import "Question.h"
 
 @interface ListQuestionsController ()
 
-@property (assign) IBOutlet NSCollectionView *collectionView;
+@property (assign) IBOutlet NSView *listQuestionsView;
 @property (retain) NSArrayController *questions;
+@property (retain) NSMutableArray *questionListViewControllers;
+@property (retain) NSMutableArray *questionListGroupHeaderViews;
 
 @end
 
 @implementation ListQuestionsController
 
-@synthesize collectionView;
+@synthesize listQuestionsView;
 @synthesize questions;
+@synthesize questionListViewControllers;
 
 - (void)awakeFromNib
 {
@@ -28,17 +33,69 @@
 	[self.questions setEntityName:@"Question"];
 	[self.questions setClearsFilterPredicateOnInsertion:NO];
 	[self.questions setAutomaticallyRearrangesObjects:YES];
-	[self.questions setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
+	[self.questions setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"slideNumber" ascending:YES]]];
 	[self.questions fetch:self];
 
-	[self.collectionView setItemPrototype:[[[QuestionListViewController alloc] initWithNibName:nil bundle:nil] autorelease]];
-	[self.collectionView bind:@"content" toObject:self.questions	withKeyPath:@"arrangedObjects" options:nil];
-//	[self.questions addObserver:self forKeyPath:@"arrangedObjects" options:0 context:nil];
+	self.questionListViewControllers = [NSMutableArray array];
+	self.questionListGroupHeaderViews = [NSMutableArray array];
+	
+	[self.questions addObserver:self forKeyPath:@"arrangedObjects" options:0 context:nil];
+}
+
+- (void)dealloc
+{
+	[self.questions removeObserver:self forKeyPath:@"arrangedObjects"];
+	self.questions = nil;
+	self.questionListViewControllers = nil;
+	self.questionListGroupHeaderViews = nil;
+	[super dealloc];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	NSLog(@"%@", self.questions.arrangedObjects);
+	[self performSelector:@selector(update) withObject:nil afterDelay:0];
+}
+
+- (void)update
+{
+	for (QuestionListViewController *viewController in self.questionListViewControllers) {
+		[viewController.view removeFromSuperviewWithoutNeedingDisplay];
+	}
+	[self.questionListViewControllers removeAllObjects];
+	for (NSView *view in self.questionListGroupHeaderViews) {
+		[view removeFromSuperviewWithoutNeedingDisplay];
+	}
+	[self.questionListGroupHeaderViews removeAllObjects];
+
+	NSArray *sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"slideNumber" ascending:YES], [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]];
+	NSArray *questionsSorted = [self.questions.arrangedObjects sortedArrayUsingDescriptors:sortDescriptors];
+	NSInteger slideNumber = -1;
+	CGFloat height = 0;
+
+	for (Question *question in questionsSorted) {
+		if (question.slideNumber.integerValue != slideNumber) {
+			slideNumber = question.slideNumber.integerValue;
+			QuestionListGroupHeaderView *view = [[QuestionListGroupHeaderView alloc] initWithFrame:NSMakeRect(0, height, listQuestionsView.frame.size.width, 20)];
+			view.textField.stringValue = [NSString stringWithFormat:@"Folie %li", (long)slideNumber];
+			[self.listQuestionsView addSubview:view];
+			height += 20;
+			[self.questionListGroupHeaderViews addObject:view];
+		}
+//		NSLog(@"%@ %@ %@ %@", question.slideIdentifier, question.slideNumber, question.order, question.text);
+		QuestionListViewController *viewController = [[[QuestionListViewController alloc] initWithQuestion:question] autorelease];
+		NSRect frame = viewController.view.frame;
+		frame.origin.x = 0;
+		frame.origin.y = height;
+		frame.size.width = listQuestionsView.frame.size.width;
+		[viewController.view setFrame:frame];
+		[self.listQuestionsView addSubview:viewController.view];
+		height += frame.size.height;
+		[self.questionListViewControllers addObject:viewController];
+	}
+
+	NSSize size = self.listQuestionsView.frame.size;
+	size.height = height;
+	[self.listQuestionsView setFrameSize:size];
 }
 
 @end

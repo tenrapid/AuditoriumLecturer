@@ -14,19 +14,14 @@
 
 @implementation QuestionListViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+@synthesize textField;
+
+- (id)initWithQuestion:(Question *)question;
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    self = [super initWithNibName:@"ListQuestionsItem" bundle:nil];
     if (self) {
-		NSTextView *textView = [[NSTextView alloc] initWithFrame:NSMakeRect(0, 0, 100, 75)];
-		[textView setAutoresizingMask:NSViewWidthSizable];
-		[textView setTextContainerInset:NSMakeSize(14, 2)];
-		[textView setRichText:YES];
-		[textView setDrawsBackground:NO];
-		[textView setEditable:NO];
-		[textView setSelectable:NO];
-		self.view = textView;
-		[textView bind:@"attributedString" toObject:self withKeyPath:@"representedObject.text" options:nil];
+		self.representedObject = question;
+		[self.view bind:@"question" toObject:self withKeyPath:@"representedObject" options:nil];
     }
     return self;
 }

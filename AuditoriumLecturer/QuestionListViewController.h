@@ -8,6 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class Question;
+
 @interface QuestionListViewController : NSCollectionViewItem
+
+- (id)initWithQuestion:(Question *)question;
 
 @end
