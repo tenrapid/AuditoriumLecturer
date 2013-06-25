@@ -20,6 +20,7 @@
 	NSInteger pulsingState;
 }
 
+@property (assign) Auditorium *auditorium;
 @property (retain) NSArrayController *events;
 @property (assign, getter = isSending) BOOL sending;
 
@@ -28,26 +29,24 @@
 
 @implementation AuditoriumController
 
+@synthesize auditorium;
 @synthesize events;
 @synthesize sending;
 
 - (void)awakeFromNib
 {
-	sending = NO;
+	self.auditorium = [Auditorium sharedInstance];
+	self.sending = NO;
 	[sendToolbarItem setEnabled:NO];
-	[eventPopUpButton setEnabled:NO];
 
 	[[Slideshow sharedInstance] addObserver:self forKeyPath:@"currentSlide" options:NSKeyValueObservingOptionNew context:nil];
-	[[Auditorium sharedInstance] addObserver:self forKeyPath:@"loggedIn" options:NSKeyValueObservingOptionNew context:nil];
-	[[Auditorium sharedInstance] addObserver:self forKeyPath:@"event" options:NSKeyValueObservingOptionNew context:nil];
-
+	[self addObserver:self forKeyPath:@"auditorium.loggedIn" options:NSKeyValueObservingOptionNew context:nil];
+	[self addObserver:self forKeyPath:@"auditorium.event" options:NSKeyValueObservingOptionNew context:nil];
+	[self addObserver:self forKeyPath:@"sending" options:NSKeyValueObservingOptionNew context:nil];
+	
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:[NSApp mainWindow]];
 	[notificationCenter addObserver:self selector:@selector(windowDidResignKey:) name:NSWindowDidResignKeyNotification object:[NSApp mainWindow]];
-
-	[self addObserver:self forKeyPath:@"sending" options:NSKeyValueObservingOptionNew context:nil];
-	[self addObserver:self forKeyPath:@"events.selectionIndex" options:0 context:nil];
-	[self addObserver:self forKeyPath:@"events.content" options:0 context:nil];
 
 	self.events = [[NSArrayController alloc] init];
 	[self.events setManagedObjectContext:[[NSApp delegate] managedObjectContext]];
@@ -59,10 +58,9 @@
 - (void)dealloc
 {
 	[[Slideshow sharedInstance] removeObserver:self forKeyPath:@"currentSlide"];
-	[[Auditorium sharedInstance] removeObserver:self forKeyPath:@"loggedIn"];
-	[[Auditorium sharedInstance] removeObserver:self forKeyPath:@"event"];
+	[self removeObserver:self forKeyPath:@"auditorium.loggedIn"];
+	[self removeObserver:self forKeyPath:@"auditroium.event"];
 	[self removeObserver:self forKeyPath:@"sending"];
-	[self removeObserver:self forKeyPath:@"events.selectionIndex"];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[events release];
 	[super dealloc];
@@ -74,14 +72,6 @@
 		if ([Slideshow sharedInstance].document && self.isSending) {
 			Slide *currentSlide = [change objectForKey:NSKeyValueChangeNewKey];
 			[[Auditorium sharedInstance] sendSlide:currentSlide];
-		}
-	}
-	else if ([keyPath isEqualToString:@"loggedIn"]) {
-		BOOL loggedInToAuditorium = [[change objectForKey:NSKeyValueChangeNewKey] boolValue];
-		self.sending = NO;
-		if (!loggedInToAuditorium) {
-			[sendToolbarItem setEnabled:NO];
-//			[eventPopUpButton setEnabled:NO];
 		}
 	}
 	else if ([keyPath isEqualToString:@"sending"]) {
@@ -97,23 +87,18 @@
 			pulsingTimer = nil;
 		}
 	}
-	else if ([keyPath isEqualToString:@"event"]) {
+	else if ([keyPath isEqualToString:@"auditorium.loggedIn"]) {
+		BOOL loggedInToAuditorium = [[change objectForKey:NSKeyValueChangeNewKey] boolValue];
+		self.sending = NO;
+		if (!loggedInToAuditorium) {
+			[sendToolbarItem setEnabled:NO];
+		}
+	}
+	else if ([keyPath isEqualToString:@"auditorium.event"]) {
 		Event *event = [change objectForKey:NSKeyValueChangeNewKey];
-		[sendToolbarItem setEnabled:[Auditorium sharedInstance].loggedIn && ![event isEqual:[NSNull null]]];
+		[sendToolbarItem setEnabled:self.auditorium.loggedIn && ![event isEqual:[NSNull null]]];
 		if ([event isEqual:[NSNull null]]) {
 			self.sending = NO;
-		}
-	}
-	else if ([keyPath isEqualToString:@"events.content"]) {
-		[eventPopUpButton setEnabled:[self.events.content count] != 0];
-	}
-	else if ([keyPath isEqualToString:@"events.selectionIndex"]) {
-		NSInteger selectionIndex = self.events.selectionIndex;
-		if (selectionIndex != 0 && selectionIndex != NSNotFound) {
-			[Auditorium sharedInstance].event = self.events.selectedObjects[0];
-		}
-		else {
-			[Auditorium sharedInstance].event = nil;
 		}
 	}
 }
@@ -131,7 +116,7 @@
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
 {
-	[sendToolbarItem setEnabled:[Auditorium sharedInstance].loggedIn && self.events.selectionIndex != NSNotFound && self.events.selectionIndex != 0];
+	[sendToolbarItem setEnabled:self.auditorium.loggedIn && self.auditorium.event];
 }
 
 - (void)windowDidResignKey:(NSNotification *)notification

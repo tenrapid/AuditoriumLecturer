@@ -173,10 +173,6 @@
 	event2.title = @"Rechnernetze – 3. Vorlesung – 31.06.2013";
 	event2.date	= [NSDate dateWithString:@"2013-06-31 10:00:00 +0000"];
 
-	event2 = [Auditorium objectForEntityName:@"Event"];
-	event2.title = @"Veranstaltung wählen…";
-	event2.date	= [NSDate dateWithString:@"0000-00-00 00:00:00 +0000"];
-
 	[context processPendingChanges];
 	[context.undoManager enableUndoRegistration];
 
