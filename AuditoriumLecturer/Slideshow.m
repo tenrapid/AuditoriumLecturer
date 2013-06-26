@@ -77,7 +77,7 @@
 - (void)updateSlideIdentifierToSlideNumberMap:(NSTimer*)timer
 {
 	self.slideIdentifierToSlideNumberMap = [[SlideshowApp sharedInstance] slideIdentifierToSlideNumberMap];
-	nextSlideIdentifier = [[[self.slideIdentifierToSlideNumberMap allValues] valueForKeyPath:@"@max.self"] integerValue] + 1;
+	nextSlideIdentifier = [[[self.slideIdentifierToSlideNumberMap allKeys] valueForKeyPath:@"@max.self"] integerValue] + 1;
 }
 
 - (Slide *)slideForSlideNumber:(NSInteger)number
@@ -97,8 +97,10 @@
 {
 	NSNumber *key = [NSNumber numberWithInteger:identifier];
 	NSInteger number = ((NSNumber *)[self.slideIdentifierToSlideNumberMap objectForKey:key]).integerValue;
-	[[SlideshowApp sharedInstance] removeIdentifierFromSlideWithNumber:number];
-	[self.slideIdentifierToSlideNumberMap removeObjectForKey:key];
+	if (number) {
+		[[SlideshowApp sharedInstance] removeIdentifierFromSlideWithNumber:number];
+		[self.slideIdentifierToSlideNumberMap removeObjectForKey:key];
+	}
 }
 
 - (void)gotoSlideWithIdentifier:(NSInteger)identifier
