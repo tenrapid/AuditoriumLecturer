@@ -84,7 +84,7 @@
 		if (question.slideNumber.integerValue != slideNumber) {
 			slideNumber = question.slideNumber.integerValue;
 			height -= height ? 1 : 0;
-			NSRect frame = NSMakeRect(0, height, listQuestionsView.frame.size.width, 20);
+			NSRect frame = NSMakeRect(0, height, listQuestionsView.frame.size.width, 19);
 			QuestionListSectionHeaderView *view = [[[QuestionListSectionHeaderView alloc] initWithFrame:frame] autorelease];
 			if (slideNumber) {
 				view.textField.stringValue = [NSString stringWithFormat:@"Folie %li", (long)slideNumber];
