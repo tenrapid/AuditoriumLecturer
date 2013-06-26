@@ -101,5 +101,13 @@
 	[self.slideIdentifierToSlideNumberMap removeObjectForKey:key];
 }
 
+- (void)gotoSlideWithIdentifier:(NSInteger)identifier
+{
+	NSInteger number = [[self.slideIdentifierToSlideNumberMap objectForKey:[NSNumber numberWithInteger:identifier]] integerValue];
+	if (number) {
+		[[SlideshowApp sharedInstance] gotoSlideWithNumber:number];
+	}
+}
+
 @end
 

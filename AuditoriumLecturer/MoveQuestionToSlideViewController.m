@@ -21,7 +21,7 @@
     self = [super initWithNibName:@"MoveQuestionToSlide" bundle:nil];
     if (self) {
 		self.representedObject = aQuestion;
-		delegate = aDelegate;
+		delegate = [aDelegate retain];
 		[self bind:@"slide" toObject:[Slideshow sharedInstance] withKeyPath:@"currentSlide" options:nil];
 		[NSApp beginSheet:self.view.window modalForWindow:[NSApp mainWindow] modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
 	}
@@ -31,6 +31,7 @@
 - (void)dealloc
 {
 	[self unbind:@"slide"];
+	[delegate release];
 	[super dealloc];
 }
 

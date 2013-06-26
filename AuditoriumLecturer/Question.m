@@ -28,6 +28,11 @@ const NSString * const QuestionTypeNames[] = {
 @dynamic type;
 @dynamic answers;
 
+- (NSNumber *)slideNumber
+{
+	return [[Slideshow sharedInstance].slideIdentifierToSlideNumberMap objectForKey:self.slideIdentifier];
+}
+
 - (void)setSlideIdentifier:(NSNumber *)slideIdentifier
 {
 	if (self.slideIdentifier.integerValue != 0) {
