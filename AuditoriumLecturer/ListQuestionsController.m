@@ -10,6 +10,7 @@
 #import "QuestionListViewController.h"
 #import "QuestionListGroupHeaderView.h"
 #import "Question.h"
+#import "Auditorium.h"
 
 @interface ListQuestionsController ()
 
@@ -33,18 +34,20 @@
 	[self.questions setEntityName:@"Question"];
 	[self.questions setClearsFilterPredicateOnInsertion:NO];
 	[self.questions setAutomaticallyRearrangesObjects:YES];
-	[self.questions setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"slideNumber" ascending:YES]]];
+	[self.questions setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"slideNumber" ascending:YES], [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
 	[self.questions fetch:self];
 
 	self.questionListViewControllers = [NSMutableArray array];
 	self.questionListGroupHeaderViews = [NSMutableArray array];
 	
-	[self.questions addObserver:self forKeyPath:@"arrangedObjects" options:0 context:nil];
+	[self addObserver:self forKeyPath:@"questions.arrangedObjects" options:0 context:nil];
+	[[Auditorium sharedInstance] addObserver:self forKeyPath:@"event" options:0 context:nil];
 }
 
 - (void)dealloc
 {
 	[self.questions removeObserver:self forKeyPath:@"arrangedObjects"];
+	[[Auditorium sharedInstance] removeObserver:self forKeyPath:@"event"];
 	self.questions = nil;
 	self.questionListViewControllers = nil;
 	self.questionListGroupHeaderViews = nil;
@@ -53,7 +56,12 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	[self performSelector:@selector(update) withObject:nil afterDelay:0];
+	if ([keyPath isEqualToString:@"questions.arrangedObjects"]) {
+		[self performSelector:@selector(update) withObject:nil afterDelay:0];
+	}
+	else if ([keyPath isEqualToString:@"event"]) {
+		[self.questions setFilterPredicate:[NSPredicate predicateWithFormat:@"event = %@", [Auditorium sharedInstance].event]];
+	}
 }
 
 - (void)update
@@ -75,11 +83,16 @@
 	for (Question *question in questionsSorted) {
 		if (question.slideNumber.integerValue != slideNumber) {
 			slideNumber = question.slideNumber.integerValue;
-			QuestionListGroupHeaderView *view = [[QuestionListGroupHeaderView alloc] initWithFrame:NSMakeRect(0, height, listQuestionsView.frame.size.width, 20)];
-			view.textField.stringValue = [NSString stringWithFormat:@"Folie %li", (long)slideNumber];
+			QuestionListGroupHeaderView *view = [[[QuestionListGroupHeaderView alloc] initWithFrame:NSMakeRect(0, height, listQuestionsView.frame.size.width, 20)] autorelease];
+			if (slideNumber) {
+				view.textField.stringValue = [NSString stringWithFormat:@"Folie %li", (long)slideNumber];
+			}
+			else {
+				view.textField.stringValue = [NSString stringWithFormat:@"nicht zugeordnet"];
+			}
 			[self.listQuestionsView addSubview:view];
-			height += 20;
 			[self.questionListGroupHeaderViews addObject:view];
+			height += 20;
 		}
 //		NSLog(@"%@ %@ %@ %@", question.slideIdentifier, question.slideNumber, question.order, question.text);
 		QuestionListViewController *viewController = [[[QuestionListViewController alloc] initWithQuestion:question] autorelease];
@@ -89,8 +102,8 @@
 		frame.size.width = listQuestionsView.frame.size.width;
 		[viewController.view setFrame:frame];
 		[self.listQuestionsView addSubview:viewController.view];
-		height += frame.size.height;
 		[self.questionListViewControllers addObject:viewController];
+		height += frame.size.height;
 	}
 
 	NSSize size = self.listQuestionsView.frame.size;
