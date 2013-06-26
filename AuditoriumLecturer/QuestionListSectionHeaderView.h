@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface QuestionListGroupHeaderView : NSView
+@interface QuestionListSectionHeaderView : NSView
 
 @property (retain) NSTextField *textField;
 

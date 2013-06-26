@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Matthias Rahne. All rights reserved.
 //
 
-#import "QuestionListGroupHeaderView.h"
+#import "QuestionListSectionHeaderView.h"
 
-@implementation QuestionListGroupHeaderView
+@implementation QuestionListSectionHeaderView
 
 @synthesize textField;
 

@@ -8,7 +8,7 @@
 
 #import "ListQuestionsController.h"
 #import "QuestionListViewController.h"
-#import "QuestionListGroupHeaderView.h"
+#import "QuestionListSectionHeaderView.h"
 #import "Question.h"
 #import "Auditorium.h"
 
@@ -83,7 +83,9 @@
 	for (Question *question in questionsSorted) {
 		if (question.slideNumber.integerValue != slideNumber) {
 			slideNumber = question.slideNumber.integerValue;
-			QuestionListGroupHeaderView *view = [[[QuestionListGroupHeaderView alloc] initWithFrame:NSMakeRect(0, height, listQuestionsView.frame.size.width, 20)] autorelease];
+			height -= height ? 1 : 0;
+			NSRect frame = NSMakeRect(0, height, listQuestionsView.frame.size.width, 20);
+			QuestionListSectionHeaderView *view = [[[QuestionListSectionHeaderView alloc] initWithFrame:frame] autorelease];
 			if (slideNumber) {
 				view.textField.stringValue = [NSString stringWithFormat:@"Folie %li", (long)slideNumber];
 			}
@@ -92,7 +94,7 @@
 			}
 			[self.listQuestionsView addSubview:view];
 			[self.questionListGroupHeaderViews addObject:view];
-			height += 20;
+			height += frame.size.height;
 		}
 //		NSLog(@"%@ %@ %@ %@", question.slideIdentifier, question.slideNumber, question.order, question.text);
 		QuestionListViewController *viewController = [[[QuestionListViewController alloc] initWithQuestion:question] autorelease];
