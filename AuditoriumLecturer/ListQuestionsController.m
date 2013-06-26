@@ -11,6 +11,7 @@
 #import "QuestionListSectionHeaderView.h"
 #import "Question.h"
 #import "Auditorium.h"
+#import "Slideshow.h"
 
 @interface ListQuestionsController ()
 
@@ -42,12 +43,14 @@
 	
 	[self addObserver:self forKeyPath:@"questions.arrangedObjects" options:0 context:nil];
 	[[Auditorium sharedInstance] addObserver:self forKeyPath:@"event" options:0 context:nil];
+	[[Slideshow sharedInstance] addObserver:self forKeyPath:@"slideIdentifierToSlideNumberMap" options:0 context:nil];
 }
 
 - (void)dealloc
 {
 	[self.questions removeObserver:self forKeyPath:@"arrangedObjects"];
 	[[Auditorium sharedInstance] removeObserver:self forKeyPath:@"event"];
+	[[Slideshow sharedInstance] removeObserver:self forKeyPath:@"slideIdentifierToSlideNumberMap"];
 	self.questions = nil;
 	self.questionListViewControllers = nil;
 	self.questionListGroupHeaderViews = nil;
@@ -58,6 +61,9 @@
 {
 	if ([keyPath isEqualToString:@"questions.arrangedObjects"]) {
 		[self performSelector:@selector(update) withObject:nil afterDelay:0];
+	}
+	if ([keyPath isEqualToString:@"slideIdentifierToSlideNumberMap"]) {
+		[self update];
 	}
 	else if ([keyPath isEqualToString:@"event"]) {
 		[self.questions setFilterPredicate:[NSPredicate predicateWithFormat:@"event = %@", [Auditorium sharedInstance].event]];

@@ -51,7 +51,7 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 		}
 		self.representedObject = aQuestion;
 
-		delegate = aDelegate;
+		delegate = [aDelegate retain];
 		sheet = self.view.window;
 
 		[self updateViewWidth];
@@ -81,6 +81,7 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[self removeObserver:self forKeyPath:@"representedObject.type"];
 	self.answers = nil;
+	[delegate release];
 	[super dealloc];
 }
 
