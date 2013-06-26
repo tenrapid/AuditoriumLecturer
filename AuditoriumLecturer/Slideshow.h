@@ -23,4 +23,6 @@
 - (NSInteger)addIdentifierToSlideWithNumber:(NSInteger)number;
 - (void)removeIdentifierFromSlide:(NSInteger)identifier;
 
+- (void)gotoSlideWithIdentifier:(NSInteger)indentifier;
+
 @end

@@ -10,6 +10,7 @@
 #import "Question.h"
 #import "QuestionEditSheetController.h"
 #import "MoveQuestionToSlideViewController.h"
+#import "Slideshow.h"
 
 @interface QuestionListView ()
 
@@ -121,7 +122,7 @@
 
 - (void)gotoQuestionSlide
 {
-	NSLog(@"goto");
+	[[Slideshow sharedInstance] gotoSlideWithIdentifier:question.slideIdentifier.integerValue];
 }
 
 - (void)editQuestion

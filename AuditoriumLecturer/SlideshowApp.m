@@ -325,6 +325,21 @@ NSString * const IdentifierTagEnd = @"#";
 	return map;
 }
 
+- (void)gotoSlideWithNumber:(NSInteger)number
+{
+	[self updateAppInstance];
+	
+	if (self.keynote) {
+		SBElementArray *slides = [self.keynoteSlideshow slides];
+		KeynoteSlide *slide = slides[number - 1];
+		[slide show];
+	}
+	if (self.powerpoint) {
+		PowerpointView *view = [(PowerpointDocumentWindow *)[[self.powerpointPresentation documentWindows] objectAtIndex:0] view];
+		[view goToSlideNumber:number];
+	}
+}
+
 - (void)start
 {
 	[self updateAppInstance];

@@ -373,7 +373,7 @@
 				2BBE3B8A172A79CC00BCF546 /* SystemEvents.h */,
 			);
 			name = "Scripting Definitions";
-			path = KeynoteAuditoriumConnector;
+			path = AuditoriumLecturer;
 			sourceTree = "<group>";
 		};
 		2BF07099173CE0F90071A52F /* InspectorTabBar */ = {
