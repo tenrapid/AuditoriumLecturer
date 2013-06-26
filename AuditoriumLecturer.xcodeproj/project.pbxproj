@@ -55,7 +55,7 @@
 		2BEA9FBA17764B7500030877 /* QuestionListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BEA9FB917764B7500030877 /* QuestionListView.m */; };
 		2BEA9FBD17764D4A00030877 /* ListQuestionsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BEA9FBC17764D4A00030877 /* ListQuestionsController.m */; };
 		2BEA9FC017764FF300030877 /* QuestionListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BEA9FBF17764FF200030877 /* QuestionListViewController.m */; };
-		2BEA9FC6177A3B9800030877 /* QuestionListGroupHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BEA9FC5177A3B9700030877 /* QuestionListGroupHeaderView.m */; };
+		2BEA9FC6177A3B9800030877 /* QuestionListSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BEA9FC5177A3B9700030877 /* QuestionListSectionHeaderView.m */; };
 		2BF07095173A409D0071A52F /* TB3_Record-Pressed-Off.png in Resources */ = {isa = PBXBuildFile; fileRef = 2BF07094173A409D0071A52F /* TB3_Record-Pressed-Off.png */; };
 		2BF07098173CDB450071A52F /* QuestionsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BF07097173CDB450071A52F /* QuestionsController.m */; };
 		2BF070A4173CE0F90071A52F /* NSDictionary+SMKeyValueObserving.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BF0709B173CE0F90071A52F /* NSDictionary+SMKeyValueObserving.m */; };
@@ -152,8 +152,8 @@
 		2BEA9FBC17764D4A00030877 /* ListQuestionsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListQuestionsController.m; sourceTree = "<group>"; };
 		2BEA9FBE17764FF200030877 /* QuestionListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionListViewController.h; sourceTree = "<group>"; };
 		2BEA9FBF17764FF200030877 /* QuestionListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionListViewController.m; sourceTree = "<group>"; };
-		2BEA9FC4177A3B9700030877 /* QuestionListGroupHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionListGroupHeaderView.h; sourceTree = "<group>"; };
-		2BEA9FC5177A3B9700030877 /* QuestionListGroupHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionListGroupHeaderView.m; sourceTree = "<group>"; };
+		2BEA9FC4177A3B9700030877 /* QuestionListSectionHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionListSectionHeaderView.h; sourceTree = "<group>"; };
+		2BEA9FC5177A3B9700030877 /* QuestionListSectionHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionListSectionHeaderView.m; sourceTree = "<group>"; };
 		2BF07094173A409D0071A52F /* TB3_Record-Pressed-Off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TB3_Record-Pressed-Off.png"; sourceTree = "<group>"; };
 		2BF07096173CDB450071A52F /* QuestionsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionsController.h; sourceTree = "<group>"; };
 		2BF07097173CDB450071A52F /* QuestionsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionsController.m; sourceTree = "<group>"; };
@@ -222,8 +222,8 @@
 				2BEA9FBF17764FF200030877 /* QuestionListViewController.m */,
 				2BEA9FB817764B7500030877 /* QuestionListView.h */,
 				2BEA9FB917764B7500030877 /* QuestionListView.m */,
-				2BEA9FC4177A3B9700030877 /* QuestionListGroupHeaderView.h */,
-				2BEA9FC5177A3B9700030877 /* QuestionListGroupHeaderView.m */,
+				2BEA9FC4177A3B9700030877 /* QuestionListSectionHeaderView.h */,
+				2BEA9FC5177A3B9700030877 /* QuestionListSectionHeaderView.m */,
 				2BF070AD173D292C0071A52F /* SlideQuestionsController.h */,
 				2BF070AE173D292C0071A52F /* SlideQuestionsController.m */,
 				2BC7E9CB173EDF3500D911AE /* SlideQuestionsView.h */,
@@ -510,7 +510,7 @@
 				2BEA9FBA17764B7500030877 /* QuestionListView.m in Sources */,
 				2BEA9FBD17764D4A00030877 /* ListQuestionsController.m in Sources */,
 				2BEA9FC017764FF300030877 /* QuestionListViewController.m in Sources */,
-				2BEA9FC6177A3B9800030877 /* QuestionListGroupHeaderView.m in Sources */,
+				2BEA9FC6177A3B9800030877 /* QuestionListSectionHeaderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

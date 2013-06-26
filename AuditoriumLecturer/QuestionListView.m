@@ -8,10 +8,17 @@
 
 #import "QuestionListView.h"
 #import "Question.h"
+#import "QuestionEditSheetController.h"
+#import "MoveQuestionToSlideViewController.h"
 
 @interface QuestionListView ()
 
 @property (assign) IBOutlet NSTextField *textField;
+@property (assign) IBOutlet NSPopUpButton *popUpButton;
+@property (retain) NSTimer *doubleClickTimer;
+@property (retain) NSTrackingArea *trackingArea;
+@property (retain) QuestionEditSheetController *questionEditSheetController;
+@property (retain) MoveQuestionToSlideViewController *moveQuestionToSlideViewController;
 
 @end
 
@@ -19,6 +26,11 @@
 
 @synthesize question;
 @synthesize textField;
+@synthesize popUpButton;
+@synthesize doubleClickTimer;
+@synthesize trackingArea;
+@synthesize questionEditSheetController;
+@synthesize moveQuestionToSlideViewController;
 
 - (id)initWithFrame:(NSRect)frame
 {
@@ -34,7 +46,15 @@
 {
 	[self removeObserver:self forKeyPath:@"question.text"];
 	[self removeObserver:self forKeyPath:@"question.type"];
+	[self.doubleClickTimer invalidate];
+	self.doubleClickTimer = nil;
+	self.trackingArea = nil;
 	[super dealloc];
+}
+
+- (void)awakeFromNib
+{
+	[self.popUpButton setHidden:YES];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -46,7 +66,7 @@
 	NSMutableParagraphStyle *paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 	paragraphStyle.paragraphSpacing = 1.f;
 
-	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [NSColor colorWithDeviceWhite:0.6f alpha:1.f], NSKernAttributeName: @1.f, NSFontAttributeName:[NSFont systemFontOfSize:10.f]};
+	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [NSColor colorWithDeviceWhite:0.75f alpha:1.f], NSKernAttributeName: @1.f, NSFontAttributeName:[NSFont systemFontOfSize:10.f]};
 	[as appendAttributedString:[[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:@"%@\r", QuestionTypeNames[question.type]] uppercaseString] attributes:attributes] autorelease]];
 
 	attributes = @{NSFontAttributeName:[NSFont systemFontOfSize:12.f]};
@@ -62,8 +82,101 @@
 	[[NSColor whiteColor] set];
 	NSRectFill([self bounds]);
 	
-    [[NSColor colorWithDeviceWhite:0.8f alpha:1.f] set];
+    [[NSColor colorWithDeviceWhite:0.85f alpha:1.f] set];
 	[NSBezierPath strokeLineFromPoint:NSMakePoint(0, 0) toPoint:NSMakePoint(self.bounds.size.width, 0)];
+}
+
+- (void)mouseUp:(NSEvent *)event
+{
+	if (event.clickCount == 1) {
+		self.doubleClickTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(gotoQuestionSlide) userInfo:nil repeats:NO];
+	}
+	else if (event.clickCount == 2) {
+		[self.doubleClickTimer invalidate];
+		[self editQuestion];
+	}
+}
+
+-(void)updateTrackingAreas
+{
+	[super updateTrackingAreas];
+    if (self.trackingArea != nil) {
+        [self removeTrackingArea:self.trackingArea];
+        self.trackingArea = nil;
+    }
+	
+    self.trackingArea = [[[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited |NSTrackingActiveInKeyWindow owner:self userInfo:nil] autorelease];
+    [self addTrackingArea:trackingArea];
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent
+{
+	[self.popUpButton setHidden:NO];
+}
+
+- (void)mouseExited:(NSEvent *)theEvent
+{
+	[self.popUpButton setHidden:YES];
+}
+
+- (void)gotoQuestionSlide
+{
+	NSLog(@"goto");
+}
+
+- (void)editQuestion
+{
+	self.questionEditSheetController = [[[QuestionEditSheetController alloc] initWithQuestion:self.question delegate:self] autorelease];
+}
+
+- (void)editQuestionDidEnd:(NSInteger)returnCode
+{
+	self.questionEditSheetController = nil;
+}
+
+- (IBAction)moveQuestionToSlideAction:(id)sender
+{
+	self.moveQuestionToSlideViewController = [[[MoveQuestionToSlideViewController alloc] initWithQuestion:self.question delegate:self] autorelease];
+}
+
+- (void)moveQuestionToSlideDidEnd:(NSInteger)returnCode
+{
+	self.moveQuestionToSlideViewController = nil;
+}
+
+- (IBAction)removeQuestionAction:(id)sender
+{
+	[self.question willBeDeleted];
+	[self.question.managedObjectContext deleteObject:question];
+}
+
+- (IBAction)moveQuestionUpAction:(id)sender
+{
+	NSInteger order = self.question.order.integerValue;
+	Question *otherQuestion = [self.question fetchWithPredicate:[NSPredicate predicateWithFormat:@"event = %@ AND slideIdentifier = %@ AND order = %@", self.question.event, self.question.slideIdentifier, [NSNumber numberWithInteger:order - 1]]][0];
+	question.order = [NSNumber numberWithInteger:order - 1];
+	otherQuestion.order = [NSNumber numberWithInteger:order];
+}
+
+- (IBAction)moveQuestionDownAction:(id)sender
+{
+	NSInteger order = self.question.order.integerValue;
+	Question *otherQuestion = [self.question fetchWithPredicate:[NSPredicate predicateWithFormat:@"event = %@ AND slideIdentifier = %@ AND order = %@", self.question.event, self.question.slideIdentifier, [NSNumber numberWithInteger:order + 1]]][0];
+	question.order = [NSNumber numberWithInteger:order + 1];
+	otherQuestion.order = [NSNumber numberWithInteger:order];
+}
+
+#pragma mark  NSMenuValidation Protocol
+
+- (BOOL)validateMenuItem:(NSMenuItem *)item {
+	NSInteger count = [self.question countWithPredicate:[NSPredicate predicateWithFormat:@"event = %@ AND slideIdentifier = %@", self.question.event, self.question.slideIdentifier]];
+    if ([item action] == @selector(moveQuestionUpAction:) && (self.question.order.integerValue == 0)) {
+        return NO;
+    }
+    else if ([item action] == @selector(moveQuestionDownAction:) && (self.question.order.integerValue == count - 1)) {
+        return NO;
+    }
+    return YES;
 }
 
 @end
