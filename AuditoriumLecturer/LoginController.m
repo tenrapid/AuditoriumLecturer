@@ -40,9 +40,13 @@
 	[loggedInBox setFrame:notLoggedInBox.frame];
 	[loggedInBox setHidden:YES];
 
+#ifdef DEBUG
+	NSURLCredential *credentials = [NSURLCredential credentialWithUser:@"mr8@mail.de" password:@"testing" persistence:NSURLCredentialPersistenceNone];
+#else
 	NSURL *url = [NSURL URLWithString:AUDITORIUM_URL];
 	NSURLProtectionSpace *protectionSpace = [[[NSURLProtectionSpace alloc] initWithHost:url.host port:url.port.intValue protocol:url.scheme realm:nil authenticationMethod:NSURLAuthenticationMethodDefault] autorelease];
 	NSURLCredential *credentials = [[NSURLCredentialStorage sharedCredentialStorage] defaultCredentialForProtectionSpace:protectionSpace];
+#endif
 	if (credentials) {
 		//credential found in keychain
 		[notLoggedInBoxSpinner setHidden:NO];
