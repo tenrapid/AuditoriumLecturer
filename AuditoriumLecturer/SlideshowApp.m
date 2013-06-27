@@ -23,6 +23,7 @@ NSString * const IdentifierTagEnd = @"#";
 @interface SlideshowApp ()
 {
 	NSTimer *updateTimer;
+	PowerpointApplication *_powerpoint;
 }
 
 @property (assign) KeynoteApplication *keynote;
@@ -122,19 +123,23 @@ NSString * const IdentifierTagEnd = @"#";
 	}
 	
 	if (powerpointRunning && !self.keynote) {
-		self.powerpoint = [SBApplication applicationWithBundleIdentifier:@"com.microsoft.Powerpoint"];
+		if (!_powerpoint) {
+			_powerpoint = [[SBApplication applicationWithBundleIdentifier:@"com.microsoft.Powerpoint"] retain];
+		}
 		
-		if (![self.powerpoint respondsToSelector:@selector(activePresentation)]) {
+		if (![_powerpoint respondsToSelector:@selector(activePresentation)]) {
+			_powerpoint = nil;
 			self.powerpoint = nil;
 		}
 	}
-	if (self.powerpoint) {
-		self.powerpointPresentation = [self.powerpoint activePresentation];
+	if (_powerpoint) {
+		self.powerpointPresentation = [_powerpoint activePresentation];
 		NSString *powerpointPresentationPath = self.powerpointPresentation.path;
 		if (powerpointPresentationPath) {
 			_document = [[NSString stringWithFormat:@"%@/%@", powerpointPresentationPath, powerpointPresentation.name] copy];
 			self.powerpointSlideshowView = [[self.powerpointPresentation slideShowWindow] slideshowView];
 			_playing = [self.powerpointSlideshowView currentShowPosition] > 0;
+			self.powerpoint = _powerpoint;
 		}
 		else {
 			self.powerpoint = nil;
