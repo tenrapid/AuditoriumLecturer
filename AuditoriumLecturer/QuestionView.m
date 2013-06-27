@@ -36,12 +36,6 @@ NSString * const QuestionViewHeightDidChangeNotification = @"QuestionViewHeightD
 		[self addSubview:textView];
 		textViewHeight = textView.frame.size.height;
 
-		NSBox *box = [[NSBox alloc] initWithFrame:NSMakeRect(32, 38, self.frame.size.width - 64, 1)];
-		[box setAutoresizingMask:NSViewWidthSizable];
-		[box setBoxType:NSBoxCustom];
-		[box setBorderColor:[NSColor colorWithDeviceWhite:0.92f alpha:1.f]];
-		[self addSubview:box];
-
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewHeightDidChange:) name:NSViewFrameDidChangeNotification object:textView];
     }
     return self;
@@ -62,7 +56,9 @@ NSString * const QuestionViewHeightDidChangeNotification = @"QuestionViewHeightD
 {
 	[super drawRect:dirtyRect];
 
-	NSShadow *theShadow = [[NSShadow alloc] init];
+	[NSGraphicsContext saveGraphicsState];
+
+	NSShadow *theShadow = [[[NSShadow alloc] init] autorelease];
 	[theShadow setShadowOffset:NSMakeSize(0.0, -2.0)];
 	[theShadow setShadowBlurRadius:3.0];
 	[theShadow setShadowColor:[[NSColor blackColor] colorWithAlphaComponent:0.2]];
@@ -77,7 +73,11 @@ NSString * const QuestionViewHeightDidChangeNotification = @"QuestionViewHeightD
 	NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:4.f yRadius:4.f];
 	[path fill];
 
-	[theShadow release];
+	[NSGraphicsContext restoreGraphicsState];
+
+	[[NSGraphicsContext currentContext] setShouldAntialias:NO];
+    [[NSColor colorWithCalibratedWhite:0.91f alpha:1.f] set];
+	[NSBezierPath strokeLineFromPoint:NSMakePoint(32.0, 39.0) toPoint:NSMakePoint(self.frame.size.width - 32.0, 39.0)];
 }
 
 - (void)updateViewHeight
