@@ -90,9 +90,7 @@
 	else if ([keyPath isEqualToString:@"auditorium.loggedIn"]) {
 		BOOL loggedInToAuditorium = [[change objectForKey:NSKeyValueChangeNewKey] boolValue];
 		self.sending = NO;
-		if (!loggedInToAuditorium) {
-			[sendToolbarItem setEnabled:NO];
-		}
+		[sendToolbarItem setEnabled:loggedInToAuditorium && self.auditorium.event];
 	}
 	else if ([keyPath isEqualToString:@"auditorium.event"]) {
 		Event *event = [change objectForKey:NSKeyValueChangeNewKey];
