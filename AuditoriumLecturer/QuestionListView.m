@@ -67,8 +67,8 @@
 	NSMutableParagraphStyle *paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 	paragraphStyle.paragraphSpacing = 1.f;
 
-	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [NSColor colorWithDeviceWhite:0.75f alpha:1.f], NSKernAttributeName: @1.f, NSFontAttributeName:[NSFont systemFontOfSize:10.f]};
-	[as appendAttributedString:[[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:@"%@\r", QuestionTypeNames[question.type]] uppercaseString] attributes:attributes] autorelease]];
+	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:0.65f alpha:1.f], NSFontAttributeName:[NSFont systemFontOfSize:12.f]};
+	[as appendAttributedString:[[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n", QuestionTypeNames[question.type]] attributes:attributes] autorelease]];
 
 	attributes = @{NSFontAttributeName:[NSFont systemFontOfSize:12.f]};
 	[as appendAttributedString:[[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", question.text] attributes:attributes] autorelease]];

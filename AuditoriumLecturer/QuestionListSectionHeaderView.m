@@ -17,10 +17,10 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self setAutoresizingMask:NSViewWidthSizable];
-		frame.origin.x = 12;
+		frame.origin.x = 16;
 		frame.origin.y = -1;
 		textField = [[NSTextField alloc] initWithFrame:frame];
-		textField.font = [NSFont systemFontOfSize:12];
+		textField.font = [NSFont boldSystemFontOfSize:12];
 		textField.textColor = [NSColor colorWithDeviceWhite:0.2f alpha:1.f];
 		[textField setEditable:NO];
 		[textField setSelectable:NO];

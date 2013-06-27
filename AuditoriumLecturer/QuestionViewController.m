@@ -108,11 +108,11 @@
 
 	NSMutableAttributedString *as = [[[NSMutableAttributedString alloc] init] autorelease];
 	
-	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [NSColor colorWithDeviceWhite:0.6f alpha:1.f], NSKernAttributeName: @1.f, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
-	[as appendAttributedString:[[[NSAttributedString alloc] initWithString:[[NSString stringWithFormat:@"\n%@\n\n\n", QuestionTypeNames[question.type]] uppercaseString] attributes:attributes] autorelease]];
+	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:0.65f alpha:1.f], NSFontAttributeName:[NSFont boldSystemFontOfSize:12.f]};
+	[as appendAttributedString:[[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@\n\n", QuestionTypeNames[question.type]] attributes:attributes] autorelease]];
 
 	NSMutableParagraphStyle *questionParagraphStyle = [[paragraphStyle mutableCopy] autorelease];
-	questionParagraphStyle.paragraphSpacingBefore = 1.f;
+	questionParagraphStyle.paragraphSpacingBefore = 11.f;
 	if (question.type != QuestionMessageType) {
 		questionParagraphStyle.paragraphSpacing = 7.f;
 	}
@@ -126,7 +126,7 @@
 		answerParagraphStyle.headIndent = 14;
 		answerParagraphStyle.paragraphSpacingBefore = 7.f;
 		NSMutableParagraphStyle *feedbackParagraphStyle = [[answerParagraphStyle mutableCopy] autorelease];
-		feedbackParagraphStyle.paragraphSpacingBefore = 1.f;
+		feedbackParagraphStyle.paragraphSpacingBefore = 4.f;
 		NSDictionary *answerAttributes = @{NSParagraphStyleAttributeName: answerParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:12.f]};
 
 		NSColor *greenColor = [NSColor colorWithDeviceRed:0.6 green:0.85 blue:0.2 alpha:1];
@@ -159,7 +159,7 @@
 			}
 		}
 	}
-	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:(question.type == QuestionMultipleChoiceType ? 9.f : 15.f)]};
+	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:(question.type == QuestionSingleChoiceType ? 15.f : question.type == QuestionMultipleChoiceType ? 9.f : 6.f)]};
 	[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes] autorelease]];
 
 	QuestionView *questionView = (QuestionView *)self.view;

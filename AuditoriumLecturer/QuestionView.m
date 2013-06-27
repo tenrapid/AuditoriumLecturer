@@ -25,7 +25,7 @@ NSString * const QuestionViewHeightDidChangeNotification = @"QuestionViewHeightD
 {
     self = [super initWithFrame:frame];
     if (self) {
-		textView = [[ClickActionTextView alloc] initWithFrame:NSMakeRect(16, 3, self.frame.size.width - 32, 75)];
+		textView = [[ClickActionTextView alloc] initWithFrame:NSMakeRect(16, -3, self.frame.size.width - 32, 75)];
 		[textView setAutoresizingMask:NSViewWidthSizable];
 		[textView setTextContainerInset:NSMakeSize(14, 2)];
 		[textView setRichText:YES];
@@ -77,13 +77,13 @@ NSString * const QuestionViewHeightDidChangeNotification = @"QuestionViewHeightD
 
 	[[NSGraphicsContext currentContext] setShouldAntialias:NO];
     [[NSColor colorWithCalibratedWhite:0.91f alpha:1.f] set];
-	[NSBezierPath strokeLineFromPoint:NSMakePoint(32.0, 39.0) toPoint:NSMakePoint(self.frame.size.width - 32.0, 39.0)];
+	[NSBezierPath strokeLineFromPoint:NSMakePoint(32.0, 40.0) toPoint:NSMakePoint(self.frame.size.width - 32.0, 40.0)];
 }
 
 - (void)updateViewHeight
 {
 	NSRect frame;
-	float height = 0;
+	float height = -3;
 
 	frame = [textView frame];
 	frame.origin.y = height;
