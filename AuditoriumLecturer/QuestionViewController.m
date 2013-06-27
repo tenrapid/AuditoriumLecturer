@@ -108,11 +108,11 @@
 
 	NSMutableAttributedString *as = [[[NSMutableAttributedString alloc] init] autorelease];
 	
-	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:0.65f alpha:1.f], NSFontAttributeName:[NSFont boldSystemFontOfSize:12.f]};
+	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:0.65f alpha:1.f], NSFontAttributeName:[NSFont systemFontOfSize:12.f]};
 	[as appendAttributedString:[[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@\n\n", QuestionTypeNames[question.type]] attributes:attributes] autorelease]];
 
 	NSMutableParagraphStyle *questionParagraphStyle = [[paragraphStyle mutableCopy] autorelease];
-	questionParagraphStyle.paragraphSpacingBefore = 11.f;
+	questionParagraphStyle.paragraphSpacingBefore = 9.f;
 	if (question.type != QuestionMessageType) {
 		questionParagraphStyle.paragraphSpacing = 7.f;
 	}

@@ -77,7 +77,7 @@ NSString * const QuestionViewHeightDidChangeNotification = @"QuestionViewHeightD
 
 	[[NSGraphicsContext currentContext] setShouldAntialias:NO];
     [[NSColor colorWithCalibratedWhite:0.91f alpha:1.f] set];
-	[NSBezierPath strokeLineFromPoint:NSMakePoint(32.0, 40.0) toPoint:NSMakePoint(self.frame.size.width - 32.0, 40.0)];
+	[NSBezierPath strokeLineFromPoint:NSMakePoint(32.0, 39.0) toPoint:NSMakePoint(self.frame.size.width - 32.0, 39.0)];
 }
 
 - (void)updateViewHeight
