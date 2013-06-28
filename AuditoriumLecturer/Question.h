@@ -35,6 +35,8 @@ extern const NSString * const QuestionTypeNames[];
 @property (nonatomic, retain) NSSet *answers;
 
 - (void)willBeDeleted;
+- (void)moveUpInOrderChain;
+- (void)moveDownInOrderChain;
 
 @end
 

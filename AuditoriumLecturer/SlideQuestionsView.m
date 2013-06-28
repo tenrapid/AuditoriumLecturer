@@ -12,6 +12,7 @@
 #import "MoveQuestionToSlideViewController.h"
 #import "QuestionEditSheetController.h"
 #import "Question.h"
+#import "Event.h"
 #import "Slide.h"
 #import "Slideshow.h"
 #import "Auditorium.h"
@@ -144,27 +145,39 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 
 - (void)removeQuestionAction:(id)sender
 {
+	NSUndoManager *undoManager = [[[NSApp delegate] managedObjectContext] undoManager];
+	[undoManager beginUndoGrouping];
+
 	Question *question = [sender representedObject];
+	[question.event recordModification];
 	[question willBeDeleted];
 	[question.managedObjectContext deleteObject:question];
+
+	[undoManager endUndoGrouping];
 }
 
 - (void)moveQuestionUpAction:(id)sender
 {
+	NSUndoManager *undoManager = [[[NSApp delegate] managedObjectContext] undoManager];
+	[undoManager beginUndoGrouping];
+
 	Question *question = [sender representedObject];
-	NSInteger order = question.order.integerValue;
-	Question *otherQuestion = questions[order -	1];
-	question.order = [NSNumber numberWithInteger:order - 1];
-	otherQuestion.order = [NSNumber numberWithInteger:order];
+	[question moveUpInOrderChain];
+	[question.event recordModification];
+
+	[undoManager endUndoGrouping];
 }
 
 - (void)moveQuestionDownAction:(id)sender
 {
+	NSUndoManager *undoManager = [[[NSApp delegate] managedObjectContext] undoManager];
+	[undoManager beginUndoGrouping];
+
 	Question *question = [sender representedObject];
-	NSInteger order = question.order.integerValue;
-	Question *otherQuestion = questions[order +	1];
-	question.order = [NSNumber numberWithInteger:order + 1];
-	otherQuestion.order = [NSNumber numberWithInteger:order];
+	[question moveDownInOrderChain];
+	[question.event recordModification];
+
+	[undoManager endUndoGrouping];
 }
 
 - (void)moveQuestionToSlideAction:(id)sender

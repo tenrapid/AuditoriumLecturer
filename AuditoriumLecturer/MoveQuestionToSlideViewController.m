@@ -10,7 +10,7 @@
 #import "Slideshow.h"
 #import	"Slide.h"
 #import "Question.h"
-
+#import "Event.h"
 
 @implementation MoveQuestionToSlideViewController
 
@@ -45,7 +45,13 @@
 	Question *question = self.representedObject;
 	Slide *newSlide = [[Slideshow sharedInstance] slideForSlideNumber:self.slide.number];
 	if (newSlide.identifier != question.slideIdentifier.integerValue) {
+		NSUndoManager *undoManager = [[[NSApp delegate] managedObjectContext] undoManager];
+		[undoManager beginUndoGrouping];
+
 		question.slide = newSlide;
+		[question.event recordModification];
+
+		[undoManager endUndoGrouping];
 	}
 	[NSApp endSheet:self.view.window returnCode:NSOKButton];
 }

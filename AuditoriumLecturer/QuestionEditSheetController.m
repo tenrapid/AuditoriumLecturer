@@ -10,6 +10,7 @@
 #import "AnswersEditViewController.h"
 #import "Question.h"
 #import "Answer.h"
+#import "Event.h"
 #import "Auditorium.h"
 #import "Slideshow.h"
 
@@ -143,9 +144,11 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 	}
 	if (question.type == QuestionMessageType) {
 		NSSet *answersToRemove = [NSSet setWithSet:question.answers];
-		[question removeAnswers:answersToRemove];
-		for (Answer *answer in answersToRemove) {
-			[answer.managedObjectContext deleteObject:answer];
+		if (answersToRemove.count) {
+			[question removeAnswers:answersToRemove];
+			for (Answer *answer in answersToRemove) {
+				[answer.managedObjectContext deleteObject:answer];
+			}
 		}
 	}
 
@@ -155,6 +158,13 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 - (void)sheetDidEnd:(NSWindow *)aSheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
 {
 	[sheet orderOut:self];
+
+	if (returnCode == NSOKButton) {
+		Question *question = self.representedObject;
+		if (question.hasChanges) {
+			[question.event recordModification];
+		}
+	}
 
 	NSUndoManager *undoManager = [[[NSApp delegate] managedObjectContext] undoManager];
 	[undoManager endUndoGrouping];

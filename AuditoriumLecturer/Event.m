@@ -14,6 +14,16 @@
 
 @dynamic title;
 @dynamic date;
+@dynamic version;
+@dynamic modified;
 @dynamic questions;
+
+- (void)recordModification
+{
+	if (!self.modified.boolValue) {
+		self.version = [NSNumber numberWithInteger:self.version.integerValue + 1];
+		self.modified = [NSNumber numberWithBool:YES];
+	}
+}
 
 @end

@@ -76,6 +76,22 @@ const NSString * const QuestionTypeNames[] = {
 	}
 }
 
+- (void)moveUpInOrderChain
+{
+	NSInteger order = self.order.integerValue;
+	Question *otherQuestion = [self fetchWithPredicate:[NSPredicate predicateWithFormat:@"event = %@ AND slideIdentifier = %@ AND order = %@", self.event, self.slideIdentifier, [NSNumber numberWithInteger:order - 1]]][0];
+	self.order = [NSNumber numberWithInteger:order - 1];
+	otherQuestion.order = [NSNumber numberWithInteger:order];
+}
+
+- (void)moveDownInOrderChain
+{
+	NSInteger order = self.order.integerValue;
+	Question *otherQuestion = [self fetchWithPredicate:[NSPredicate predicateWithFormat:@"event = %@ AND slideIdentifier = %@ AND order = %@", self.event, self.slideIdentifier, [NSNumber numberWithInteger:order + 1]]][0];
+	self.order = [NSNumber numberWithInteger:order + 1];
+	otherQuestion.order = [NSNumber numberWithInteger:order];
+}
+
 - (void)removeFromOrderChain
 {
 	NSArray *questions = [self fetchWithPredicate:[NSPredicate predicateWithFormat:@"(event = %@) AND (slideIdentifier = %@) AND (order > %@)", self.event, self.slideIdentifier, self.order]];

@@ -14,9 +14,14 @@
 
 @interface Event : AuditoriumObject
 
-@property (nonatomic, retain) NSString * title;
-@property (nonatomic, retain) NSDate * date;
+@property (nonatomic, retain) NSString *title;
+@property (nonatomic, retain) NSDate *date;
+@property (nonatomic, retain) NSNumber *version;
+@property (nonatomic, retain) NSNumber *modified;
 @property (nonatomic, retain) NSSet *questions;
+
+- (void)recordModification;
+
 @end
 
 @interface Event (CoreDataGeneratedAccessors)

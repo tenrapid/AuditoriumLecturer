@@ -8,6 +8,7 @@
 
 #import "QuestionListView.h"
 #import "Question.h"
+#import "Event.h"
 #import "QuestionEditSheetController.h"
 #import "MoveQuestionToSlideViewController.h"
 #import "Slideshow.h"
@@ -147,24 +148,36 @@
 
 - (IBAction)removeQuestionAction:(id)sender
 {
+	NSUndoManager *undoManager = [[[NSApp delegate] managedObjectContext] undoManager];
+	[undoManager beginUndoGrouping];
+
+	[self.question.event recordModification];
 	[self.question willBeDeleted];
-	[self.question.managedObjectContext deleteObject:question];
+	[self.question.managedObjectContext deleteObject:self.question];
+
+	[undoManager endUndoGrouping];
 }
 
 - (IBAction)moveQuestionUpAction:(id)sender
 {
-	NSInteger order = self.question.order.integerValue;
-	Question *otherQuestion = [self.question fetchWithPredicate:[NSPredicate predicateWithFormat:@"event = %@ AND slideIdentifier = %@ AND order = %@", self.question.event, self.question.slideIdentifier, [NSNumber numberWithInteger:order - 1]]][0];
-	question.order = [NSNumber numberWithInteger:order - 1];
-	otherQuestion.order = [NSNumber numberWithInteger:order];
+	NSUndoManager *undoManager = [[[NSApp delegate] managedObjectContext] undoManager];
+	[undoManager beginUndoGrouping];
+
+	[self.question moveUpInOrderChain];
+	[self.question.event recordModification];
+
+	[undoManager endUndoGrouping];
 }
 
 - (IBAction)moveQuestionDownAction:(id)sender
 {
-	NSInteger order = self.question.order.integerValue;
-	Question *otherQuestion = [self.question fetchWithPredicate:[NSPredicate predicateWithFormat:@"event = %@ AND slideIdentifier = %@ AND order = %@", self.question.event, self.question.slideIdentifier, [NSNumber numberWithInteger:order + 1]]][0];
-	question.order = [NSNumber numberWithInteger:order + 1];
-	otherQuestion.order = [NSNumber numberWithInteger:order];
+	NSUndoManager *undoManager = [[[NSApp delegate] managedObjectContext] undoManager];
+	[undoManager beginUndoGrouping];
+
+	[self.question moveDownInOrderChain];
+	[self.question.event recordModification];
+
+	[undoManager endUndoGrouping];
 }
 
 #pragma mark  NSMenuValidation Protocol
