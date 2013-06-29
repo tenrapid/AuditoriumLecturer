@@ -23,6 +23,7 @@
 	self = [super init];
     if (self) {
 		reallyAwake = NO;
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginOnAppLaunch:) name:NSApplicationDidBecomeActiveNotification object:nil];
 		[NSBundle loadNibNamed:@"LoginDialog" owner:self];
     }
     return self;
@@ -35,10 +36,15 @@
 		reallyAwake = YES;
 		return;
 	}
-	
+
 	[notLoggedInBox.superview addSubview:loggedInBox positioned:NSWindowAbove relativeTo:notLoggedInBox];
 	[loggedInBox setFrame:notLoggedInBox.frame];
 	[loggedInBox setHidden:YES];
+}
+
+- (void)loginOnAppLaunch:(NSNotification *)notification
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSApplicationDidBecomeActiveNotification object:nil];
 
 #ifdef DEBUG
 	NSURLCredential *credentials = [NSURLCredential credentialWithUser:@"mr8@mail.de" password:@"testing" persistence:NSURLCredentialPersistenceNone];
@@ -54,7 +60,8 @@
 		[notLoggedInBoxLoginButton setEnabled:NO];
 		email.stringValue = credentials.user;
 		password.stringValue = credentials.password;
-		[[Auditorium sharedInstance] loginWithEmail:credentials.user password:credentials.password delegate:self];
+		[self loginButtonPressed:nil];
+		[self loginDialogLoginButtonPressed:nil];
 	}
 }
 
@@ -69,6 +76,8 @@
 	[password setEnabled:YES];
 	[email selectText:self];
 	[loginDialogErrorMessage setHidden:YES];
+	[loginDialogSpinner setHidden:YES];
+	[loginDialogSpinner stopAnimation:self];
 	[self controlTextDidChange:nil];
 	[NSApp beginSheet:loginDialog modalForWindow:[NSApp mainWindow] modalDelegate:self didEndSelector:@selector(loginDialogDidEnd:returnCode:contextInfo:) contextInfo:nil];
 }
@@ -87,6 +96,8 @@
 - (IBAction)loginDialogCancelButtonPressed:(id)sender
 {
 	[NSApp endSheet:loginDialog returnCode:NSCancelButton];
+	[[Auditorium sharedInstance] cancelLogin];
+	[self didLogout];
 }
 
 - (void)loginDialogDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
