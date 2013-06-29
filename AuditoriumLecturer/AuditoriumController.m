@@ -51,6 +51,7 @@
 	self.events = [[NSArrayController alloc] init];
 	[self.events setManagedObjectContext:[[NSApp delegate] managedObjectContext]];
 	[self.events setEntityName:@"Event"];
+	[self.events setAutomaticallyRearrangesObjects:YES];
 	[self.events setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES]]];
 	[self.events fetch:self];
 }

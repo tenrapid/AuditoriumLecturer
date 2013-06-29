@@ -18,6 +18,7 @@
 @property (nonatomic, retain) NSDate *date;
 @property (nonatomic, retain) NSNumber *version;
 @property (nonatomic, retain) NSNumber *modified;
+@property (nonatomic, retain) NSNumber *auditoriumId;
 @property (nonatomic, retain) NSSet *questions;
 
 - (void)recordModification;

@@ -11,6 +11,7 @@
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Event" representedClassName="Event" parentEntity="AuditoriumObject" syncable="YES">
+        <attribute name="auditoriumId" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="date" attributeType="Date" syncable="YES"/>
         <attribute name="modified" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="title" attributeType="String" syncable="YES"/>
@@ -31,7 +32,7 @@
     <elements>
         <element name="Answer" positionX="270" positionY="0" width="128" height="120"/>
         <element name="AuditoriumObject" positionX="18" positionY="270" width="128" height="60"/>
-        <element name="Event" positionX="-173" positionY="0" width="128" height="120"/>
+        <element name="Event" positionX="-173" positionY="0" width="128" height="135"/>
         <element name="Question" positionX="43" positionY="-75" width="128" height="165"/>
         <element name="Rule" positionX="360" positionY="180" width="128" height="45"/>
     </elements>

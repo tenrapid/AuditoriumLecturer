@@ -22,6 +22,8 @@
 - (void)didFailLogin:(NSString *)error;
 - (void)didLogout;
 
+- (void)didEventsForUser:(NSArray *)events;
+
 @end
 
 @interface AuditoriumNetworkManager : NSObject
@@ -30,5 +32,7 @@
 
 - (void)loginWithEmail:(NSString *)email password:(NSString *)password;
 - (void)logout:(LoggedInUser *)user;
+
+- (void)eventsForUser:(LoggedInUser *)user;
 
 @end

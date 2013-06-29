@@ -38,6 +38,8 @@
 	NSLog(@"%i", request.responseStatusCode);
 }
 
+#pragma mark Login/Logout
+
 - (void)loginWithEmail:(NSString *)email password:(NSString *)password
 {
 	NSURL *url = [NSURL URLWithString:@"/users/sign_in.json" relativeToURL:[NSURL URLWithString:AUDITORIUM_URL]];
@@ -79,6 +81,40 @@
 - (void)didLogout:(ASIHTTPRequest *)request
 {
 	[delegate didLogout];
+}
+
+#pragma mark Events
+
+- (void)eventsForUser:(LoggedInUser *)user
+{
+	NSURL *url = [NSURL URLWithString:@"/users/events.json" relativeToURL:[NSURL URLWithString:AUDITORIUM_URL]];
+	url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?auth_token=%@", url.absoluteString, [user.authToken stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+	[self jsonRequest:url method:@"GET" data:nil finisch:@selector(didEventsForUser:) fail:@selector(requestFailed:)];
+}
+
+- (void)didEventsForUser:(ASIHTTPRequest *)request
+{
+	NSArray *response = [request.responseString objectFromJSONString];
+	NSMutableArray *events = [NSMutableArray array];
+
+	NSDateFormatter *dateParser = [[[NSDateFormatter alloc] init] autorelease];
+	[dateParser setDateFormat:@"yyyy-MM-dd"];
+
+	NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+	[dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+
+	for (NSDictionary *e in response) {
+		NSMutableDictionary *event = [NSMutableDictionary dictionary];
+		NSDate *date = [dateParser dateFromString:[e objectForKey:@"beginDate"]];
+		NSString *dateString = [dateFormatter stringFromDate:date];
+		NSString *courseName = [(NSDictionary *)[e objectForKey:@"course"] objectForKey:@"name"];
+		NSString *title = [NSString stringWithFormat:@"%@ – %@", courseName, dateString];
+		[event setValue:[e objectForKey:@"id"] forKey:@"auditoriumId"];
+		[event setValue:title forKey:@"title"];
+		[event setValue:date forKey:@"date"];
+		[events addObject:event];
+	}
+	[delegate didEventsForUser:events];
 }
 
 - (void)jsonRequest:(NSURL *)url method:(NSString *)method data:(NSDictionary *)data finisch:(SEL)finish fail:(SEL)fail

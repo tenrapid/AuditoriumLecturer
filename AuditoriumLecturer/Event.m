@@ -16,6 +16,7 @@
 @dynamic date;
 @dynamic version;
 @dynamic modified;
+@dynamic auditoriumId;
 @dynamic questions;
 
 - (void)recordModification

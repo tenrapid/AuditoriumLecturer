@@ -281,9 +281,11 @@
 	[self performSelector:@selector(createTestEvents) withObject:nil afterDelay:simulatedNetworkDelay];
 	self.loggedInUser = user;
 	self.loggedIn = YES;
-	
+	[self.networkManager eventsForUser:self.loggedInUser];
+
 	[self.loginDelegate performSelector:@selector(didLogin) withObject:nil];
 	self.loginDelegate = nil;
+
 }
 
 - (void)didFailLogin:(NSString *)error
@@ -302,6 +304,61 @@
 	[self.logoutDelegate performSelector:@selector(didLogout) withObject:nil];
 	self.logoutDelegate = nil;
 }
+
+#pragma mark Events
+
+- (void)didEventsForUser:(NSArray *)serverEvents
+{
+	self.saveEnabled = NO;
+
+	[context processPendingChanges];
+	[context.undoManager disableUndoRegistration];
+
+	NSError *error = nil;
+
+	NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
+	[fetchRequest setEntity:[NSEntityDescription entityForName:@"Event" inManagedObjectContext:context]];
+	NSArray *localEvents = [context executeFetchRequest:fetchRequest error:&error];
+	
+	NSMutableArray *localEventsAuditoriumIds = [[localEvents valueForKeyPath:@"auditoriumId"] mutableCopy];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"auditoriumId = $AUDITORIUM_ID"];
+
+	for (NSDictionary *serverEvent in serverEvents) {
+		Event *localEvent;
+		NSNumber *auditoriumId = [serverEvent objectForKey:@"auditoriumId"];
+		if ([localEventsAuditoriumIds containsObject:auditoriumId]) {
+			NSDictionary *variables = @{@"AUDITORIUM_ID": auditoriumId};
+			localEvent = [localEvents filteredArrayUsingPredicate:[predicate predicateWithSubstitutionVariables:variables]][0];
+			[localEventsAuditoriumIds removeObject:auditoriumId];
+		}
+		else {
+			localEvent = [Auditorium objectForEntityName:@"Event"];
+		}
+		[localEvent setValuesForKeysWithDictionary:serverEvent];
+	}
+
+	NSArray *localEventsToDelete = [localEvents filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"auditoriumId IN %@", localEventsAuditoriumIds]];
+	for (Event *localEventToDelete in localEventsToDelete) {
+		if ([localEventToDelete isEqualTo:self.event]) {
+			self.event = nil;
+		}
+		[context deleteObject:localEventToDelete];
+	}
+	
+	[context processPendingChanges];
+	[context.undoManager enableUndoRegistration];
+
+	self.postEnabled = NO;
+	error = nil;
+	[context save:&error];
+	if (error) {
+		NSLog(@"%@", error);
+	}
+	self.postEnabled = YES;
+	self.saveEnabled = YES;
+}
+
+#pragma mark Sending current slide to server
 
 - (void)sendSlide:(Slide *)slide
 {
