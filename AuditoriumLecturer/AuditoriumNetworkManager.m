@@ -11,9 +11,16 @@
 #import "ASIHTTPRequest.h"
 #import "JSONKit.h"
 
+@interface AuditoriumNetworkManager ()
+
+@property (retain) ASIHTTPRequest *loginRequest;
+
+@end
+
 @implementation AuditoriumNetworkManager
 
 @synthesize delegate;
+@synthesize loginRequest;
 
 - (id)init
 {
@@ -44,11 +51,19 @@
 {
 	NSURL *url = [NSURL URLWithString:@"/users/sign_in.json" relativeToURL:[NSURL URLWithString:AUDITORIUM_URL]];
 	NSDictionary *data = @{@"user": @{@"email": email, @"password": password}};
-	[self jsonRequest:url method:@"POST" data:data finisch:@selector(didLogin:) fail:@selector(didFailLogin:)];
+	self.loginRequest = [self jsonRequest:url method:@"POST" data:data finisch:@selector(didLogin:) fail:@selector(didFailLogin:)];
+}
+
+- (void)cancelLogin
+{
+	[self.loginRequest clearDelegatesAndCancel];
+	self.loginRequest = nil;
 }
 
 - (void)didLogin:(ASIHTTPRequest *)request
 {
+	self.loginRequest = nil;
+
 	NSDictionary *response = [request.responseString objectFromJSONString];
 	LoggedInUser *user = [[LoggedInUser new] autorelease];
 	user.userName = [response objectForKey:@"username"];
@@ -61,6 +76,8 @@
 
 - (void)didFailLogin:(ASIHTTPRequest *)request
 {
+	self.loginRequest = nil;
+
 	NSString *error;
 	if (request.responseStatusCode == 401) {
 		error = @"Benutzername/Passwort falsch";
@@ -117,7 +134,7 @@
 	[delegate didEventsForUser:events];
 }
 
-- (void)jsonRequest:(NSURL *)url method:(NSString *)method data:(NSDictionary *)data finisch:(SEL)finish fail:(SEL)fail
+- (ASIHTTPRequest *)jsonRequest:(NSURL *)url method:(NSString *)method data:(NSDictionary *)data finisch:(SEL)finish fail:(SEL)fail
 {
 	ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
 	[request setDelegate:self];
@@ -131,6 +148,7 @@
 	}
 	[request startAsynchronous];
 
+	return request;
 }
 
 @end

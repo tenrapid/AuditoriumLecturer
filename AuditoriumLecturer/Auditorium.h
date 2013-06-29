@@ -33,6 +33,7 @@
 + (id)objectForEntityName:(NSString *)entityName;
 
 - (void)loginWithEmail:(NSString *)email password:(NSString *)password delegate:(id)delegate;
+- (void)cancelLogin;
 - (void)logoutWithDelegate:(id)delegate;
 
 - (void)sendSlide:(Slide *)slide;

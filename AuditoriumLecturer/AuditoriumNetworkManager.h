@@ -31,6 +31,7 @@
 @property (retain) id<AuditoriumNetworkManagerDelegateProtocol> delegate;
 
 - (void)loginWithEmail:(NSString *)email password:(NSString *)password;
+- (void)cancelLogin;
 - (void)logout:(LoggedInUser *)user;
 
 - (void)eventsForUser:(LoggedInUser *)user;

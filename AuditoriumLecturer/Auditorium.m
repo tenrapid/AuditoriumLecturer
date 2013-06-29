@@ -172,10 +172,9 @@
 	[self.networkManager loginWithEmail:email password:password];
 }
 
-- (void)logoutWithDelegate:(id)delegate
+- (void)cancelLogin
 {
-	self.logoutDelegate = delegate;
-	[self.networkManager logout:self.loggedInUser];
+	[self.networkManager cancelLogin];
 }
 
 - (void)didLogin:(LoggedInUser *)user
@@ -193,9 +192,15 @@
 - (void)didFailLogin:(NSString *)error
 {
 	self.loggedIn = NO;
-	
+
 	[self.loginDelegate performSelector:@selector(didFailLogin:) withObject:error];
 	self.loginDelegate = nil;
+}
+
+- (void)logoutWithDelegate:(id)delegate
+{
+	self.logoutDelegate = delegate;
+	[self.networkManager logout:self.loggedInUser];
 }
 
 - (void)didLogout
