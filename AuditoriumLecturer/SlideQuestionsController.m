@@ -49,8 +49,8 @@
 		self.questions = [[NSArrayController alloc] init];
 		[self.questions setManagedObjectContext:[[NSApp delegate] managedObjectContext]];
 		[self.questions setEntityName:@"Question"];
-		[self.questions setClearsFilterPredicateOnInsertion:NO];
 		[self.questions setAutomaticallyRearrangesObjects:YES];
+		[self.questions setFetchPredicate:[self questionsFetchPredicate]];
 		[self.questions setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
 		[self.questions fetch:self];
 
@@ -84,11 +84,15 @@
 	[super dealloc];
 }
 
+- (NSPredicate *)questionsFetchPredicate
+{
+	return [NSPredicate predicateWithFormat:@"event = %@ AND slideIdentifier = %@ AND slideIdentifier != 0", self.event, [NSNumber numberWithInteger:self.slide.identifier]];
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
 	if ([keyPath isEqualToString:@"event"] || [keyPath isEqualToString:@"slide"]) {
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"event = %@ AND slideIdentifier = %@ AND slideIdentifier != 0", self.event, [NSNumber numberWithInteger:self.slide.identifier]];
-		[self.questions setFilterPredicate:predicate];
+		[self.questions setFetchPredicate:[self questionsFetchPredicate]];
 	}
 }
 
