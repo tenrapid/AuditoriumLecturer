@@ -43,8 +43,8 @@
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSPopUpButton" id="345428638">
 						<reference key="NSNextResponder" ref="1005"/>
-						<int key="NSvFlags">289</int>
-						<string key="NSFrame">{{331, 39}, {34, 19}}</string>
+						<int key="NSvFlags">265</int>
+						<string key="NSFrame">{{331, 43}, {34, 19}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
@@ -148,6 +148,7 @@
 									<int key="NSfFlags">1044</int>
 								</object>
 							</object>
+							<int key="NSSelectedIndex">-1</int>
 							<bool key="NSPullDown">YES</bool>
 							<int key="NSPreferredEdge">1</int>
 							<bool key="NSUsesItemFromMenu">YES</bool>
@@ -158,7 +159,7 @@
 					<object class="NSTextField" id="889508305">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">274</int>
-						<string key="NSFrame">{{16, 6}, {343, 51}}</string>
+						<string key="NSFrame">{{16, 6}, {343, 55}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="345428638"/>
@@ -197,7 +198,7 @@
 						</object>
 					</object>
 				</array>
-				<string key="NSFrameSize">{375, 61}</string>
+				<string key="NSFrameSize">{375, 68}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="889508305"/>
