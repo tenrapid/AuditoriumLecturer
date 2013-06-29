@@ -19,6 +19,7 @@
 	IBOutlet NSProgressIndicator *loginDialogSpinner;
 	IBOutlet NSTextField *loginDialogErrorMessage;
 
+	IBOutlet NSWindow *window;
 	IBOutlet NSBox *loggedInBox;
 	IBOutlet NSBox *notLoggedInBox;
 	IBOutlet NSTextField *loggedInUser;

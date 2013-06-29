@@ -23,7 +23,6 @@
 	self = [super init];
     if (self) {
 		reallyAwake = NO;
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginOnAppLaunch:) name:NSApplicationDidBecomeActiveNotification object:nil];
 		[NSBundle loadNibNamed:@"LoginDialog" owner:self];
     }
     return self;
@@ -40,12 +39,11 @@
 	[notLoggedInBox.superview addSubview:loggedInBox positioned:NSWindowAbove relativeTo:notLoggedInBox];
 	[loggedInBox setFrame:notLoggedInBox.frame];
 	[loggedInBox setHidden:YES];
+	[self performSelector:@selector(loginOnAppLaunch) withObject:nil afterDelay:0];
 }
 
-- (void)loginOnAppLaunch:(NSNotification *)notification
+- (void)loginOnAppLaunch
 {
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSApplicationDidBecomeActiveNotification object:nil];
-
 #ifdef DEBUG
 	NSURLCredential *credentials = [NSURLCredential credentialWithUser:@"mr8@mail.de" password:@"testing" persistence:NSURLCredentialPersistenceNone];
 #else
@@ -79,7 +77,7 @@
 	[loginDialogSpinner setHidden:YES];
 	[loginDialogSpinner stopAnimation:self];
 	[self controlTextDidChange:nil];
-	[NSApp beginSheet:loginDialog modalForWindow:[NSApp mainWindow] modalDelegate:self didEndSelector:@selector(loginDialogDidEnd:returnCode:contextInfo:) contextInfo:nil];
+	[NSApp beginSheet:loginDialog modalForWindow:window modalDelegate:self didEndSelector:@selector(loginDialogDidEnd:returnCode:contextInfo:) contextInfo:nil];
 }
 
 - (IBAction)loginDialogLoginButtonPressed:(id)sender
