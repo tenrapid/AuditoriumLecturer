@@ -102,6 +102,18 @@
 	}
 }
 
+- (IBAction)synchronizeAction:(id)sender
+{
+	[self.auditorium synchronize];
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)item {
+	if (item.action == @selector(synchronizeAction:)) {
+		return self.auditorium.loggedIn && !self.auditorium.synchronizing;
+	}
+    return YES;
+}
+
 - (void)pulseSendToolbarItem:(NSTimer*)timer
 {
 	[sendToolbarItem setImage:[NSImage imageNamed:pulsingState < 2 ? @"TB3_Record-Pressed" : @"TB3_Record-Pressed-Off"]];

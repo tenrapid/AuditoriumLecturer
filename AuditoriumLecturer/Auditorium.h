@@ -25,7 +25,8 @@
 
 @interface Auditorium : NSObject <AuditoriumNetworkManagerDelegateProtocol>
 
-@property BOOL loggedIn;
+@property (assign) BOOL loggedIn;
+@property (assign) BOOL synchronizing;
 @property (retain) LoggedInUser *loggedInUser;
 @property (assign) Event *event;
 
@@ -35,6 +36,8 @@
 - (void)loginWithEmail:(NSString *)email password:(NSString *)password delegate:(id)delegate;
 - (void)cancelLogin;
 - (void)logoutWithDelegate:(id)delegate;
+
+- (void)synchronize;
 
 - (void)sendSlide:(Slide *)slide;
 

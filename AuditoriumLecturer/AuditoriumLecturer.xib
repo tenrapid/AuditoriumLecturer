@@ -259,6 +259,14 @@
 									<reference key="NSOnImage" ref="35465992"/>
 									<reference key="NSMixedImage" ref="502551668"/>
 								</object>
+								<object class="NSMenuItem" id="814563850">
+									<reference key="NSMenu" ref="720053764"/>
+									<string key="NSTitle">Synchronize</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="35465992"/>
+									<reference key="NSMixedImage" ref="502551668"/>
+								</object>
 								<object class="NSMenuItem" id="776162233">
 									<reference key="NSMenu" ref="720053764"/>
 									<string key="NSTitle">Close</string>
@@ -1214,7 +1222,7 @@
 														<string key="NSFrame">{{0, 81}, {525, 15}}</string>
 														<reference key="NSSuperview" ref="9375772"/>
 														<reference key="NSWindow"/>
-														<reference key="NSNextKeyView" ref="652999364"/>
+														<reference key="NSNextKeyView"/>
 														<string key="NSReuseIdentifierKey">_NS:26</string>
 														<int key="NSsFlags">1</int>
 														<reference key="NSTarget" ref="9375772"/>
@@ -1644,6 +1652,22 @@
 					<int key="connectionID">905</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">synchronizeAction:</string>
+						<reference key="source" ref="1006013941"/>
+						<reference key="destination" ref="814563850"/>
+					</object>
+					<int key="connectionID">1173</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">synchronizeMenuItem</string>
+						<reference key="source" ref="1006013941"/>
+						<reference key="destination" ref="814563850"/>
+					</object>
+					<int key="connectionID">1174</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">loggedInBox</string>
 						<reference key="source" ref="161435072"/>
@@ -1932,6 +1956,7 @@
 							<reference ref="425164168"/>
 							<reference ref="579971712"/>
 							<reference ref="1010469920"/>
+							<reference ref="814563850"/>
 						</array>
 						<reference key="parent" ref="379814623"/>
 					</object>
@@ -2713,6 +2738,11 @@
 						<reference key="object" ref="124511064"/>
 						<reference key="parent" ref="9375772"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1171</int>
+						<reference key="object" ref="814563850"/>
+						<reference key="parent" ref="720053764"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -2727,6 +2757,7 @@
 				<string key="1158.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1159.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1160.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1171.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="124.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="125.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="126.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2860,13 +2891,24 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1170</int>
+			<int key="maxID">1174</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<object class="IBPartialClassDescription">
 					<string key="className">AppDelegate</string>
 					<string key="superclassName">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">synchronizeAction:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">synchronizeAction:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">synchronizeAction:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<string key="NS.key.0">window</string>
 						<string key="NS.object.0">NSWindow</string>
@@ -2886,20 +2928,24 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">AuditoriumController</string>
 					<string key="superclassName">NSObject</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">sendToolbarItemPressed:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">sendToolbarItemPressed:</string>
-						<object class="IBActionInfo" key="NS.object.0">
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="sendToolbarItemPressed:">id</string>
+						<string key="synchronizeAction:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="sendToolbarItemPressed:">
 							<string key="name">sendToolbarItemPressed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-					</object>
+						<object class="IBActionInfo" key="synchronizeAction:">
+							<string key="name">synchronizeAction:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="eventPopUpButton">NSPopUpButton</string>
 						<string key="sendToolbarItem">NSToolbarItem</string>
+						<string key="synchronizeMenuItem">NSMenuItem</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="eventPopUpButton">
@@ -2909,6 +2955,10 @@
 						<object class="IBToOneOutletInfo" key="sendToolbarItem">
 							<string key="name">sendToolbarItem</string>
 							<string key="candidateClassName">NSToolbarItem</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="synchronizeMenuItem">
+							<string key="name">synchronizeMenuItem</string>
+							<string key="candidateClassName">NSMenuItem</string>
 						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">

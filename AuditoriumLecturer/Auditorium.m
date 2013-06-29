@@ -212,7 +212,12 @@
 	self.logoutDelegate = nil;
 }
 
-#pragma mark Events
+#pragma mark Synchronize
+
+- (void)synchronize
+{
+	
+}
 
 - (void)didEventsForUser:(NSArray *)serverEvents
 {
