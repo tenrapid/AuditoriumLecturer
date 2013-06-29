@@ -109,7 +109,7 @@
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item {
 	if (item.action == @selector(synchronizeAction:)) {
-		return self.auditorium.loggedIn && !self.auditorium.synchronizing;
+		return self.auditorium.loggedIn && !self.auditorium.synchronizing && ![[NSApp mainWindow] attachedSheet];
 	}
     return YES;
 }
