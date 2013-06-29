@@ -120,13 +120,9 @@
 		networkManager.delegate = self;
 
 		NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-		[notificationCenter addObserver:self selector:@selector(disableSave:) name:QuestionEditSheetWillOpenNotification object:nil];
-		[notificationCenter addObserver:self selector:@selector(enableSave:) name:QuestionEditSheetDidCloseNotification object:nil];
 		[notificationCenter addObserver:self selector:@selector(contextDidSave:) name:NSManagedObjectContextDidSaveNotification object:context];
 
 		[self addObserver:self forKeyPath:@"event" options:NSKeyValueObservingOptionNew context:nil];
-
-		[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(save:) userInfo:nil repeats:YES];
 	}
     return self;
 }
@@ -134,18 +130,15 @@
 - (void)contextDidSave:(NSNotification *)notification
 {
 	return;
-	if (self.isPostEnabled) {
-		NSLog(@"inserted: %@", [notification.userInfo objectForKey:@"inserted"]);
-		NSLog(@"updated: %@", [notification.userInfo objectForKey:@"updated"]);
-		NSLog(@"deleted: %@", [notification.userInfo objectForKey:@"deleted"]);
-	}
+	NSLog(@"inserted: %@", [notification.userInfo objectForKey:@"inserted"]);
+	NSLog(@"updated: %@", [notification.userInfo objectForKey:@"updated"]);
+	NSLog(@"deleted: %@", [notification.userInfo objectForKey:@"deleted"]);
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
 	if ([keyPath isEqualToString:@"event"]) {
 		if (self.event) {
-//			[self performSelector:@selector(createTestQuestions) withObject:nil afterDelay:simulatedNetworkDelay];
 		}
 	}
 }
@@ -160,107 +153,16 @@
 		return;
 	}
 
-	self.saveEnabled = NO;
-
 	[context processPendingChanges];
 	[context.undoManager disableUndoRegistration];
 	
 	Event *event1 = [Auditorium objectForEntityName:@"Event"];
-	event1.title = @"Rechnernetze – 2. Vorlesung – 24.06.2013";
-	event1.date	= [NSDate dateWithString:@"2013-06-24 10:00:00 +0000"];
-
-	Event *event2 = [Auditorium objectForEntityName:@"Event"];
-	event2.title = @"Rechnernetze – 3. Vorlesung – 31.06.2013";
-	event2.date	= [NSDate dateWithString:@"2013-06-31 10:00:00 +0000"];
+	event1.title = @"Testvorlesung – 19.07.2013";
+	event1.date	= [NSDate dateWithString:@"2013-07-19 10:00:00 +0000"];
 
 	[context processPendingChanges];
 	[context.undoManager enableUndoRegistration];
-
-	self.postEnabled = NO;
-	error = nil;
-	[context save:&error];
-	if (error) {
-		NSLog(@"%@", error);
-	}
-	self.postEnabled = YES;
-	self.saveEnabled = YES;
 }
-
-- (void)createTestQuestions
-{
-	self.saveEnabled = NO;
-
-	[context processPendingChanges];
-	[context.undoManager disableUndoRegistration];
-	
-	Question *question;
-	Answer *answer;
-	
-	question = [Auditorium objectForEntityName:@"Question"];
-	question.event = self.event;
-	question.slideIdentifier = [NSNumber numberWithInteger:1];
-	question.text = @"Warum sind Modelle des selbstgesteuerten bzw. selbstregulierten Lernens für computergestützte Lehr-Lernszenarien von Bedeutung?";
-	question.type = QuestionSingleChoiceType;
-
-	answer = [Auditorium objectForEntityName:@"Answer"];
-	answer.correct = [NSNumber numberWithBool:YES];
-	answer.text = @"Das Konzept legt Anforderungen offen, bei denen der Lerner durch den Computer unterstützt werden kann.";
-	answer.feedback = @"Der Computer eignet sich um dem Lerner adaptiv Unterstützung zu geben.";
-	answer.order = [NSNumber numberWithInteger:0];
-	[question addAnswersObject:answer];
-	answer = [Auditorium objectForEntityName:@"Answer"];
-	answer.correct = [NSNumber numberWithBool:NO];
-	answer.text = @"Das Konzept legt Anforderungen offen, bei denen der Computer durch den Lerner unterstützt werden kann.";
-	answer.feedback = @"Es geht primär um die Unterstützung des Lerners, nicht um die Unterstützung eines selbstreguliert lernenden Computers.";
-	answer.order = [NSNumber numberWithInteger:1];
-	[question addAnswersObject:answer];
-	answer = [Auditorium objectForEntityName:@"Answer"];
-	answer.correct = [NSNumber numberWithBool:NO];
-	answer.text = @"Das Konzept trifft Aussagen über Lehr-Lernprozesse beim computergestützten Lernen.";
-	answer.feedback = @"Das computergestützte Lernen wird nicht direkt thematisiert, es ist lediglich eine von vielen Anwendungssituationen, da Lernen am Computer zu einem großen Teil selbstgesteuert ist.";
-	answer.order = [NSNumber numberWithInteger:2];
-	[question addAnswersObject:answer];
-	answer = [Auditorium objectForEntityName:@"Answer"];
-	answer.correct = [NSNumber numberWithBool:NO];
-	answer.text = @"Das Konzept trifft Aussagen über volitionale Prozesse beim computergestützten Lernen.";
-	answer.feedback = @"Volitionale Prozesse werden thematisiert, allerdings nicht explizit in Bezug auf das computergestützte Lernen.";
-	answer.order = [NSNumber numberWithInteger:3];
-	[question addAnswersObject:answer];
-
-	[context processPendingChanges];
-	[context.undoManager enableUndoRegistration];
-	
-	self.postEnabled = NO;
-	NSError *error = nil;
-	[context save:&error];
-	if (error) {
-		NSLog(@"%@", error);
-	}
-	self.postEnabled = YES;
-	self.saveEnabled = YES;
-}
-
-- (void)save:(NSTimer*)timer
-{
-	NSError *error = nil;
-	if (context.hasChanges && self.isSaveEnabled) {
-		[context save:&error];
-		if (error) {
-			NSLog(@"%@", error);
-		}
-	}
-}
-
-- (void)disableSave:(NSNotification *)notification
-{
-	self.saveEnabled = NO;
-}
-
-- (void)enableSave:(NSNotification *)notification
-{
-	self.saveEnabled = YES;
-}
-
 
 #pragma mark Login/Logout
 
@@ -309,8 +211,6 @@
 
 - (void)didEventsForUser:(NSArray *)serverEvents
 {
-	self.saveEnabled = NO;
-
 	[context processPendingChanges];
 	[context.undoManager disableUndoRegistration];
 
@@ -347,15 +247,6 @@
 	
 	[context processPendingChanges];
 	[context.undoManager enableUndoRegistration];
-
-	self.postEnabled = NO;
-	error = nil;
-	[context save:&error];
-	if (error) {
-		NSLog(@"%@", error);
-	}
-	self.postEnabled = YES;
-	self.saveEnabled = YES;
 }
 
 #pragma mark Sending current slide to server
