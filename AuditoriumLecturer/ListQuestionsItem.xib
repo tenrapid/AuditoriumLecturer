@@ -44,7 +44,7 @@
 					<object class="NSPopUpButton" id="345428638">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">265</int>
-						<string key="NSFrame">{{331, 43}, {34, 19}}</string>
+						<string key="NSFrame">{{327, 44}, {36, 19}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
@@ -159,7 +159,7 @@
 					<object class="NSTextField" id="889508305">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">274</int>
-						<string key="NSFrame">{{16, 6}, {343, 55}}</string>
+						<string key="NSFrame">{{16, 6}, {343, 56}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="345428638"/>
@@ -198,7 +198,7 @@
 						</object>
 					</object>
 				</array>
-				<string key="NSFrameSize">{375, 68}</string>
+				<string key="NSFrameSize">{375, 69}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="889508305"/>

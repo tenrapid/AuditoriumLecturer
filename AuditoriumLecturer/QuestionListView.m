@@ -66,7 +66,7 @@
 	NSMutableAttributedString *as = [[[NSMutableAttributedString alloc] init] autorelease];
 
 	NSMutableParagraphStyle *paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-	paragraphStyle.paragraphSpacing = 2.f;
+	paragraphStyle.paragraphSpacing = 3.f;
 
 	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:0.65f alpha:1.f], NSFontAttributeName:[NSFont systemFontOfSize:12.f]};
 	[as appendAttributedString:[[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n", QuestionTypeNames[question.type]] attributes:attributes] autorelease]];
