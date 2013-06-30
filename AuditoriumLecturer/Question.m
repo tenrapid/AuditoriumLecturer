@@ -37,6 +37,7 @@ const NSString * const QuestionTypeNames[] = {
 {
 	if (self.slideIdentifier.integerValue != 0) {
 		[self removeFromOrderChain];
+		[self removeSlideIdentifierFromSlideshowIfNotUsed];
 	}
 	self.order = [NSNumber numberWithInteger:[self countWithPredicate:[NSPredicate predicateWithFormat:@"(event = %@) AND (slideIdentifier = %@)", self.event, slideIdentifier]]];
 
@@ -47,11 +48,6 @@ const NSString * const QuestionTypeNames[] = {
 
 - (void)setSlide:(Slide *)slide
 {
-	if (self.slideIdentifier.integerValue != 0) {
-		[self removeSlideIdentifierFromSlideshowIfNotUsed];
-	}
-
-	self.slideNumber = [NSNumber numberWithInteger:slide.number];
 	NSInteger identifier = slide.identifier;
 	if (!identifier) {
 		identifier = [[Slideshow sharedInstance] addIdentifierToSlideWithNumber:slide.number];

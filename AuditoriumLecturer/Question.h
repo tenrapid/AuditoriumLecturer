@@ -28,7 +28,7 @@ extern const NSString * const QuestionTypeNames[];
 @property (nonatomic, assign) Event * event;
 @property (nonatomic, retain) NSNumber * order;
 @property (nonatomic, assign) Slide * slide;
-@property (nonatomic, retain) NSNumber * slideNumber;
+@property (nonatomic, assign) NSNumber * slideNumber;
 @property (nonatomic, retain) NSNumber * slideIdentifier;
 @property (nonatomic, retain) NSString * text;
 @property (nonatomic, assign) QuestionType type;

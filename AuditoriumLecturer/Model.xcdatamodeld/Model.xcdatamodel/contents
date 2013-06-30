@@ -22,7 +22,7 @@
         <attribute name="order" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="slide" optional="YES" transient="YES" syncable="YES"/>
         <attribute name="slideIdentifier" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
-        <attribute name="slideNumber" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="slideNumber" transient="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="type" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="answers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Answer" inverseName="question" inverseEntity="Answer" syncable="YES"/>
