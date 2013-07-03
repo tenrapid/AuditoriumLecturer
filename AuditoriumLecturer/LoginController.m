@@ -8,7 +8,7 @@
 
 #import "LoginController.h"
 #import "Auditorium.h"
-#import "AuditoriumNetworkManager.h"
+#import "LoggedInUser.h"
 
 @interface LoginController ()
 {

@@ -12,40 +12,33 @@
 #import "Event.h"
 #import "Question.h"
 #import "Answer.h"
+#import "LoggedInUser.h"
 #import "QuestionEditSheetController.h"
+#import "SyncInfoSheetController.h"
+#import "ResolveSyncConflictSheetController.h"
 
-#define simulatedNetworkDelay 0
-
-
-@implementation LoggedInUser
-
-@synthesize userName;
-@synthesize firstName;
-@synthesize lastName;
-@synthesize email;
-@synthesize authToken;
-
-- (void)dealloc
-{
-	[self.userName release];
-	[self.firstName release];
-	[self.lastName release];
-	[self.email release];
-	[self.authToken release];
-	[super dealloc];
-}
-
-@end
-
+typedef enum SyncState {
+	NoSyncSyncState = 0,
+	SyncEventsSyncState = 1,
+	SyncQuestionsSyncState = 2,
+	FinishSyncSyncState = 3
+} SyncState;
 
 @interface Auditorium ()
+{
+	NSMutableArray *eventsToPull;
+	NSMutableArray *eventsToPush;
+	NSMutableArray *eventsInConflict;
+	NSMutableArray *eventsSyncing;
+}
 
 @property (assign) NSManagedObjectContext *context;
 @property (retain) AuditoriumNetworkManager *networkManager;
-@property (getter = isSaveEnabled) BOOL saveEnabled;
-@property (getter = isPostEnabled) BOOL postEnabled;
+@property (assign) SyncState syncState;
 @property (retain) id loginDelegate;
 @property (retain) id logoutDelegate;
+@property (retain) SyncInfoSheetController *syncInfoSheetController;
+@property (retain) ResolveSyncConflictSheetController *resolveSyncConflictSheetController;
 
 @end
 
@@ -53,13 +46,16 @@
 
 @synthesize loggedIn;
 @synthesize loggedInUser;
-@synthesize saveEnabled;
-@synthesize postEnabled;
+@synthesize syncing;
+@synthesize event = _event;
+
 @synthesize context;
 @synthesize networkManager;
-
-@synthesize event;
-
+@synthesize syncState;
+@synthesize loginDelegate;
+@synthesize logoutDelegate;
+@synthesize syncInfoSheetController;
+@synthesize resolveSyncConflictSheetController;
 
 #pragma mark  Class Methods
 
@@ -119,28 +115,12 @@
 		networkManager = [[AuditoriumNetworkManager alloc] init];
 		networkManager.delegate = self;
 
-		NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-		[notificationCenter addObserver:self selector:@selector(contextDidSave:) name:NSManagedObjectContextDidSaveNotification object:context];
-
-		[self addObserver:self forKeyPath:@"event" options:NSKeyValueObservingOptionNew context:nil];
+		eventsToPull = [[NSMutableArray alloc] init];
+		eventsToPush = [[NSMutableArray alloc] init];
+		eventsSyncing = [[NSMutableArray alloc] init];
+		eventsInConflict = [[NSMutableArray alloc] init];
 	}
     return self;
-}
-
-- (void)contextDidSave:(NSNotification *)notification
-{
-	return;
-	NSLog(@"inserted: %@", [notification.userInfo objectForKey:@"inserted"]);
-	NSLog(@"updated: %@", [notification.userInfo objectForKey:@"updated"]);
-	NSLog(@"deleted: %@", [notification.userInfo objectForKey:@"deleted"]);
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-	if ([keyPath isEqualToString:@"event"]) {
-		if (self.event) {
-		}
-	}
 }
 
 - (void)createTestEvents
@@ -156,9 +136,9 @@
 	[context processPendingChanges];
 	[context.undoManager disableUndoRegistration];
 	
-	Event *event1 = [Auditorium objectForEntityName:@"Event"];
-	event1.title = @"Testvorlesung – 19.07.2013";
-	event1.date	= [NSDate dateWithString:@"2013-07-19 10:00:00 +0000"];
+	Event *event = [Auditorium objectForEntityName:@"Event"];
+	event.title = @"Testvorlesung – 19.07.2013";
+	event.date	= [NSDate dateWithString:@"2013-07-19 10:00:00 +0000"];
 
 	[context processPendingChanges];
 	[context.undoManager enableUndoRegistration];
@@ -179,14 +159,14 @@
 
 - (void)didLogin:(LoggedInUser *)user
 {
-	[self performSelector:@selector(createTestEvents) withObject:nil afterDelay:simulatedNetworkDelay];
+	[self performSelector:@selector(createTestEvents) withObject:nil afterDelay:0];
 	self.loggedInUser = user;
 	self.loggedIn = YES;
-	[self.networkManager eventsForUser:self.loggedInUser];
 
 	[self.loginDelegate performSelector:@selector(didLogin) withObject:nil];
 	self.loginDelegate = nil;
 
+	[self sync];
 }
 
 - (void)didFailLogin:(NSString *)error
@@ -212,11 +192,72 @@
 	self.logoutDelegate = nil;
 }
 
-#pragma mark Synchronize
+#pragma mark Sync
 
-- (void)synchronize
+- (void)sync
 {
-	
+	if (self.syncState != NoSyncSyncState) {
+		return;
+	}
+	[self updateSyncState];
+}
+
+- (void)updateSyncState
+{
+	switch (self.syncState) {
+		case NoSyncSyncState:
+			self.syncState = SyncEventsSyncState;
+			self.syncing = YES;
+			self.syncInfoSheetController = [[[SyncInfoSheetController alloc] init] autorelease];
+			[self.syncInfoSheetController setMessage:@"Lade Veranstaltungen…"];
+			[self.networkManager eventsForUser:self.loggedInUser];
+			break;
+			
+		case SyncEventsSyncState:
+			self.syncState = SyncQuestionsSyncState;
+			[self.syncInfoSheetController setMessage:@"Synchronisiere Nachrichten…"];
+			[self syncQuestions];
+			break;
+			
+		case SyncQuestionsSyncState:
+			if (!eventsSyncing.count && !eventsInConflict.count) {
+				self.syncState = FinishSyncSyncState;
+				[self updateSyncState];
+			}
+			else if (eventsInConflict.count && !self.resolveSyncConflictSheetController) {
+				if (self.syncInfoSheetController) {
+					self.syncInfoSheetController = nil;
+				}
+				[self performSelector:@selector(resolveSyncConflict) withObject:nil afterDelay:0];
+			}
+			else if (!self.syncInfoSheetController) {
+				self.syncInfoSheetController = [[[SyncInfoSheetController alloc] init] autorelease];
+				[self.syncInfoSheetController setMessage:@"Synchronisiere Nachrichten…"];
+			}
+			break;
+			
+		case FinishSyncSyncState:
+			if (self.syncInfoSheetController) {
+				self.syncInfoSheetController = nil;
+			}
+			self.syncState = NoSyncSyncState;
+			self.syncing = NO;
+			break;
+	}
+}
+
+- (void)cancelSync
+{
+	if (self.syncState == SyncEventsSyncState) {
+		[self.networkManager cancelEventsForUser];
+	}
+	else if (self.syncState == SyncQuestionsSyncState) {
+		for (Event *event in eventsSyncing) {
+			[self.networkManager cancelPullPushQuestionsForEvent:event];
+		}
+	}
+	self.syncState = FinishSyncSyncState;
+	[self updateSyncState];
 }
 
 - (void)didEventsForUser:(NSArray *)serverEvents
@@ -226,37 +267,193 @@
 
 	NSError *error = nil;
 
+	// fetch local events…
 	NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[fetchRequest setEntity:[NSEntityDescription entityForName:@"Event" inManagedObjectContext:context]];
-	NSArray *localEvents = [context executeFetchRequest:fetchRequest error:&error];
-	
-	NSMutableArray *localEventsAuditoriumIds = [[localEvents valueForKeyPath:@"auditoriumId"] mutableCopy];
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"auditoriumId = $AUDITORIUM_ID"];
+	NSArray *localEventsArray = [context executeFetchRequest:fetchRequest error:&error];
 
+	// …and build auditoriumId-to-localEvent map
+	NSMutableDictionary *localEvents = [NSMutableDictionary dictionary];
+	for (Event *event in localEventsArray) {
+		[localEvents setObject:event forKey:event.auditoriumId];
+	}
+	
+	NSMutableArray *localEventsAuditoriumIds = [[localEvents allKeys] mutableCopy];
+	NSArray *keysToUpdate = @[@"auditoriumId", @"title", @"date"];
+	
 	for (NSDictionary *serverEvent in serverEvents) {
-		Event *localEvent;
 		NSNumber *auditoriumId = [serverEvent objectForKey:@"auditoriumId"];
+		Event *localEvent;
 		if ([localEventsAuditoriumIds containsObject:auditoriumId]) {
-			NSDictionary *variables = @{@"AUDITORIUM_ID": auditoriumId};
-			localEvent = [localEvents filteredArrayUsingPredicate:[predicate predicateWithSubstitutionVariables:variables]][0];
+			// get existing local event…
+			localEvent = [localEvents objectForKey:auditoriumId];
 			[localEventsAuditoriumIds removeObject:auditoriumId];
 		}
 		else {
+			// …or create a new one
 			localEvent = [Auditorium objectForEntityName:@"Event"];
+			[localEvents setObject:localEvent forKey:auditoriumId];
 		}
-		[localEvent setValuesForKeysWithDictionary:serverEvent];
+		// update local event with data from server
+		for (NSString *key in keysToUpdate) {
+			[localEvent setValue:[serverEvent valueForKey:key] forKey:key];
+		}
 	}
 
-	NSArray *localEventsToDelete = [localEvents filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"auditoriumId IN %@", localEventsAuditoriumIds]];
+	// local events that are not on the server will be deleted
+	NSPredicate *localEventsToDeletePredicate = [NSPredicate predicateWithFormat:@"auditoriumId IN %@", localEventsAuditoriumIds];
+	NSArray *localEventsToDelete = [[localEvents allValues] filteredArrayUsingPredicate:localEventsToDeletePredicate];
 	for (Event *localEventToDelete in localEventsToDelete) {
 		if ([localEventToDelete isEqualTo:self.event]) {
 			self.event = nil;
 		}
 		[context deleteObject:localEventToDelete];
+		[localEvents removeObjectForKey:localEventToDelete.auditoriumId];
 	}
 	
 	[context processPendingChanges];
 	[context.undoManager enableUndoRegistration];
+	
+	for (NSDictionary *serverEvent in serverEvents) {
+		Event *localEvent = [localEvents objectForKey:[serverEvent objectForKey:@"auditoriumId"]];
+		NSInteger localVersion = localEvent.version.integerValue;
+		NSInteger serverVersion = ((NSNumber *)[serverEvent objectForKey:@"version"]).integerValue;
+		if (localVersion == serverVersion) {
+			if (localEvent.modified.boolValue) {
+				[eventsInConflict addObject:localEvent];
+			}
+		}
+		else {
+			if (localVersion > serverVersion) {
+				[eventsToPush addObject:localEvent];
+			}
+			else {
+				[eventsToPull addObject:localEvent];
+			}
+		}
+	}
+
+	[self updateSyncState];
+}
+
+- (void)didFailEventsForUser:(NSString *)error
+{
+	NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+	[alert addButtonWithTitle:@"OK"];
+	[alert setMessageText:error];
+	[alert setAlertStyle:NSWarningAlertStyle];
+	[alert runModal];
+	self.syncState = FinishSyncSyncState;
+	[self updateSyncState];
+}
+
+- (void)syncQuestions
+{
+	NSLog(@"pull %@\npush %@\nconflict %@", eventsToPull, eventsToPush, eventsInConflict);
+	
+	for (Event *eventToPull in eventsToPull) {
+		[eventsSyncing addObject:eventToPull];
+		[networkManager pullQuestionsForEvent:eventToPull user:self.loggedInUser];
+	}
+	[eventsToPull removeAllObjects];
+	
+	for (Event *eventToPush in eventsToPush) {
+		[eventsSyncing addObject:eventToPush];
+		[networkManager pushQuestionsForEvent:eventToPush user:self.loggedInUser];
+	}
+	[eventsToPush removeAllObjects];
+	
+	[self updateSyncState];
+}
+
+- (void)didPullQuestionsForEvent:(Event *)event version:(NSInteger)version questions:(NSArray *)_questions
+{
+//	NSLog(@"%@\n%@", event, questions);
+	
+	[context processPendingChanges];
+	[context.undoManager disableUndoRegistration];
+	
+	event.version = [NSNumber numberWithInteger:version];
+	event.modified = [NSNumber numberWithBool:NO];
+
+	NSSet *questionsToDelete = [event.questions copy];
+	[event removeQuestions:questionsToDelete];
+	for (Question *questionToDelete in questionsToDelete) {
+		[context deleteObject:questionToDelete];
+	}
+
+	NSMutableSet *questions = [NSMutableSet set];
+	for (NSDictionary *_question in _questions) {
+		Question *question = [NSEntityDescription insertNewObjectForEntityForName:@"Question" inManagedObjectContext:context];
+		for (NSString *key in @[@"uuid", @"type", @"text", @"slideIdentifier"]) {
+			if ([_question objectForKey:key] != [NSNull null]) {
+				[question setPrimitiveValue:[_question objectForKey:key] forKey:key];
+			}
+		}
+		NSMutableSet *answers = [NSMutableSet set];
+		for (NSDictionary *_answer in [_question objectForKey:@"answers"]) {
+			Answer *answer = [NSEntityDescription insertNewObjectForEntityForName:@"Answer" inManagedObjectContext:context];
+			for (NSString *key in @[@"uuid", @"text", @"feedback", @"correct"]) {
+				if ([_answer objectForKey:key] != [NSNull null]) {
+					[answer setPrimitiveValue:[_answer objectForKey:key] forKey:key];
+				}
+			}
+			[answers addObject:answer];
+		}
+		[question addAnswers:answers];
+		[questions addObject:question];
+	}
+	[event addQuestions:questions];
+
+	[context processPendingChanges];
+	[context.undoManager enableUndoRegistration];
+	
+	[eventsSyncing removeObject:event];
+	[self updateSyncState];
+}
+
+- (void)didPushQuestionsForEvent:(Event *)event
+{
+	[context processPendingChanges];
+	[context.undoManager disableUndoRegistration];
+	
+	event.modified = [NSNumber numberWithBool:NO];
+
+	[context processPendingChanges];
+	[context.undoManager enableUndoRegistration];
+	
+	[eventsSyncing removeObject:event];
+	[self updateSyncState];
+}
+
+- (void)didFailPullPushQuestionsForEvent:(Event *)event error:(NSString *)error
+{
+	NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+	[alert addButtonWithTitle:@"OK"];
+	[alert setMessageText:error];
+	[alert setAlertStyle:NSWarningAlertStyle];
+	[alert runModal];
+	[eventsSyncing removeObject:event];
+	[self updateSyncState];
+}
+
+- (void)resolveSyncConflict
+{
+	Event *eventInConflict  = eventsInConflict.lastObject;
+	self.resolveSyncConflictSheetController = [[[ResolveSyncConflictSheetController alloc] initWithEvent:eventInConflict] autorelease];
+}
+
+- (void)didResolveSyncConflict:(Event *)event resolve:(ResolveThroughPushOrPull)resolve
+{
+	self.resolveSyncConflictSheetController = nil;
+	[eventsInConflict removeObject:event];
+	if (resolve == ResolveThroughPull) {
+		[eventsToPull addObject:event];
+	}
+	else if (resolve == ResolveThroughPush) {
+		[eventsToPush addObject:event];
+	}
+	[self syncQuestions];
 }
 
 #pragma mark Sending current slide to server

@@ -8,25 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #import "AuditoriumNetworkManager.h"
+#import "ResolveSyncConflictSheetController.h"
 
-@class Slide, AuditoriumNetworkManager, AuditoriumNetworkManagerDelegateProtocol, AuditoriumObject, AuditoriumEvent, Event;
-
-
-@interface LoggedInUser : NSObject
-
-@property (copy) NSString *email;
-@property (copy) NSString *userName;
-@property (copy) NSString *firstName;
-@property (copy) NSString *lastName;
-@property (copy) NSString *authToken;
-
-@end
-
+@class Slide, AuditoriumNetworkManager, AuditoriumNetworkManagerDelegateProtocol, AuditoriumObject, AuditoriumEvent, Event, LoggedInUser;
 
 @interface Auditorium : NSObject <AuditoriumNetworkManagerDelegateProtocol>
 
 @property (assign) BOOL loggedIn;
-@property (assign) BOOL synchronizing;
+@property (assign) BOOL syncing;
 @property (retain) LoggedInUser *loggedInUser;
 @property (assign) Event *event;
 
@@ -37,7 +26,9 @@
 - (void)cancelLogin;
 - (void)logoutWithDelegate:(id)delegate;
 
-- (void)synchronize;
+- (void)sync;
+- (void)cancelSync;
+- (void)didResolveSyncConflict:(Event *)event resolve:(ResolveThroughPushOrPull)resolve;
 
 - (void)sendSlide:(Slide *)slide;
 
