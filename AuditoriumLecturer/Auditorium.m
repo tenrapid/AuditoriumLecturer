@@ -215,24 +215,27 @@ typedef enum SyncState {
 			
 		case SyncEventsSyncState:
 			self.syncState = SyncQuestionsSyncState;
-			[self.syncInfoSheetController setMessage:@"Synchronisiere Nachrichten…"];
 			[self syncQuestions];
 			break;
 			
 		case SyncQuestionsSyncState:
-			if (!eventsSyncing.count && !eventsInConflict.count) {
+			if (eventsSyncing.count && !eventsInConflict.count) {
+				if (!self.syncInfoSheetController) {
+					self.syncInfoSheetController = [[[SyncInfoSheetController alloc] init] autorelease];
+				}
+				[self.syncInfoSheetController setMessage:@"Synchronisiere Nachrichten…"];
+			}
+			else if (eventsInConflict.count) {
+				if (!self.resolveSyncConflictSheetController) {
+					if (self.syncInfoSheetController) {
+						self.syncInfoSheetController = nil;
+					}
+					[self performSelector:@selector(resolveSyncConflict) withObject:nil afterDelay:0];
+				}
+			}
+			else if (!eventsSyncing.count && !eventsInConflict.count) {
 				self.syncState = FinishSyncSyncState;
 				[self updateSyncState];
-			}
-			else if (eventsInConflict.count && !self.resolveSyncConflictSheetController) {
-				if (self.syncInfoSheetController) {
-					self.syncInfoSheetController = nil;
-				}
-				[self performSelector:@selector(resolveSyncConflict) withObject:nil afterDelay:0];
-			}
-			else if (!self.syncInfoSheetController) {
-				self.syncInfoSheetController = [[[SyncInfoSheetController alloc] init] autorelease];
-				[self.syncInfoSheetController setMessage:@"Synchronisiere Nachrichten…"];
 			}
 			break;
 			
