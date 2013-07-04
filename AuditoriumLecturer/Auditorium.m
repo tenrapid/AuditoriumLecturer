@@ -259,6 +259,10 @@ typedef enum SyncState {
 			[self.networkManager cancelPullPushQuestionsForEvent:event];
 		}
 	}
+	[eventsToPull removeAllObjects];
+	[eventsToPush removeAllObjects];
+	[eventsInConflict removeAllObjects];
+	[eventsSyncing removeAllObjects];
 	self.syncState = FinishSyncSyncState;
 	[self updateSyncState];
 }
