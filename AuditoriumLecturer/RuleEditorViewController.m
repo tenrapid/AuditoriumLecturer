@@ -89,8 +89,9 @@ NSString * const RuleEditorViewHeightDidChangeNotification = @"RuleEditorViewHei
 	rules = [_rules copy];
 	
 	for (Rule *rule in rules) {
-		RuleEditorItemViewController *viewController = [[[RuleEditorItemViewController alloc] initWithRule:rule questions:questionsMenuItems] autorelease];
+		RuleEditorItemViewController *viewController = [[RuleEditorItemViewController alloc] initWithRule:rule questions:questionsMenuItems];
 		[ruleEditorItemViewControllers addObject:viewController];
+		[viewController release];
 		
 		NSView *view = [viewController view];
 		[view setFrame:NSMakeRect(0, 0, self.view.frame.size.width, view.frame.size.height)];
@@ -118,6 +119,7 @@ NSString * const RuleEditorViewHeightDidChangeNotification = @"RuleEditorViewHei
 		frame.origin.y = height;
 		if (height == 25) {
 			frame.size.height -= 10;
+			[viewController.orLabel setHidden:YES];
 		}
 		[viewController.view setFrame:frame];
 

@@ -14,6 +14,7 @@
 
 @property (assign) IBOutlet NSButton *plusButton;
 @property (assign) IBOutlet NSButton *minusButton;
+@property (assign) IBOutlet NSTextField *orLabel;
 
 - (RuleEditorItemViewController *)initWithRule:(Rule *)rule questions:(NSArray *)questions;
 - (IBAction)addRuleAction:(id)sender;

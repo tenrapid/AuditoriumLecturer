@@ -29,6 +29,7 @@
 @synthesize minusButton;
 @synthesize questionPopUpButton;
 @synthesize answerPopUpButton;
+@synthesize orLabel;
 
 @synthesize questions = _questions;
 @synthesize selectedQuestion = _selectedQuestion;
