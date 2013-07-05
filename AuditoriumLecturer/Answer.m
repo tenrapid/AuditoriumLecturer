@@ -17,6 +17,7 @@
 @dynamic feedback;
 @dynamic order;
 @dynamic correct;
+@dynamic rules;
 
 - (void)setQuestion:(Question *)question
 {

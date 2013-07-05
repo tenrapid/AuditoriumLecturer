@@ -27,6 +27,7 @@ const NSString * const QuestionTypeNames[] = {
 @dynamic text;
 @dynamic type;
 @dynamic answers;
+@dynamic rules;
 
 - (NSNumber *)slideNumber
 {

@@ -11,11 +11,13 @@
 #import "QuestionEditSheetController.h"
 #import "Question.h"
 #import "Answer.h"
+#import "Rule.h"
 #import "ClickActionTextView.h"
 
 @interface QuestionViewController ()
 
 @property (assign) NSArrayController *answers;
+@property (assign) NSArrayController *rules;
 @property (assign, getter = isUpdateDisabled) BOOL updateDisabled;
 @property (assign, getter = isChanged) BOOL changed;
 
@@ -30,6 +32,7 @@
 @synthesize editQuestionButton;
 
 @synthesize answers;
+@synthesize rules;
 @synthesize updateDisabled;
 @synthesize changed;
 
@@ -42,6 +45,10 @@
 		[answers setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
 		[answers setAutomaticallyRearrangesObjects:YES];
 		[answers bind:@"contentSet" toObject:self withKeyPath:@"representedObject.answers" options:nil];
+		rules = [[NSArrayController alloc] init];
+		[rules setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
+		[rules setAutomaticallyRearrangesObjects:YES];
+		[rules bind:@"contentSet" toObject:self withKeyPath:@"representedObject.rules" options:nil];
 		[self updateTextView];
 
 		[self addObserver:self forKeyPath:@"representedObject.text" options:NSKeyValueObservingOptionNew context:nil];
@@ -49,6 +56,7 @@
 		[self addObserver:self forKeyPath:@"answers.arrangedObjects.text" options:NSKeyValueObservingOptionNew context:nil];
 		[self addObserver:self forKeyPath:@"answers.arrangedObjects.feedback" options:NSKeyValueObservingOptionNew context:nil];
 		[self addObserver:self forKeyPath:@"answers.arrangedObjects.correct" options:NSKeyValueObservingOptionNew context:nil];
+		[self addObserver:self forKeyPath:@"rules.arrangedObjects.answer" options:NSKeyValueObservingOptionNew context:nil];
 		NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 		[notificationCenter addObserver:self selector:@selector(questionEditSheet:) name:QuestionEditSheetWillOpenNotification object:nil];
 		[notificationCenter addObserver:self selector:@selector(questionEditSheet:) name:QuestionEditSheetDidCloseNotification object:nil];
@@ -63,9 +71,12 @@
 	[self removeObserver:self forKeyPath:@"answers.arrangedObjects.text"];
 	[self removeObserver:self forKeyPath:@"answers.arrangedObjects.feedback"];
 	[self removeObserver:self forKeyPath:@"answers.arrangedObjects.correct"];
+	[self removeObserver:self forKeyPath:@"rules.arrangedObjects.answer"];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[answers unbind:@"contentSet"];
 	[answers release];
+	[rules unbind:@"contentSet"];
+	[rules release];
 	[super dealloc];
 }
 
@@ -85,7 +96,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	if ([keyPath isEqualToString:@"representedObject.text"] || [keyPath isEqualToString:@"representedObject.type"] || [keyPath isEqualToString:@"answers.arrangedObjects.text"] || [keyPath isEqualToString:@"answers.arrangedObjects.feedback"] || [keyPath isEqualToString:@"answers.arrangedObjects.correct"]) {
+	if ([keyPath isEqualToString:@"representedObject.text"] || [keyPath isEqualToString:@"representedObject.type"] || [keyPath isEqualToString:@"answers.arrangedObjects.text"] || [keyPath isEqualToString:@"answers.arrangedObjects.feedback"] || [keyPath isEqualToString:@"answers.arrangedObjects.correct"] || [keyPath isEqualToString:@"rules.arrangedObjects.answer"]) {
 		if (self.isUpdateDisabled) {
 			self.changed = YES;
 		}
@@ -157,6 +168,33 @@
 					[as appendAttributedString:[[[NSAttributedString alloc] initWithString:answer.feedback attributes:attributes] autorelease]];
 				}
 			}
+		}
+	}
+	else {
+		NSMutableParagraphStyle *ruleParagraphStyle = [[paragraphStyle mutableCopy] autorelease];
+		NSTextTab *tab = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:14] autorelease];
+		ruleParagraphStyle.tabStops = @[tab];
+		ruleParagraphStyle.headIndent = 14;
+		NSDictionary *ruleAttributes = @{NSParagraphStyleAttributeName: ruleParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
+		NSMutableParagraphStyle *ruleFirstLineParagraphStyle = [[ruleParagraphStyle mutableCopy] autorelease];
+		ruleFirstLineParagraphStyle.paragraphSpacingBefore = 7.f;
+		NSDictionary *ruleFirstLineAttributes = @{NSParagraphStyleAttributeName: ruleFirstLineParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
+		
+		if (question.rules.count) {
+			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n" attributes:ruleFirstLineAttributes] autorelease]];
+		}
+		
+		for (Rule *rule in [self.rules valueForKeyPath:@"arrangedObjects"]) {
+			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"●\t" attributes:ruleFirstLineAttributes] autorelease]];
+			attributes = @{NSForegroundColorAttributeName: [NSColor lightGrayColor], NSParagraphStyleAttributeName: ruleFirstLineAttributes, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
+			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"Frage: " attributes:attributes] autorelease]];
+			NSString *questionString = [NSString stringWithFormat:@"%@", rule.answer.question.text];
+			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:questionString attributes:ruleFirstLineAttributes] autorelease]];
+			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n\t" attributes:ruleAttributes] autorelease]];
+			attributes = @{NSForegroundColorAttributeName: [NSColor lightGrayColor], NSParagraphStyleAttributeName: ruleParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
+			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"beantwortet mit: " attributes:attributes] autorelease]];
+			NSString *answerString = [NSString stringWithFormat:@"%@\n", rule.answer.text];
+			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:answerString attributes:ruleAttributes] autorelease]];
 		}
 	}
 	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:(question.type == QuestionSingleChoiceType ? 15.f : question.type == QuestionMultipleChoiceType ? 9.f : 6.f)]};

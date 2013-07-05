@@ -8,8 +8,10 @@
 
 #import "QuestionEditSheetController.h"
 #import "AnswersEditViewController.h"
+#import "RuleEditorViewController.h"
 #import "Question.h"
 #import "Answer.h"
+#import "Rule.h"
 #import "Event.h"
 #import "Auditorium.h"
 #import "Slideshow.h"
@@ -25,9 +27,10 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 
 @property (assign) IBOutlet NSTextField *textField;
 @property (assign) IBOutlet NSPopUpButton *typePopupButton;
-@property (assign) IBOutlet NSRuleEditor *ruleEditor;
 @property (assign) IBOutlet AnswersEditViewController *answersEditViewController;
+@property (assign) IBOutlet RuleEditorViewController *ruleEditorViewController;
 @property (assign) NSArrayController *answers;
+@property (assign) NSArrayController *rules;
 
 @end
 
@@ -35,14 +38,17 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 
 @synthesize textField;
 @synthesize typePopupButton;
-@synthesize ruleEditor;
 @synthesize answersEditViewController;
+@synthesize ruleEditorViewController;
 @synthesize answers;
+@synthesize rules;
 
 - (id)initWithQuestion:(Question *)aQuestion delegate:(id)aDelegate
 {
     self = [super initWithNibName:@"QuestionEditSheet" bundle:nil];
     if (self) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetWillOpenNotification object:self];
+
 		NSUndoManager *undoManager = [[[NSApp delegate] managedObjectContext] undoManager];
 		[undoManager beginUndoGrouping];
 
@@ -50,6 +56,7 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 			aQuestion = [Auditorium objectForEntityName:@"Question"];
 			aQuestion.event = [Auditorium sharedInstance].event;
 		}
+		[self addObserver:self forKeyPath:@"representedObject.type" options:NSKeyValueObservingOptionNew context:nil];
 		self.representedObject = aQuestion;
 
 		delegate = [aDelegate retain];
@@ -65,11 +72,16 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 		[answersEditViewController bind:@"answers" toObject:self withKeyPath:@"answers.arrangedObjects" options:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(answersEditViewHeightDidChange:) name:AnswersEditViewHeightDidChangeNotification object:answersEditViewController];
 
-		[self addObserver:self forKeyPath:@"representedObject.type" options:NSKeyValueObservingOptionNew context:nil];
+		rules = [[NSArrayController alloc] init];
+		[rules setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
+		[rules setAutomaticallyRearrangesObjects:YES];
+		[rules bind:@"content" toObject:self.representedObject withKeyPath:@"rules" options:nil];
+		
+		[ruleEditorViewController bind:@"rules" toObject:self withKeyPath:@"rules.arrangedObjects" options:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ruleEditorViewHeightDidChange:) name:RuleEditorViewHeightDidChangeNotification object:ruleEditorViewController];
 
 		[self updateViewHeight];
 
-		[[NSNotificationCenter defaultCenter] postNotificationName:QuestionEditSheetWillOpenNotification object:self];
 		[NSApp beginSheet:sheet modalForWindow:[NSApp mainWindow] modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
 	}
     return self;
@@ -77,11 +89,14 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 
 - (void)dealloc
 {
-	[answers unbind:@"content"];
 	[answersEditViewController unbind:@"answers"];
+	[ruleEditorViewController unbind:@"rules"];
+	[answers unbind:@"content"];
+	[rules unbind:@"content"];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[self removeObserver:self forKeyPath:@"representedObject.type"];
 	self.answers = nil;
+	self.rules = nil;
 	[delegate release];
 	[super dealloc];
 }
@@ -90,12 +105,19 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 {
 	if ([keyPath isEqualToString:@"representedObject.type"]) {
 		Question *question = self.representedObject;
+		if (!question.uuid) {
+			return;
+		}
 		if (question.type != QuestionMessageType && ![question.answers count]) {
 			NSSet *newAnswers = [NSSet setWithObjects:
 							  [Auditorium objectForEntityName:@"Answer"],
 							  [Auditorium objectForEntityName:@"Answer"],
 							  [Auditorium objectForEntityName:@"Answer"], nil];
 			[question addAnswers:newAnswers];
+		}
+		else if (question.type == QuestionMessageType && ![question.rules count]) {
+			Rule *rule = [Auditorium objectForEntityName:@"Rule"];
+			[question addRulesObject:rule];
 		}
 	}
 }
@@ -106,8 +128,8 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 	if (question.type == QuestionMessageType) {
 		[answersEditViewController.view setHidden:YES];
 	}
-	NSInteger staticHeight = (question.type == QuestionMessageType ? 328 : 242) + ([self.view.window isSheet] ? 0 : 22);
-	NSInteger dynamicHeight = question.type == QuestionMessageType ? -6 : answersEditViewController.view.frame.size.height;
+	NSInteger staticHeight = 242 + ([self.view.window isSheet] ? 0 : 22);
+	NSInteger dynamicHeight = question.type == QuestionMessageType ? ruleEditorViewController.view.frame.size.height : answersEditViewController.view.frame.size.height;
 	NSRect frame = sheet.frame;
 	frame.origin.y += (frame.size.height - staticHeight) - dynamicHeight;
 	frame.size.height = staticHeight + dynamicHeight;
@@ -122,6 +144,11 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 }
 
 - (void)answersEditViewHeightDidChange:(NSNotification *)notification
+{
+	[self updateViewHeight];
+}
+
+- (void)ruleEditorViewHeightDidChange:(NSNotification *)notification
 {
 	[self updateViewHeight];
 }
@@ -148,6 +175,20 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 			[question removeAnswers:answersToRemove];
 			for (Answer *answer in answersToRemove) {
 				[answer.managedObjectContext deleteObject:answer];
+			}
+		}
+		for (Rule *rule in question.rules) {
+			if (!(rule.question && rule.answer)) {
+				[rule.managedObjectContext deleteObject:rule];
+			}
+		}
+	}
+	else {
+		NSSet *rulesToRemove = [NSSet setWithSet:question.rules];
+		if (rulesToRemove.count) {
+			[question removeRules:rulesToRemove];
+			for (Rule *rule in rulesToRemove) {
+				[rule.managedObjectContext deleteObject:rule];
 			}
 		}
 	}

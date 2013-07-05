@@ -11,8 +11,24 @@
 #import "Event.h"
 #import "Question.h"
 #import "Answer.h"
+#import "Rule.h"
 #import "ASIHTTPRequest.h"
 #import "JSONKit.h"
+
+@interface NSNull (IntegerValue);
+
+- (NSInteger)integerValue;
+
+@end
+
+@implementation NSNull (IntegerValue)
+
+- (NSInteger)integerValue
+{
+	return 0;
+}
+
+@end
 
 @interface AuditoriumNetworkManager ()
 
@@ -202,6 +218,7 @@
 		[question setObject:[self normalizeUUID:[poll objectForKey:@"id"]] forKey:@"uuid"];
 		[question setObject:[poll objectForKey:@"questiontext"] forKey:@"text"];
 		[question setObject:[poll objectForKey:@"on_slide"] forKey:@"slideIdentifier"];
+		[question setObject:[poll objectForKey:@"order"] ? [poll objectForKey:@"order"] : [NSNull null] forKey:@"order"];
 		NSMutableArray *answers = [NSMutableArray array];
 		for (NSDictionary *choice in [poll objectForKey:@"choices"]) {
 			NSMutableDictionary *answer = [NSMutableDictionary dictionary];
@@ -209,6 +226,7 @@
 			[answer setObject:[choice objectForKey:@"answertext"] forKey:@"text"];
 			[answer setObject:[choice objectForKey:@"feedback"] forKey:@"feedback"];
 			[answer setObject:[choice objectForKey:@"is_correct"] forKey:@"correct"];
+			[answer setObject:[choice objectForKey:@"order"] ? [choice objectForKey:@"order"] : [NSNull null] forKey:@"order"];
 			[answers addObject:answer];
 		}
 		QuestionType type;
@@ -223,6 +241,28 @@
 		[question setObject:answers forKey:@"answers"];
 		[questions addObject:question];
 	}
+
+	// recreate order
+	NSArray *sortedQuestions = [questions sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"slideIdentifier" ascending:YES], [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
+	NSInteger slideIdentifier = 0;
+	NSInteger questionOrder = 0;
+	for (NSMutableDictionary *question in sortedQuestions) {
+		NSInteger questionSlideIdentifier = ((NSNumber *)[question objectForKey:@"slideIdentifier"]).integerValue;
+		if (questionSlideIdentifier != slideIdentifier) {
+			slideIdentifier = questionSlideIdentifier;
+			questionOrder = 0;
+		}
+		[question setObject:[NSNumber numberWithInteger:questionOrder] forKey:@"order"];
+		questionOrder++;
+		
+		NSInteger answerOrder = 0;
+		NSArray *sortedAnswers = [[question objectForKey:@"answers"] sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
+		for (NSMutableDictionary *answer in sortedAnswers) {
+			[answer setObject:[NSNumber numberWithInteger:answerOrder] forKey:@"order"];
+			answerOrder++;
+		}
+	}
+//	NSLog(@"%@", questions);
 	[delegate didPullQuestionsForEvent:event version:version questions:questions];
 }
 
@@ -237,7 +277,15 @@
 				@"id": answer.uuid,
 				@"answertext": answer.text,
 				@"feedback": answer.feedback,
-				@"is_correct": answer.correct
+				@"is_correct": answer.correct,
+				@"order": answer.order,
+			 }];
+		}
+		NSMutableArray *rules = [NSMutableArray array];
+		for (Rule *rule in question.rules) {
+			[rules addObject:@{
+				@"id": rule.uuid,
+				@"choice_id": rule.answer.uuid
 			 }];
 		}
 		[questions addObject:@{
@@ -245,7 +293,9 @@
 			@"id": question.uuid,
 			@"questiontext": question.text,
 			@"on_slide": question.slideIdentifier,
-			@"choices": answers
+			@"order": question.order,
+			@"choices": answers,
+			@"poll_rules": rules
 		 }];
 	}
 	NSDictionary *data = @{

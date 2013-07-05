@@ -392,7 +392,7 @@ typedef enum SyncState {
 	NSMutableSet *questions = [NSMutableSet set];
 	for (NSDictionary *_question in _questions) {
 		Question *question = [NSEntityDescription insertNewObjectForEntityForName:@"Question" inManagedObjectContext:context];
-		for (NSString *key in @[@"uuid", @"type", @"text", @"slideIdentifier"]) {
+		for (NSString *key in @[@"uuid", @"type", @"text", @"slideIdentifier", @"order"]) {
 			if ([_question objectForKey:key] != [NSNull null]) {
 				[question setPrimitiveValue:[_question objectForKey:key] forKey:key];
 			}
@@ -400,14 +400,15 @@ typedef enum SyncState {
 		NSMutableSet *answers = [NSMutableSet set];
 		for (NSDictionary *_answer in [_question objectForKey:@"answers"]) {
 			Answer *answer = [NSEntityDescription insertNewObjectForEntityForName:@"Answer" inManagedObjectContext:context];
-			for (NSString *key in @[@"uuid", @"text", @"feedback", @"correct"]) {
+			for (NSString *key in @[@"uuid", @"text", @"feedback", @"correct", @"order"]) {
 				if ([_answer objectForKey:key] != [NSNull null]) {
 					[answer setPrimitiveValue:[_answer objectForKey:key] forKey:key];
 				}
 			}
+			[answer setPrimitiveValue:question forKey:@"question"];
 			[answers addObject:answer];
 		}
-		[question addAnswers:answers];
+		[question setPrimitiveValue:answers forKey:@"answers"];
 		[questions addObject:question];
 	}
 	[event addQuestions:questions];

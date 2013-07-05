@@ -10,7 +10,7 @@
 #import <CoreData/CoreData.h>
 #import "AuditoriumObject.h"
 
-@class Answer, Slide, Event;
+@class Answer, Rule, Slide, Event;
 
 
 enum QuestionType : int16_t {
@@ -33,6 +33,7 @@ extern const NSString * const QuestionTypeNames[];
 @property (nonatomic, retain) NSString * text;
 @property (nonatomic, assign) QuestionType type;
 @property (nonatomic, retain) NSSet *answers;
+@property (nonatomic, retain) NSSet *rules;
 
 - (void)willBeDeleted;
 - (void)moveUpInOrderChain;
@@ -46,5 +47,10 @@ extern const NSString * const QuestionTypeNames[];
 - (void)removeAnswersObject:(Answer *)value;
 - (void)addAnswers:(NSSet *)values;
 - (void)removeAnswers:(NSSet *)values;
+
+- (void)addRulesObject:(Rule *)value;
+- (void)removeRulesObject:(Rule *)value;
+- (void)addRules:(NSSet *)values;
+- (void)removeRules:(NSSet *)values;
 
 @end

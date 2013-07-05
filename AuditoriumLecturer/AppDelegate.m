@@ -188,6 +188,7 @@
 
     NSError *error = nil;
     if (![[self managedObjectContext] save:&error]) {
+		NSLog(@"%@", error);
 
         // Customize this code block to include application-specific recovery steps.
         BOOL result = [sender presentError:error];

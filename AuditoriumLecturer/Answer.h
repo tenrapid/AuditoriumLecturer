@@ -10,7 +10,7 @@
 #import <CoreData/CoreData.h>
 #import "AuditoriumObject.h"
 
-@class Question;
+@class Question, Rule;
 
 @interface Answer : AuditoriumObject
 
@@ -19,5 +19,15 @@
 @property (nonatomic, retain) NSString * feedback;
 @property (nonatomic, retain) NSNumber * order;
 @property (nonatomic, retain) NSNumber * correct;
+@property (nonatomic, retain) NSSet *rules;
+
+@end
+
+@interface Answer (CoreDataGeneratedAccessors)
+
+- (void)addRulesObject:(Rule *)value;
+- (void)removeRulesObject:(Rule *)value;
+- (void)addRules:(NSSet *)values;
+- (void)removeRules:(NSSet *)values;
 
 @end
