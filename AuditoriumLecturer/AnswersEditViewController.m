@@ -216,7 +216,9 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 	}
 	if (self.question.type == QuestionMultipleChoiceType) {
 		for (Answer *answer in answers) {
-			answer.correct = [NSNumber numberWithBool:NO];
+			if (answer.correct.boolValue) {
+				answer.correct = [NSNumber numberWithBool:NO];
+			}
 		}
 	}
 	return returnValue;
