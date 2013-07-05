@@ -181,12 +181,13 @@
 		NSDictionary *ruleFirstLineAttributes = @{NSParagraphStyleAttributeName: ruleFirstLineParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
 		
 		if (question.rules.count) {
-			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n" attributes:ruleFirstLineAttributes] autorelease]];
+			attributes = @{NSForegroundColorAttributeName: [NSColor lightGrayColor], NSParagraphStyleAttributeName: ruleParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:12.f]};
+			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n\nEmpfänger:\n" attributes:attributes] autorelease]];
 		}
 		
 		for (Rule *rule in [self.rules valueForKeyPath:@"arrangedObjects"]) {
 			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"●\t" attributes:ruleFirstLineAttributes] autorelease]];
-			attributes = @{NSForegroundColorAttributeName: [NSColor lightGrayColor], NSParagraphStyleAttributeName: ruleFirstLineAttributes, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
+			attributes = @{NSForegroundColorAttributeName: [NSColor lightGrayColor], NSParagraphStyleAttributeName: ruleFirstLineParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
 			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"Frage: " attributes:attributes] autorelease]];
 			NSString *questionString = [NSString stringWithFormat:@"%@", rule.answer.question.text];
 			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:questionString attributes:ruleFirstLineAttributes] autorelease]];

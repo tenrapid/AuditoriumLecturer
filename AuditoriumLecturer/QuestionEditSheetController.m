@@ -95,8 +95,8 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 	[rules unbind:@"content"];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[self removeObserver:self forKeyPath:@"representedObject.type"];
-	self.answers = nil;
-	self.rules = nil;
+	[answers release];
+	[rules release];
 	[delegate release];
 	[super dealloc];
 }
