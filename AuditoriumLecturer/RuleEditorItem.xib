@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">11G63b</string>
+		<string key="IBDocument.SystemVersion">11G63</string>
 		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
 		<string key="IBDocument.AppKitVersion">1138.51</string>
 		<string key="IBDocument.HIToolboxVersion">569.00</string>
@@ -276,23 +276,22 @@
 							<string key="NSKeyEquivalent"/>
 							<int key="NSPeriodicDelay">400</int>
 							<int key="NSPeriodicInterval">75</int>
-							<object class="NSMenuItem" key="NSMenuItem" id="623917166">
-								<reference key="NSMenu" ref="774912109"/>
-								<string key="NSTitle">Frage auswählen…</string>
-								<string key="NSKeyEquiv"/>
-								<int key="NSKeyEquivModMask">1048576</int>
-								<int key="NSMnemonicLoc">2147483647</int>
-								<int key="NSState">1</int>
-								<reference key="NSOnImage" ref="696907177"/>
-								<reference key="NSMixedImage" ref="142287091"/>
-								<string key="NSAction">_popUpItemAction:</string>
-								<reference key="NSTarget" ref="146686160"/>
-							</object>
+							<nil key="NSMenuItem"/>
 							<bool key="NSMenuItemRespectAlignment">YES</bool>
 							<object class="NSMenu" key="NSMenu" id="774912109">
 								<string key="NSTitle">OtherViews</string>
 								<array class="NSMutableArray" key="NSMenuItems">
-									<reference ref="623917166"/>
+									<object class="NSMenuItem" id="623917166">
+										<reference key="NSMenu" ref="774912109"/>
+										<string key="NSTitle">Frage auswählen…</string>
+										<string key="NSKeyEquiv"/>
+										<int key="NSKeyEquivModMask">1048576</int>
+										<int key="NSMnemonicLoc">2147483647</int>
+										<reference key="NSOnImage" ref="696907177"/>
+										<reference key="NSMixedImage" ref="142287091"/>
+										<string key="NSAction">_popUpItemAction:</string>
+										<reference key="NSTarget" ref="146686160"/>
+									</object>
 									<object class="NSMenuItem" id="444323633">
 										<reference key="NSMenu" ref="774912109"/>
 										<string key="NSTitle">Item 2</string>
@@ -316,8 +315,10 @@
 										<reference key="NSTarget" ref="146686160"/>
 									</object>
 								</array>
+								<bool key="NSNoAutoenable">YES</bool>
 								<reference key="NSMenuFont" ref="306328395"/>
 							</object>
+							<int key="NSSelectedIndex">-1</int>
 							<int key="NSPreferredEdge">1</int>
 							<bool key="NSUsesItemFromMenu">YES</bool>
 							<bool key="NSAltersState">YES</bool>
@@ -446,15 +447,15 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">content: self.questions.arrangedObjects</string>
+						<string key="label">content: self.questions</string>
 						<reference key="source" ref="84383102"/>
 						<reference key="destination" ref="1001"/>
-						<object class="NSNibBindingConnector" key="connector" id="423415401">
+						<object class="NSNibBindingConnector" key="connector" id="723021090">
 							<reference key="NSSource" ref="84383102"/>
 							<reference key="NSDestination" ref="1001"/>
-							<string key="NSLabel">content: self.questions.arrangedObjects</string>
+							<string key="NSLabel">content: self.questions</string>
 							<string key="NSBinding">content</string>
-							<string key="NSKeyPath">self.questions.arrangedObjects</string>
+							<string key="NSKeyPath">self.questions</string>
 							<dictionary key="NSOptions">
 								<boolean value="YES" key="NSInsertsNullPlaceholder"/>
 								<string key="NSNullPlaceholder">Frage auswählen…</string>
@@ -462,28 +463,28 @@
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">119</int>
+					<int key="connectionID">188</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">contentValues: self.questions.arrangedObjects.text</string>
+						<string key="label">contentValues: self.questions.text</string>
 						<reference key="source" ref="84383102"/>
 						<reference key="destination" ref="1001"/>
-						<object class="NSNibBindingConnector" key="connector" id="929749173">
+						<object class="NSNibBindingConnector" key="connector" id="644255768">
 							<reference key="NSSource" ref="84383102"/>
 							<reference key="NSDestination" ref="1001"/>
-							<string key="NSLabel">contentValues: self.questions.arrangedObjects.text</string>
+							<string key="NSLabel">contentValues: self.questions.text</string>
 							<string key="NSBinding">contentValues</string>
-							<string key="NSKeyPath">self.questions.arrangedObjects.text</string>
+							<string key="NSKeyPath">self.questions.text</string>
 							<object class="NSDictionary" key="NSOptions">
 								<string key="NS.key.0">NSInsertsNullPlaceholder</string>
 								<boolean value="YES" key="NS.object.0"/>
 							</object>
-							<reference key="NSPreviousConnector" ref="423415401"/>
+							<reference key="NSPreviousConnector" ref="723021090"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">125</int>
+					<int key="connectionID">193</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -496,11 +497,11 @@
 							<string key="NSLabel">selectedObject: self.selectedQuestion</string>
 							<string key="NSBinding">selectedObject</string>
 							<string key="NSKeyPath">self.selectedQuestion</string>
-							<reference key="NSPreviousConnector" ref="929749173"/>
+							<reference key="NSPreviousConnector" ref="644255768"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">148</int>
+					<int key="connectionID">194</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -579,6 +580,14 @@
 						</object>
 					</object>
 					<int key="connectionID">187</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="774912109"/>
+						<reference key="destination" ref="1001"/>
+					</object>
+					<int key="connectionID">195</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -815,7 +824,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">187</int>
+			<int key="maxID">195</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

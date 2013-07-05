@@ -10,6 +10,7 @@
 #import "RuleEditorItemViewController.h"
 #import "Rule.h"
 #import "Question.h"
+#import "Event.h"
 #import "Auditorium.h"
 
 NSString * const RuleEditorViewHeightDidChangeNotification = @"RuleEditorViewHeightDidChangeNotification";
@@ -19,6 +20,7 @@ NSString * const RuleEditorViewHeightDidChangeNotification = @"RuleEditorViewHei
 	NSArray *rules;
 	NSMutableArray *ruleEditorItemViewControllers;
 	NSArrayController *questions;
+	NSMutableArray *questionsMenuItems;
 }
 @end
 
@@ -35,12 +37,15 @@ NSString * const RuleEditorViewHeightDidChangeNotification = @"RuleEditorViewHei
 		[questions setFilterPredicate:[NSPredicate predicateWithFormat:@"type != %@", [NSNumber numberWithInteger:QuestionMessageType]]];
 		[questions setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"slideNumber" ascending:YES], [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
 		[questions bind:@"content" toObject:[Auditorium sharedInstance] withKeyPath:@"event.questions" options:0];
+		[self updateQuestionsMenuItems];
+		[self addObserver:self forKeyPath:@"questions.arrangedObjects" options:0 context:nil];
 	}
 	return self;
 }
 
 - (void)dealloc
 {
+	[self removeObserver:self forKeyPath:@"questions.arrangedObjects"];
 	for (NSViewController *viewController in ruleEditorItemViewControllers) {
 		[[viewController view] removeFromSuperview];
 	}
@@ -49,7 +54,28 @@ NSString * const RuleEditorViewHeightDidChangeNotification = @"RuleEditorViewHei
 	[rules release];
 	[questions unbind:@"content"];
 	[questions release];
+	[questionsMenuItems release];
 	[super dealloc];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+	if ([keyPath isEqualToString:@"questions.arrangedObjects"]) {
+		[self updateQuestionsMenuItems];
+	}
+}
+
+- (void)updateQuestionsMenuItems
+{
+	questionsMenuItems = [NSMutableArray new];
+	NSInteger slideNumber = -1;
+	for (Question *question in questions.arrangedObjects) {
+		if (question.slideNumber.integerValue != slideNumber) {
+			slideNumber = question.slideNumber.integerValue;
+			[questionsMenuItems addObject:@{@"text": slideNumber ? [NSString stringWithFormat:@"— Folie %li —", (long)slideNumber] : @"— nicht zugeordnet —"}];
+		}
+		[questionsMenuItems addObject:question];
+	}
 }
 
 - (void)setRules:(NSArray *)_rules
@@ -63,7 +89,7 @@ NSString * const RuleEditorViewHeightDidChangeNotification = @"RuleEditorViewHei
 	rules = [_rules copy];
 	
 	for (Rule *rule in rules) {
-		RuleEditorItemViewController *viewController = [[[RuleEditorItemViewController alloc] initWithRule:rule questions:questions] autorelease];
+		RuleEditorItemViewController *viewController = [[[RuleEditorItemViewController alloc] initWithRule:rule questions:questionsMenuItems] autorelease];
 		[ruleEditorItemViewControllers addObject:viewController];
 		
 		NSView *view = [viewController view];

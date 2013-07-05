@@ -17,7 +17,7 @@
 @property (assign) IBOutlet NSPopUpButton *questionPopUpButton;
 @property (assign) IBOutlet NSPopUpButton *answerPopUpButton;
 
-@property (retain) NSArrayController *questions;
+@property (retain) NSArray *questions;
 @property (assign) Question *selectedQuestion;
 @property (retain) NSArrayController *answers;
 
@@ -34,7 +34,7 @@
 @synthesize selectedQuestion = _selectedQuestion;
 @synthesize answers = _answers;
 
-- (id)initWithRule:(Rule *)rule questions:(NSArrayController *)questions
+- (id)initWithRule:(Rule *)rule questions:(NSArray *)questions
 {
     self = [super initWithNibName:@"RuleEditorItem" bundle:nil];
     if (self) {
@@ -57,9 +57,9 @@
 - (void)dealloc
 {
 	[self removeObserver:self forKeyPath:@"selectedQuestion"];
+	self.selectedQuestion = nil;
 	self.answers = nil;
 	self.questions = nil;
-	self.representedObject = nil;
 	[super dealloc];
 }
 
@@ -84,6 +84,23 @@
 	Rule *rule = self.representedObject;
 	[rule.question removeRulesObject:rule];
 	[rule.managedObjectContext deleteObject:rule];
+}
+
+#pragma mark  NSMenuDelegate Protocol
+
+- (NSInteger)numberOfItemsInMenu:(NSMenu *)menu
+{
+	// menu items + nil placeholder
+	return self.questions.count + 1;
+}
+
+- (BOOL)menu:(NSMenu *)menu updateItem:(NSMenuItem *)item atIndex:(NSInteger)index shouldCancel:(BOOL)shouldCancel
+{
+	Class class = [item.representedObject class];
+	if (class && class != Question.class) {
+		[item setEnabled:NO];
+	}
+    return YES;
 }
 
 @end
