@@ -261,6 +261,13 @@
 			[answer setObject:[NSNumber numberWithInteger:answerOrder] forKey:@"order"];
 			answerOrder++;
 		}
+
+		NSInteger ruleOrder = 0;
+		NSArray *sortedRules = [[question objectForKey:@"rules"] sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
+		for (NSMutableDictionary *rule in sortedRules) {
+			[rule setObject:[NSNumber numberWithInteger:ruleOrder] forKey:@"order"];
+			ruleOrder++;
+		}
 	}
 //	NSLog(@"%@", questions);
 	[delegate didPullQuestionsForEvent:event version:version questions:questions];
