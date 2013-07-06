@@ -172,28 +172,37 @@
 	}
 	else {
 		NSMutableParagraphStyle *ruleParagraphStyle = [[paragraphStyle mutableCopy] autorelease];
-		NSTextTab *tab = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:14] autorelease];
-		ruleParagraphStyle.tabStops = @[tab];
-		ruleParagraphStyle.headIndent = 14;
+		
+		NSTextTab *tabRight = [[[NSTextTab alloc] initWithType:NSRightTabStopType location:95] autorelease];
+		NSTextTab *tabLeft = [[[NSTextTab alloc] initWithType:NSLeftTabStopType location:100] autorelease];
+		ruleParagraphStyle.tabStops = @[tabRight, tabLeft];
+		ruleParagraphStyle.headIndent = 100;
+		ruleParagraphStyle.paragraphSpacing = 5.f;
 		NSDictionary *ruleAttributes = @{NSParagraphStyleAttributeName: ruleParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
+
+		NSMutableParagraphStyle *ruleHeaderParagraphStyle = [[ruleParagraphStyle mutableCopy] autorelease];
+		ruleHeaderParagraphStyle.paragraphSpacingBefore = 14.f;
+		ruleHeaderParagraphStyle.paragraphSpacing = 3.f;
+		NSDictionary *ruleHeaderAttributes = @{NSParagraphStyleAttributeName: ruleHeaderParagraphStyle, NSFontAttributeName:[NSFont boldSystemFontOfSize:11.f]};
+
 		NSMutableParagraphStyle *ruleFirstLineParagraphStyle = [[ruleParagraphStyle mutableCopy] autorelease];
-		ruleFirstLineParagraphStyle.paragraphSpacingBefore = 7.f;
+		ruleFirstLineParagraphStyle.paragraphSpacingBefore = 10.f;
 		NSDictionary *ruleFirstLineAttributes = @{NSParagraphStyleAttributeName: ruleFirstLineParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
 		
 		if (question.rules.count) {
-			attributes = @{NSForegroundColorAttributeName: [NSColor lightGrayColor], NSParagraphStyleAttributeName: ruleParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:12.f]};
-			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n\nEmpfänger:\n" attributes:attributes] autorelease]];
+			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n\t\tEmpfänger:\n" attributes:ruleHeaderAttributes] autorelease]];
 		}
 		
 		for (Rule *rule in [self.rules valueForKeyPath:@"arrangedObjects"]) {
-			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"●\t" attributes:ruleFirstLineAttributes] autorelease]];
-			attributes = @{NSForegroundColorAttributeName: [NSColor lightGrayColor], NSParagraphStyleAttributeName: ruleFirstLineParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
-			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"Frage: " attributes:attributes] autorelease]];
+			attributes = @{NSForegroundColorAttributeName: [NSColor grayColor], NSParagraphStyleAttributeName: ruleFirstLineParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
+			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\tFrage:\t" attributes:attributes] autorelease]];
 			NSString *questionString = [NSString stringWithFormat:@"%@", rule.answer.question.text];
 			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:questionString attributes:ruleFirstLineAttributes] autorelease]];
-			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n\t" attributes:ruleAttributes] autorelease]];
-			attributes = @{NSForegroundColorAttributeName: [NSColor lightGrayColor], NSParagraphStyleAttributeName: ruleParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
-			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"beantwortet mit: " attributes:attributes] autorelease]];
+			
+			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n" attributes:ruleAttributes] autorelease]];
+			
+			attributes = @{NSForegroundColorAttributeName: [NSColor grayColor], NSParagraphStyleAttributeName: ruleParagraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:11.f]};
+			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\tbeantwortet mit:\t" attributes:attributes] autorelease]];
 			NSString *answerString = [NSString stringWithFormat:@"%@\n", rule.answer.text];
 			[as appendAttributedString:[[[NSAttributedString alloc] initWithString:answerString attributes:ruleAttributes] autorelease]];
 		}
