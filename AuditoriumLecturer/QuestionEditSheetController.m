@@ -204,16 +204,12 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 		Question *question = self.representedObject;
 		BOOL hasChanges = NO;
 		hasChanges |= question.hasChanges;
-		NSLog(@"%d", hasChanges);
 		for (Answer *answer in question.answers) {
 			hasChanges |= answer.hasChanges;
-			NSLog(@"answer %d", hasChanges);
 		}
 		for (Rule *rule in question.rules) {
 			hasChanges |= rule.hasChanges;
-			NSLog(@"rule %d", hasChanges);
 		}
-		NSLog(@"%d", hasChanges);
 		if (hasChanges) {
 			[question.event recordModification];
 		}
