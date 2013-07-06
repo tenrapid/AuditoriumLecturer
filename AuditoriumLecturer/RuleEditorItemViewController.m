@@ -20,6 +20,7 @@
 @property (retain) NSArray *questions;
 @property (assign) Question *selectedQuestion;
 @property (retain) NSArrayController *answers;
+@property (retain) NSMutableArray *answersMenuItems;
 
 @end
 
@@ -34,6 +35,7 @@
 @synthesize questions = _questions;
 @synthesize selectedQuestion = _selectedQuestion;
 @synthesize answers = _answers;
+@synthesize answersMenuItems = _answersMenuItems;
 
 - (id)initWithRule:(Rule *)rule questions:(NSArray *)questions
 {
@@ -41,16 +43,17 @@
     if (self) {
 		self.representedObject = rule;
 		_questions = [questions retain];
+		_answersMenuItems = [[NSMutableArray alloc] init];
+
+		_answers = [[NSArrayController alloc] init];
+		[_answers setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"answer.order" ascending:YES]]];
+		[_answers setContent:_answersMenuItems];
 
 		if (rule.answer) {
 			_selectedQuestion = rule.answer.question;
+			[self updateAnswersMenuItemValues];
 		}
 		[self addObserver:self forKeyPath:@"selectedQuestion" options:0 context:nil];
-
-		_answers = [[NSArrayController alloc] init];
-		[_answers setAutomaticallyRearrangesObjects:YES];
-		[_answers setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
-		[_answers bind:@"content" toObject:self withKeyPath:@"selectedQuestion.answers" options:0];
     }
     return self;
 }
@@ -58,9 +61,10 @@
 - (void)dealloc
 {
 	[self removeObserver:self forKeyPath:@"selectedQuestion"];
-	self.selectedQuestion = nil;
-	self.answers = nil;
-	self.questions = nil;
+	_selectedQuestion = nil;
+	[_answers release];
+	[_answersMenuItems release];
+	[_questions release];
 	[super dealloc];
 }
 
@@ -69,7 +73,24 @@
 	if ([keyPath isEqualToString:@"selectedQuestion"]) {
 		Rule *rule = self.representedObject;
 		rule.answer = nil;
+		[self updateAnswersMenuItemValues];
 	}
+}
+
+- (void)updateAnswersMenuItemValues
+{
+	[_answersMenuItems removeAllObjects];
+	for (Answer *answer in _selectedQuestion.answers) {
+		NSString *text;
+		if (_selectedQuestion.type == QuestionSingleChoiceType) {
+			text = [NSString stringWithFormat:@"%@: %@", answer.correct.boolValue ? @"RICHTIG" : @"FALSCH", answer.text];
+		}
+		else {
+			text = [NSString stringWithFormat:@"%@", answer.text];
+		}
+		[_answersMenuItems addObject:@{@"answer": answer, @"text": text}];
+	}
+	[_answers rearrangeObjects];
 }
 
 - (IBAction)addRuleAction:(id)sender
