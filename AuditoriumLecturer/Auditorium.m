@@ -245,6 +245,11 @@ typedef enum SyncState {
 			}
 			self.syncState = NoSyncSyncState;
 			self.syncing = NO;
+
+			NSError *error = nil;
+			if (![context save:&error]) {
+				[NSApp presentError:error];
+			}
 			break;
 	}
 }
