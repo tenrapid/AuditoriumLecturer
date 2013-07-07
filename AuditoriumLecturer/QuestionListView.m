@@ -183,6 +183,10 @@
 #pragma mark  NSMenuValidation Protocol
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item {
+	if (([item action] == @selector(moveQuestionUpAction:) || [item action] == @selector(moveQuestionDownAction:)) && !self.question.slideNumber) {
+		return NO;
+	}
+
 	NSInteger count = [self.question countWithPredicate:[NSPredicate predicateWithFormat:@"event = %@ AND slideIdentifier = %@", self.question.event, self.question.slideIdentifier]];
     if ([item action] == @selector(moveQuestionUpAction:) && (self.question.order.integerValue == 0)) {
         return NO;
