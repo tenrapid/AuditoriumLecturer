@@ -190,7 +190,7 @@
 	NSString *urlString = [NSString stringWithFormat:@"/events/%@/pull.json", event.auditoriumId];
 	NSURL *url = [self auditoriumUrlWithString:urlString user:user];
 	ASIHTTPRequest *request = [self jsonRequest:url
-									method:@"GET"
+									method:@"POST"
 									data:nil
 									finisch:@selector(didPullQuestionsForEvent:)
 									fail:@selector(didFailPullPushQuestionsForEvent:)
