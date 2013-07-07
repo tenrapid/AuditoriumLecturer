@@ -243,14 +243,4 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 	[invocation invoke];
 }
 
-- (BOOL)control:(NSControl*)control textView:(NSTextField*)textfield doCommandBySelector:(SEL)commandSelector
-{
-	BOOL result = NO;
-	if (commandSelector == @selector(insertNewline:)) {
-		[textfield insertNewlineIgnoringFieldEditor:self];
-		result = YES;
-	}
-	return result;
-}
-
 @end
