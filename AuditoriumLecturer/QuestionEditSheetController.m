@@ -164,46 +164,6 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 {
 	[self commitEditing];
 	[self.answersEditViewController commitEditing];
-	
-	Question *question = self.representedObject;
-	if (!question.slide) {
-		question.slide = [Slideshow sharedInstance].currentSlide;
-	}
-	if (question.type == QuestionMessageType) {
-		NSSet *answersToRemove = [NSSet setWithSet:question.answers];
-		if (answersToRemove.count) {
-			[question removeAnswers:answersToRemove];
-			for (Answer *answer in answersToRemove) {
-				[answer.managedObjectContext deleteObject:answer];
-			}
-		}
-		for (Rule *rule in question.rules) {
-			if (!(rule.question && rule.answer)) {
-				// invalid rule
-				[rule.managedObjectContext deleteObject:rule];
-			}
-		}
-		NSArray *rulesAnswers = [question.rules valueForKeyPath:@"@distinctUnionOfObjects.answer"];
-		if (rulesAnswers.count != question.rules.count) {
-			// duplicate rules
-			for (Answer *answer in rulesAnswers) {
-				NSArray *rulesWithAnswer = [question.rules.allObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"answer = %@", answer]];
-				if (rulesWithAnswer.count > 1) {
-					[answer.managedObjectContext deleteObject:rulesWithAnswer.lastObject];
-				}
-			}
-		}
-	}
-	else {
-		NSSet *rulesToRemove = [NSSet setWithSet:question.rules];
-		if (rulesToRemove.count) {
-			[question removeRules:rulesToRemove];
-			for (Rule *rule in rulesToRemove) {
-				[rule.managedObjectContext deleteObject:rule];
-			}
-		}
-	}
-
 	[NSApp endSheet:sheet returnCode:NSOKButton];
 }
 
@@ -213,13 +173,57 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 
 	if (returnCode == NSOKButton) {
 		Question *question = self.representedObject;
+		
+		if (!question.slide) {
+			question.slide = [Slideshow sharedInstance].currentSlide;
+		}
+		
+		if (question.type == QuestionMessageType) {
+			// remove answers
+			NSSet *answersToRemove = [NSSet setWithSet:question.answers];
+			if (answersToRemove.count) {
+				[question removeAnswers:answersToRemove];
+				for (Answer *answer in answersToRemove) {
+					[answer.managedObjectContext deleteObject:answer];
+				}
+			}
+			// remove invalid rules
+			for (Rule *rule in [NSSet setWithSet:question.rules]) {
+				if (!(rule.question && rule.answer)) {
+					[question removeRulesObject:rule];
+					[rule.managedObjectContext deleteObject:rule];
+				}
+			}
+			// remove duplicate rules
+			NSArray *rulesAnswers = [question.rules valueForKeyPath:@"@distinctUnionOfObjects.answer"];
+			if (rulesAnswers.count != question.rules.count) {
+				for (Answer *ruleAnswer in rulesAnswers) {
+					NSArray *rulesWithSameAnswer = [question.rules.allObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"answer = %@", ruleAnswer]];
+					if (rulesWithSameAnswer.count > 1) {
+						[question removeRulesObject:rulesWithSameAnswer.lastObject];
+						[ruleAnswer.managedObjectContext deleteObject:rulesWithSameAnswer.lastObject];
+					}
+				}
+			}
+		}
+		else {
+			// remove rules
+			NSSet *rulesToRemove = [NSSet setWithSet:question.rules];
+			if (rulesToRemove.count) {
+				[question removeRules:rulesToRemove];
+				for (Rule *rule in rulesToRemove) {
+					[rule.managedObjectContext deleteObject:rule];
+				}
+			}
+		}
+		
 		BOOL hasChanges = NO;
-		hasChanges |= question.hasChanges;
+		hasChanges |= question.isInserted || question.isUpdated;
 		for (Answer *answer in question.answers) {
-			hasChanges |= answer.hasChanges;
+			hasChanges |= answer.isInserted || answer.isUpdated;
 		}
 		for (Rule *rule in question.rules) {
-			hasChanges |= rule.hasChanges;
+			hasChanges |= rule.isInserted || rule.isUpdated;
 		}
 		if (hasChanges) {
 			[question.event recordModification];
