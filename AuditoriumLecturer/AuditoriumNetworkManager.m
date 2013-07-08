@@ -7,11 +7,13 @@
 //
 
 #import "AuditoriumNetworkManager.h"
+#import "Auditorium.h"
 #import "LoggedInUser.h"
 #import "Event.h"
 #import "Question.h"
 #import "Answer.h"
 #import "Rule.h"
+#import "Slide.h"
 #import "ASIHTTPRequest.h"
 #import "JSONKit.h"
 
@@ -348,6 +350,33 @@
 	ASIHTTPRequest *request = [self.questionsPullPushRequests objectForKey:event.auditoriumId];
 	[self.questionsPullPushRequests removeObjectForKey:event.auditoriumId];
 	[request clearDelegatesAndCancel];
+}
+
+#pragma mark Presentation
+
+- (void)sendCurrentSlide:(Slide *)slide forEvent:(Event *)event user:(LoggedInUser *)user;
+{
+	NSDictionary *currentSlide = @{
+		@"slide_number": [NSNumber numberWithInteger:slide.number],
+		@"slide_id": [NSNumber numberWithInteger:slide.identifier]
+	};
+
+	NSString *urlString = [NSString stringWithFormat:@"/events/%@/update_slide", event.auditoriumId];
+	NSURL *url = [self auditoriumUrlWithString:urlString user:user];
+	ASIHTTPRequest *request = [self jsonRequest:url
+										 method:@"POST"
+										   data:currentSlide
+										finisch:@selector(didSendCurrentSlide:)
+										   fail:@selector(didSendCurrentSlide:)
+									   userInfo:nil];
+	[self.queue addOperation:request];
+}
+
+- (void)didSendCurrentSlide:(ASIHTTPRequest *)request
+{
+#ifdef DEBUG
+	NSLog(@"%i %@\n%@", request.responseStatusCode, request.responseStatusMessage, request.responseString);
+#endif
 }
 
 #pragma mark jsonRequest

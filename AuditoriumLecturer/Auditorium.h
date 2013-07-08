@@ -30,6 +30,6 @@
 - (void)cancelSync;
 - (void)didResolveSyncConflict:(Event *)event resolve:(ResolveThroughPushOrPull)resolve;
 
-- (void)sendSlide:(Slide *)slide;
+- (void)sendCurrentSlide:(Slide *)slide;
 
 @end

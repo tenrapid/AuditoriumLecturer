@@ -21,6 +21,7 @@
 }
 
 @property (assign) Auditorium *auditorium;
+@property (assign) Slideshow *slideshow;
 @property (retain) NSArrayController *events;
 @property (assign, getter = isSending) BOOL sending;
 
@@ -36,10 +37,12 @@
 - (void)awakeFromNib
 {
 	self.auditorium = [Auditorium sharedInstance];
+	self.slideshow = [Slideshow sharedInstance];
 	self.sending = NO;
 	[sendToolbarItem setEnabled:NO];
 
-	[[Slideshow sharedInstance] addObserver:self forKeyPath:@"currentSlide" options:NSKeyValueObservingOptionNew context:nil];
+	[self addObserver:self forKeyPath:@"slideshow.currentSlide" options:NSKeyValueObservingOptionNew context:nil];
+	[self addObserver:self forKeyPath:@"slideshow.playing" options:NSKeyValueObservingOptionNew context:nil];
 	[self addObserver:self forKeyPath:@"auditorium.loggedIn" options:NSKeyValueObservingOptionNew context:nil];
 	[self addObserver:self forKeyPath:@"auditorium.event" options:NSKeyValueObservingOptionNew context:nil];
 	[self addObserver:self forKeyPath:@"sending" options:NSKeyValueObservingOptionNew context:nil];
@@ -58,7 +61,8 @@
 
 - (void)dealloc
 {
-	[[Slideshow sharedInstance] removeObserver:self forKeyPath:@"currentSlide"];
+	[self removeObserver:self forKeyPath:@"slideshow.currentSlide"];
+	[self removeObserver:self forKeyPath:@"slideshow.playing"];
 	[self removeObserver:self forKeyPath:@"auditorium.loggedIn"];
 	[self removeObserver:self forKeyPath:@"auditroium.event"];
 	[self removeObserver:self forKeyPath:@"sending"];
@@ -69,10 +73,9 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	if ([keyPath isEqualToString:@"currentSlide"]) {
-		if ([Slideshow sharedInstance].document && self.isSending) {
-			Slide *currentSlide = [change objectForKey:NSKeyValueChangeNewKey];
-			[[Auditorium sharedInstance] sendSlide:currentSlide];
+	if ([keyPath isEqualToString:@"slideshow.currentSlide"] || [keyPath isEqualToString:@"slideshow.playing"]) {
+		if (self.slideshow.document && self.slideshow.isPlaying && self.isSending) {
+			[self sendCurrentSlide];
 		}
 	}
 	else if ([keyPath isEqualToString:@"sending"]) {
@@ -102,12 +105,18 @@
 	}
 }
 
+- (void)sendCurrentSlide
+{
+	[self.auditorium sendCurrentSlide:self.slideshow.currentSlide];
+}
+
 - (IBAction)syncAction:(id)sender
 {
 	[self.auditorium sync];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item {
+	// validate "Synchronize" menu item
 	if (item.action == @selector(syncAction:)) {
 		return self.auditorium.loggedIn && !self.auditorium.syncing && ![[NSApp mainWindow] attachedSheet];
 	}

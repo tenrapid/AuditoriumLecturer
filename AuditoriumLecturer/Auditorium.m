@@ -471,11 +471,9 @@ typedef enum SyncState {
 
 #pragma mark Sending current slide to server
 
-- (void)sendSlide:(Slide *)slide
+- (void)sendCurrentSlide:(Slide *)slide
 {
-	NSArray *keys = [NSArray arrayWithObjects:@"number", @"identifier", @"title", @"body", @"notes", nil];
-	NSDictionary *currentSlide = [slide dictionaryWithValuesForKeys:keys];
-	NSLog(@"%@", currentSlide);
+	[self.networkManager sendCurrentSlide:slide forEvent:self.event user:self.loggedInUser];
 }
 
 @end

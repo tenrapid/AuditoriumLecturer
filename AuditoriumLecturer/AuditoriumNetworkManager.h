@@ -14,7 +14,7 @@
 #define AUDITORIUM_URL @"http://auditorium.inf.tu-dresden.de/"
 #endif
 
-@class LoggedInUser, Event;
+@class LoggedInUser, Event, Slide;
 
 @protocol AuditoriumNetworkManagerDelegateProtocol <NSObject>
 
@@ -45,5 +45,7 @@
 - (void)pullQuestionsForEvent:(Event *)event user:(LoggedInUser *)user;
 - (void)pushQuestionsForEvent:(Event *)event user:(LoggedInUser *)user;
 - (void)cancelPullPushQuestionsForEvent:(Event *)event;
+
+- (void)sendCurrentSlide:(Slide *)slide forEvent:(Event *)event user:(LoggedInUser *)user;
 
 @end
