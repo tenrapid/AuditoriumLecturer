@@ -287,14 +287,15 @@
 				@"answertext": answer.text,
 				@"feedback": answer.feedback,
 				@"is_correct": answer.correct,
-				@"order": answer.order,
+				@"position": answer.order,
 			 }];
 		}
 		NSMutableArray *rules = [NSMutableArray array];
 		for (Rule *rule in question.rules) {
 			[rules addObject:@{
 				@"id": rule.uuid,
-				@"choice_id": rule.answer.uuid
+				@"choice_id": rule.answer.uuid,
+				@"position": rule.order,
 			 }];
 		}
 		[questions addObject:@{
@@ -302,7 +303,7 @@
 			@"id": question.uuid,
 			@"questiontext": question.text,
 			@"on_slide": question.slideIdentifier,
-			@"order": question.order,
+			@"position": question.order,
 			@"choices": answers,
 			@"poll_rules": rules
 		 }];
