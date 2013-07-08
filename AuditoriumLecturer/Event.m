@@ -19,6 +19,35 @@
 @dynamic auditoriumId;
 @dynamic questions;
 
+- (void)awakeFromFetch
+{
+	[self addObserver:self forKeyPath:@"modified" options:NSKeyValueObservingOptionNew context:nil];
+}
+
+- (void)awakeFromInsert
+{
+	[self addObserver:self forKeyPath:@"modified" options:NSKeyValueObservingOptionNew context:nil];
+}
+
+- (void)willTurnIntoFault
+{
+	[self removeObserver:self forKeyPath:@"modified"];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+	if ([keyPath isEqualToString:@"modified"]) {
+		BOOL modified = [[change objectForKey:NSKeyValueChangeNewKey] boolValue];
+		NSLog(@"%d", modified);
+		if (modified) {
+			self.title = [NSString stringWithFormat:@"%@ *", self.title];
+		}
+		else {
+			self.title = [self.title substringToIndex:self.title.length - 3];
+		}
+	}
+}
+
 - (void)recordModification
 {
 	if (!self.modified.boolValue) {
