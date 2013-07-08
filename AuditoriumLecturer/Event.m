@@ -38,7 +38,6 @@
 {
 	if ([keyPath isEqualToString:@"modified"]) {
 		BOOL modified = [[change objectForKey:NSKeyValueChangeNewKey] boolValue];
-		NSLog(@"%d", modified);
 		if (modified) {
 			self.title = [NSString stringWithFormat:@"%@ *", self.title];
 		}
