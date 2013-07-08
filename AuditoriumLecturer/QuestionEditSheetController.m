@@ -179,7 +179,18 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 		}
 		for (Rule *rule in question.rules) {
 			if (!(rule.question && rule.answer)) {
+				// invalid rule
 				[rule.managedObjectContext deleteObject:rule];
+			}
+		}
+		NSArray *rulesAnswers = [question.rules valueForKeyPath:@"@distinctUnionOfObjects.answer"];
+		if (rulesAnswers.count != question.rules.count) {
+			// duplicate rules
+			for (Answer *answer in rulesAnswers) {
+				NSArray *rulesWithAnswer = [question.rules.allObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"answer = %@", answer]];
+				if (rulesWithAnswer.count > 1) {
+					[answer.managedObjectContext deleteObject:rulesWithAnswer.lastObject];
+				}
 			}
 		}
 	}
