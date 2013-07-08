@@ -29,5 +29,7 @@ extern NSString * const SlideshowAppIsPlayingDidChangeNotification;
 - (void)addIdentifier:(NSInteger)identifier toSlideWithNumber:(NSInteger)number;
 - (void)removeIdentifierFromSlideWithNumber:(NSInteger)number;
 - (void)gotoSlideWithNumber:(NSInteger)number;
+- (void)gotoPreviousSlide;
+- (void)gotoNextSlide;
 
 @end

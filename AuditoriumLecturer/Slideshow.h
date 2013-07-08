@@ -24,5 +24,7 @@
 - (void)removeIdentifierFromSlide:(NSInteger)identifier;
 
 - (void)gotoSlideWithIdentifier:(NSInteger)indentifier;
+- (void)gotoPreviousSlide;
+- (void)gotoNextSlide;
 
 @end

@@ -109,4 +109,16 @@
 	[self updateViewHeight];
 }
 
+- (IBAction)nextOrPreviousSlideAction:(id)sender
+{
+	NSSegmentedControl *control = sender;
+	NSSegmentedCell *cell = control.cell;
+	if (cell.selectedSegment == 0) {
+		[[Slideshow sharedInstance] gotoPreviousSlide];
+	}
+	else if (cell.selectedSegment == 1) {
+		[[Slideshow sharedInstance] gotoNextSlide];
+	}
+}
+
 @end

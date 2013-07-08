@@ -111,5 +111,15 @@
 	}
 }
 
+- (void)gotoPreviousSlide
+{
+	[[SlideshowApp sharedInstance] gotoPreviousSlide];
+}
+
+- (void)gotoNextSlide
+{
+	[[SlideshowApp sharedInstance] gotoNextSlide];
+}
+
 @end
 

@@ -345,6 +345,58 @@ NSString * const IdentifierTagEnd = @"#";
 	}
 }
 
+- (void)gotoPreviousSlide
+{
+	if (!self.currentSlide || self.currentSlide.number == 1) {
+		return;
+	}
+	
+	[self updateAppInstance];
+	
+	NSInteger currentSlideNumber = self.currentSlide.number;
+	
+	if (self.keynote) {
+		SBElementArray *slides = [self.keynoteSlideshow slides];
+		KeynoteSlide *slide = slides[currentSlideNumber - 2];
+		[slide show];
+	}
+	if (self.powerpoint) {
+		PowerpointView *view = [(PowerpointDocumentWindow *)[[self.powerpointPresentation documentWindows] objectAtIndex:0] view];
+		[view goToSlideNumber:currentSlideNumber - 1];
+	}
+
+	[self updateCurrentSlide];
+}
+
+- (void)gotoNextSlide
+{
+	if (!self.currentSlide) {
+		return;
+	}
+	
+	[self updateAppInstance];
+	
+	NSInteger currentSlideNumber = self.currentSlide.number;
+	
+	if (self.keynote) {
+		SBElementArray *slides = [self.keynoteSlideshow slides];
+		if (currentSlideNumber == slides.count) {
+			return;
+		}
+		KeynoteSlide *slide = slides[currentSlideNumber];
+		[slide show];
+	}
+	if (self.powerpoint) {
+		if (currentSlideNumber == [self.powerpointPresentation slides].count) {
+			return;
+		}
+		PowerpointView *view = [(PowerpointDocumentWindow *)[[self.powerpointPresentation documentWindows] objectAtIndex:0] view];
+		[view goToSlideNumber:currentSlideNumber + 1];
+	}
+	
+	[self updateCurrentSlide];
+}
+
 - (void)start
 {
 	[self updateAppInstance];

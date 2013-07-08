@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">11G63</string>
+		<string key="IBDocument.SystemVersion">11G63b</string>
 		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
 		<string key="IBDocument.AppKitVersion">1138.51</string>
 		<string key="IBDocument.HIToolboxVersion">569.00</string>
@@ -20,6 +20,8 @@
 			<string>NSImageView</string>
 			<string>NSScrollView</string>
 			<string>NSScroller</string>
+			<string>NSSegmentedCell</string>
+			<string>NSSegmentedControl</string>
 			<string>NSTextField</string>
 			<string>NSTextFieldCell</string>
 			<string>NSUserDefaultsController</string>
@@ -148,7 +150,7 @@
 														<string key="NSFrame">{{36, 434}, {34, 22}}</string>
 														<reference key="NSSuperview" ref="217165355"/>
 														<reference key="NSWindow"/>
-														<reference key="NSNextKeyView" ref="768251953"/>
+														<reference key="NSNextKeyView" ref="411875666"/>
 														<string key="NSReuseIdentifierKey">_NS:1535</string>
 														<bool key="NSEnabled">YES</bool>
 														<object class="NSTextFieldCell" key="NSCell" id="510855057">
@@ -206,6 +208,47 @@
 															<string key="NSKeyEquivalent"/>
 															<int key="NSPeriodicDelay">200</int>
 															<int key="NSPeriodicInterval">25</int>
+														</object>
+													</object>
+													<object class="NSSegmentedControl" id="411875666">
+														<reference key="NSNextResponder" ref="217165355"/>
+														<int key="NSvFlags">265</int>
+														<string key="NSFrame">{{276, 437}, {62, 19}}</string>
+														<reference key="NSSuperview" ref="217165355"/>
+														<reference key="NSWindow"/>
+														<reference key="NSNextKeyView" ref="768251953"/>
+														<string key="NSReuseIdentifierKey">_NS:9</string>
+														<bool key="NSEnabled">YES</bool>
+														<object class="NSSegmentedCell" key="NSCell" id="303803797">
+															<int key="NSCellFlags">67108864</int>
+															<int key="NSCellFlags2">131072</int>
+															<reference key="NSSupport" ref="26"/>
+															<string key="NSCellIdentifier">_NS:9</string>
+															<reference key="NSControlView" ref="411875666"/>
+															<array class="NSMutableArray" key="NSSegmentImages">
+																<object class="NSSegmentItem">
+																	<double key="NSSegmentItemWidth">30</double>
+																	<object class="NSCustomResource" key="NSSegmentItemImage">
+																		<string key="NSClassName">NSImage</string>
+																		<string key="NSResourceName">NSLeftFacingTriangleTemplate</string>
+																	</object>
+																	<string key="NSSegmentItemLabel"/>
+																	<int key="NSSegmentItemImageScaling">0</int>
+																</object>
+																<object class="NSSegmentItem">
+																	<double key="NSSegmentItemWidth">29</double>
+																	<object class="NSCustomResource" key="NSSegmentItemImage">
+																		<string key="NSClassName">NSImage</string>
+																		<string key="NSResourceName">NSRightFacingTriangleTemplate</string>
+																	</object>
+																	<string key="NSSegmentItemLabel"/>
+																	<int key="NSSegmentItemTag">1</int>
+																	<int key="NSSegmentItemImageScaling">0</int>
+																</object>
+															</array>
+															<int key="NSSelectedSegment">1</int>
+															<int key="NSTrackingMode">2</int>
+															<int key="NSSegmentStyle">4</int>
 														</object>
 													</object>
 												</array>
@@ -344,6 +387,14 @@
 					<int key="connectionID">366</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">nextOrPreviousSlideAction:</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="411875666"/>
+					</object>
+					<int key="connectionID">398</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">hidden: delegate.slideshow.currentSlide.number</string>
 						<reference key="source" ref="833449134"/>
@@ -443,6 +494,26 @@
 					</object>
 					<int key="connectionID">384</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">hidden: delegate.slideshow.currentSlide.number</string>
+						<reference key="source" ref="411875666"/>
+						<reference key="destination" ref="1004"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="411875666"/>
+							<reference key="NSDestination" ref="1004"/>
+							<string key="NSLabel">hidden: delegate.slideshow.currentSlide.number</string>
+							<string key="NSBinding">hidden</string>
+							<string key="NSKeyPath">delegate.slideshow.currentSlide.number</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">402</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -507,6 +578,7 @@
 							<reference ref="908532512"/>
 							<reference ref="668041487"/>
 							<reference ref="776931057"/>
+							<reference ref="411875666"/>
 						</array>
 						<reference key="parent" ref="620408413"/>
 					</object>
@@ -572,6 +644,19 @@
 						<reference key="object" ref="956766114"/>
 						<reference key="parent" ref="776931057"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">396</int>
+						<reference key="object" ref="411875666"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="303803797"/>
+						</array>
+						<reference key="parent" ref="138178096"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">397</int>
+						<reference key="object" ref="303803797"/>
+						<reference key="parent" ref="411875666"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -595,12 +680,15 @@
 				<string key="358.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="364.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="365.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="396.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<integer value="1" key="397.IBNSSegmentedControlInspectorSelectedSegmentMetadataKey"/>
+				<string key="397.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">393</int>
+			<int key="maxID">402</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -673,9 +761,10 @@
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="NS.key.0">slide</string>
-			<string key="NS.object.0">{14, 16}</string>
-		</object>
+		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<string key="NSLeftFacingTriangleTemplate">{9, 9}</string>
+			<string key="NSRightFacingTriangleTemplate">{9, 9}</string>
+			<string key="slide">{14, 16}</string>
+		</dictionary>
 	</data>
 </archive>
