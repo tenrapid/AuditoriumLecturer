@@ -42,7 +42,9 @@
 			self.title = [NSString stringWithFormat:@"%@ *", self.title];
 		}
 		else {
-			self.title = [self.title substringToIndex:self.title.length - 3];
+			if (self.title.length >= 2 && [[self.title substringFromIndex:self.title.length - 2] isEqualToString:@" *"]) {
+				self.title = [self.title substringToIndex:self.title.length - 2];
+			}
 		}
 	}
 }
