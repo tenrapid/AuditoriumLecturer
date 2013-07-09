@@ -11,7 +11,7 @@
 #ifdef DEBUG
 #define AUDITORIUM_URL @"http://localhost:3000/"
 #else
-#define AUDITORIUM_URL @"http://auditorium.inf.tu-dresden.de/"
+#define AUDITORIUM_URL @"https://141.76.41.204/"
 #endif
 
 @class LoggedInUser, Event, Slide;
