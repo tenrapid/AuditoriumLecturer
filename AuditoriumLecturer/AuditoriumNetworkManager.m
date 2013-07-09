@@ -401,6 +401,7 @@
 	[request addRequestHeader:@"Content-type" value:@"application/json"];
 	[request setDidFinishSelector:finish];
 	[request setDidFailSelector:fail];
+	[request setValidatesSecureCertificate:NO];
 	if (userInfo) {
 		[request setUserInfo:userInfo];
 	}
