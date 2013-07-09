@@ -54,11 +54,6 @@
 	[super dealloc];
 }
 
-- (void)awakeFromNib
-{
-	[self.popUpButton setHidden:YES];
-}
-
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
 	NSDictionary *attributes;
@@ -107,8 +102,17 @@
         self.trackingArea = nil;
     }
 	
-    self.trackingArea = [[[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited |NSTrackingActiveInKeyWindow owner:self userInfo:nil] autorelease];
+    self.trackingArea = [[[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow owner:self userInfo:nil] autorelease];
     [self addTrackingArea:trackingArea];
+
+	NSPoint mouseLocation = [[self window] mouseLocationOutsideOfEventStream];
+	mouseLocation = [self convertPoint:mouseLocation fromView:nil];
+	if (NSPointInRect(mouseLocation, [self bounds])) {
+		[self mouseEntered:nil];
+	}
+	else {
+		[self mouseExited:nil];
+	}
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent

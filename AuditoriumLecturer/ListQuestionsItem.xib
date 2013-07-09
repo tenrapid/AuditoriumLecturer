@@ -43,7 +43,7 @@
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSPopUpButton" id="345428638">
 						<reference key="NSNextResponder" ref="1005"/>
-						<int key="NSvFlags">265</int>
+						<int key="NSvFlags">-2147483383</int>
 						<string key="NSFrame">{{327, 44}, {36, 19}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
@@ -148,7 +148,6 @@
 									<int key="NSfFlags">1044</int>
 								</object>
 							</object>
-							<int key="NSSelectedIndex">-1</int>
 							<bool key="NSPullDown">YES</bool>
 							<int key="NSPreferredEdge">1</int>
 							<bool key="NSUsesItemFromMenu">YES</bool>
@@ -391,6 +390,27 @@
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">NSCollectionViewItem</string>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="imageView">NSImageView</string>
+						<string key="textField">NSTextField</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="imageView">
+							<string key="name">imageView</string>
+							<string key="candidateClassName">NSImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="textField">
+							<string key="name">textField</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/NSCollectionViewItem.h</string>
+					</object>
+				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">QuestionListView</string>
 					<string key="superclassName">NSView</string>
