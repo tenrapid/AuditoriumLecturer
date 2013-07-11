@@ -211,16 +211,17 @@
 	[self.questionsPullPushRequests removeObjectForKey:event.auditoriumId];
 
 	NSDictionary *responseEvent = [request.responseString objectFromJSONString];
-	NSDictionary *responsePolls = [responseEvent objectForKey:@"polls"];
+	NSArray *responsePolls = [responseEvent objectForKey:@"polls"];
 	NSInteger version = ((NSNumber *)[responseEvent objectForKey:@"version"]).integerValue;
 	NSMutableArray *questions = [NSMutableArray array];
+	NSMutableArray *allAnswers = [NSMutableArray array];
 
 	for (NSDictionary *poll in responsePolls) {
 		NSMutableDictionary *question = [NSMutableDictionary dictionary];
 		[question setObject:[self normalizeUUID:[poll objectForKey:@"id"]] forKey:@"uuid"];
 		[question setObject:[poll objectForKey:@"questiontext"] forKey:@"text"];
 		[question setObject:[poll objectForKey:@"on_slide"] forKey:@"slideIdentifier"];
-		[question setObject:[poll objectForKey:@"order"] ? [poll objectForKey:@"order"] : [NSNull null] forKey:@"order"];
+		[question setObject:[poll objectForKey:@"position"] ? [poll objectForKey:@"position"] : [NSNull null] forKey:@"order"];
 		NSMutableArray *answers = [NSMutableArray array];
 		for (NSDictionary *choice in [poll objectForKey:@"choices"]) {
 			NSMutableDictionary *answer = [NSMutableDictionary dictionary];
@@ -228,8 +229,9 @@
 			[answer setObject:[choice objectForKey:@"answertext"] forKey:@"text"];
 			[answer setObject:[choice objectForKey:@"feedback"] forKey:@"feedback"];
 			[answer setObject:[choice objectForKey:@"is_correct"] forKey:@"correct"];
-			[answer setObject:[choice objectForKey:@"order"] ? [choice objectForKey:@"order"] : [NSNull null] forKey:@"order"];
+			[answer setObject:[choice objectForKey:@"position"] ? [choice objectForKey:@"position"] : [NSNull null] forKey:@"order"];
 			[answers addObject:answer];
+			[allAnswers addObject:answer];
 		}
 		QuestionType type;
 		if (answers.count == 0) {
@@ -241,7 +243,32 @@
 		}
 		[question setObject:[NSNumber numberWithInteger:type] forKey:@"type"];
 		[question setObject:answers forKey:@"answers"];
+		[question setObject:[NSMutableArray array] forKey:@"rules"];
 		[questions addObject:question];
+	}
+
+	// create rules and link them to questions and answers
+	NSPredicate *uuidPredicateTemplate = [NSPredicate predicateWithFormat:@"uuid = $UUID"];
+	for (NSDictionary *poll in responsePolls) {
+		NSArray *pollRules = [poll objectForKey:@"poll_rules"];
+		if (!pollRules.count) {
+			continue;
+		}
+		NSPredicate *uuidPredicate;
+		for (NSDictionary *pollRule in pollRules) {
+			uuidPredicate = [uuidPredicateTemplate predicateWithSubstitutionVariables:@{@"UUID": [self normalizeUUID:[pollRule objectForKey:@"poll_id"]]}];
+			NSDictionary *question = [questions filteredArrayUsingPredicate:uuidPredicate][0];
+			uuidPredicate = [uuidPredicateTemplate predicateWithSubstitutionVariables:@{@"UUID": [self normalizeUUID:[pollRule objectForKey:@"choice_id"]]}];
+			NSDictionary *answer = [allAnswers filteredArrayUsingPredicate:uuidPredicate][0];
+
+			NSMutableDictionary *rule = [NSMutableDictionary dictionary];
+			[rule setObject:[self normalizeUUID:[pollRule objectForKey:@"id"]] forKey:@"uuid"];
+			[rule setObject:[pollRule objectForKey:@"position"] ? [pollRule objectForKey:@"position"] : [NSNull null] forKey:@"order"];
+			[rule setObject:answer forKey:@"answer"];
+			[rule setObject:question forKey:@"question"];
+			NSMutableArray *rules = [question objectForKey:@"rules"];
+			[rules addObject:rule];
+		}
 	}
 
 	// recreate order
@@ -271,7 +298,7 @@
 			ruleOrder++;
 		}
 	}
-//	NSLog(@"%@", questions);
+
 	[delegate didPullQuestionsForEvent:event version:version questions:questions];
 }
 

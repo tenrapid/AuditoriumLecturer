@@ -12,6 +12,7 @@
 #import "Event.h"
 #import "Question.h"
 #import "Answer.h"
+#import "Rule.h"
 #import "LoggedInUser.h"
 #import "QuestionEditSheetController.h"
 #import "SyncInfoSheetController.h"
@@ -380,21 +381,23 @@ typedef enum SyncState {
 
 - (void)didPullQuestionsForEvent:(Event *)event version:(NSInteger)version questions:(NSArray *)_questions
 {
-//	NSLog(@"%@\n%@", event, questions);
-	
 	[context processPendingChanges];
 	[context.undoManager disableUndoRegistration];
 	
 	event.version = [NSNumber numberWithInteger:version];
 	event.modified = [NSNumber numberWithBool:NO];
 
+	// delete all questions in managed object context
 	NSSet *questionsToDelete = [event.questions copy];
 	[event removeQuestions:questionsToDelete];
 	for (Question *questionToDelete in questionsToDelete) {
 		[context deleteObject:questionToDelete];
 	}
 
+	// create questions and answers
 	NSMutableSet *questions = [NSMutableSet set];
+	NSMutableDictionary *_questionToManagedObjectMap = [NSMutableDictionary dictionary];
+	NSMutableDictionary *_answerToManagedObjectMap = [NSMutableDictionary dictionary];
 	for (NSDictionary *_question in _questions) {
 		Question *question = [NSEntityDescription insertNewObjectForEntityForName:@"Question" inManagedObjectContext:context];
 		for (NSString *key in @[@"uuid", @"type", @"text", @"slideIdentifier", @"order"]) {
@@ -412,11 +415,54 @@ typedef enum SyncState {
 			}
 			[answer setPrimitiveValue:question forKey:@"question"];
 			[answers addObject:answer];
+			[_answerToManagedObjectMap setObject:answer forKey:_answer];
 		}
 		[question setPrimitiveValue:answers forKey:@"answers"];
 		[questions addObject:question];
+		[_questionToManagedObjectMap setObject:question forKey:_question];
 	}
 	[event addQuestions:questions];
+
+	// create rules and link them to questions and answers
+	NSArray *_ruleArrays = [_questions valueForKeyPath:@"rules"];
+	NSMutableDictionary *_questionToRulesMap = [NSMutableDictionary dictionary];
+	NSMutableDictionary *_answerToRulesMap = [NSMutableDictionary dictionary];
+	for (NSArray *_ruleArray in _ruleArrays) {
+		if (!_ruleArray.count) {
+			continue;
+		}
+		for (NSDictionary *_rule in _ruleArray) {
+			Rule *rule = [NSEntityDescription insertNewObjectForEntityForName:@"Rule" inManagedObjectContext:context];
+			[rule setPrimitiveValue:[_rule objectForKey:@"uuid"] forKey:@"uuid"];
+			[rule setPrimitiveValue:[_rule objectForKey:@"order"] forKey:@"order"];
+			NSDictionary *_question = [_rule objectForKey:@"question"];
+			NSDictionary *_answer = [_rule objectForKey:@"answer"];
+			Question *question = [_questionToManagedObjectMap objectForKey:_question];
+			Answer *answer = [_answerToManagedObjectMap objectForKey:_answer];
+			[rule setPrimitiveValue:question forKey:@"question"];
+			[rule setPrimitiveValue:answer forKey:@"answer"];
+			NSMutableSet *questionRules = [_questionToRulesMap objectForKey:_question];
+			if (!questionRules) {
+				questionRules = [NSMutableSet set];
+				[_questionToRulesMap setObject:questionRules forKey:_question];
+			}
+			[questionRules addObject:rule];
+			NSMutableSet *answerRules = [_answerToRulesMap objectForKey:_answer];
+			if (!answerRules) {
+				answerRules = [NSMutableSet set];
+				[_answerToRulesMap setObject:answerRules forKey:_answer];
+			}
+			[answerRules addObject:rule];
+		}
+	}
+	for (NSDictionary *_question in _questionToRulesMap.allKeys) {
+		Question *question = [_questionToManagedObjectMap objectForKey:_question];
+		[question setPrimitiveValue:[_questionToRulesMap objectForKey:_question] forKey:@"rules"];
+	}
+	for (NSDictionary *_answer in _answerToRulesMap.allKeys) {
+		Answer *answer = [_answerToManagedObjectMap objectForKey:_answer];
+		[answer setPrimitiveValue:[_answerToRulesMap objectForKey:_answer] forKey:@"rules"];
+	}
 
 	[context processPendingChanges];
 	[context.undoManager enableUndoRegistration];
