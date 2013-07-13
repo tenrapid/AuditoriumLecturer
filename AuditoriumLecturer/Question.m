@@ -29,6 +29,13 @@ const NSString * const QuestionTypeNames[] = {
 @dynamic answers;
 @dynamic rules;
 
+- (QuestionType)type
+{
+	[self willAccessValueForKey:@"type"];
+	return ((NSNumber *)[self primitiveValueForKey:@"type"]).integerValue;
+	[self didAccessValueForKey:@"type"];
+}
+
 - (NSNumber *)slideNumber
 {
 	return [[Slideshow sharedInstance].slideIdentifierToSlideNumberMap objectForKey:self.slideIdentifier];
