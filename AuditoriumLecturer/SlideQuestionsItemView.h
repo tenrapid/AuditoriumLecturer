@@ -8,11 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString * const QuestionViewHeightDidChangeNotification;
+extern NSString * const SlideQuestionsItemViewHeightDidChangeNotification;
 
 @class ClickActionTextView;
 
-@interface QuestionView : NSView <NSTextViewDelegate>
+@interface SlideQuestionsItemView : NSView <NSTextViewDelegate>
 
 @property (assign) ClickActionTextView *textView;
 

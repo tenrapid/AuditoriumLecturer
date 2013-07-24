@@ -6,19 +6,19 @@
 //  Copyright (c) 2013 Matthias Rahne. All rights reserved.
 //
 
-#import "QuestionListViewController.h"
+#import "QuestionListItemViewController.h"
 
-@interface QuestionListViewController ()
+@interface QuestionListItemViewController ()
 
 @end
 
-@implementation QuestionListViewController
+@implementation QuestionListItemViewController
 
 @synthesize textField;
 
 - (id)initWithQuestion:(Question *)question;
 {
-    self = [super initWithNibName:@"ListQuestionsItem" bundle:nil];
+    self = [super initWithNibName:@"QuestionListItem" bundle:nil];
     if (self) {
 		self.representedObject = question;
 		[self.view bind:@"question" toObject:self withKeyPath:@"representedObject" options:nil];

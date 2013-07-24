@@ -6,15 +6,15 @@
 //  Copyright (c) 2013 Matthias Rahne. All rights reserved.
 //
 
-#import "QuestionViewController.h"
-#import "QuestionView.h"
+#import "SlideQuestionsItemViewController.h"
+#import "SlideQuestionsItemView.h"
 #import "QuestionEditSheetController.h"
 #import "Question.h"
 #import "Answer.h"
 #import "Rule.h"
 #import "ClickActionTextView.h"
 
-@interface QuestionViewController ()
+@interface SlideQuestionsItemViewController ()
 
 @property (assign) NSArrayController *answers;
 @property (assign) NSArrayController *rules;
@@ -23,7 +23,7 @@
 
 @end
 
-@implementation QuestionViewController
+@implementation SlideQuestionsItemViewController
 
 @synthesize moveQuestionUpMenuItem;
 @synthesize moveQuestionDownMenuItem;
@@ -38,7 +38,7 @@
 
 - (id)initWithQuestion:(Question *)question
 {
-    self = [super initWithNibName:@"QuestionEdit" bundle:nil];
+    self = [super initWithNibName:@"SlideQuestionsItem" bundle:nil];
     if (self) {
 		self.representedObject = question;
 		answers = [[NSArrayController alloc] init];
@@ -210,7 +210,7 @@
 	attributes = @{NSParagraphStyleAttributeName: paragraphStyle, NSFontAttributeName:[NSFont systemFontOfSize:(question.type == QuestionSingleChoiceType ? 15.f : question.type == QuestionMultipleChoiceType ? 9.f : 6.f)]};
 	[as appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes] autorelease]];
 
-	QuestionView *questionView = (QuestionView *)self.view;
+	SlideQuestionsItemView *questionView = (SlideQuestionsItemView *)self.view;
 	[questionView.textView.textStorage setAttributedString:as];
 }
 

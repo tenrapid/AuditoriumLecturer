@@ -6,19 +6,19 @@
 //  Copyright (c) 2013 Matthias Rahne. All rights reserved.
 //
 
-#import "MoveQuestionToSlideViewController.h"
+#import "MoveQuestionToSlideSheetController.h"
 #import "Slideshow.h"
 #import	"Slide.h"
 #import "Question.h"
 #import "Event.h"
 
-@implementation MoveQuestionToSlideViewController
+@implementation MoveQuestionToSlideSheetController
 
 @synthesize slide;
 
 - (id)initWithQuestion:(Question *)aQuestion delegate:(id)aDelegate
 {
-    self = [super initWithNibName:@"MoveQuestionToSlide" bundle:nil];
+    self = [super initWithNibName:@"MoveQuestionToSlideSheet" bundle:nil];
     if (self) {
 		self.representedObject = aQuestion;
 		delegate = [aDelegate retain];

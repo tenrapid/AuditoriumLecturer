@@ -6,18 +6,18 @@
 //  Copyright (c) 2013 Matthias Rahne. All rights reserved.
 //
 
-#import "QuestionView.h"
+#import "SlideQuestionsItemView.h"
 #import "ClickActionTextView.h"
 
-NSString * const QuestionViewHeightDidChangeNotification = @"QuestionViewHeightDidChangeNotification";
+NSString * const SlideQuestionsItemViewHeightDidChangeNotification = @"SlideQuestionsItemViewHeightDidChangeNotification";
 
-@interface QuestionView ( )
+@interface SlideQuestionsItemView ( )
 {
 	float textViewHeight;
 }
 @end
 
-@implementation QuestionView
+@implementation SlideQuestionsItemView
 
 @synthesize textView;
 
@@ -103,7 +103,7 @@ NSString * const QuestionViewHeightDidChangeNotification = @"QuestionViewHeightD
 {
 	if (self.textView.frame.size.height != textViewHeight) {
 		textViewHeight = self.textView.frame.size.height;
-		[[NSNotificationCenter defaultCenter] postNotificationName:QuestionViewHeightDidChangeNotification object:self];
+		[[NSNotificationCenter defaultCenter] postNotificationName:SlideQuestionsItemViewHeightDidChangeNotification object:self];
 	}
 }
 

@@ -7,9 +7,9 @@
 //
 
 #import "SlideQuestionsView.h"
-#import "QuestionViewController.h"
-#import "QuestionView.h"
-#import "MoveQuestionToSlideViewController.h"
+#import "SlideQuestionsItemViewController.h"
+#import "SlideQuestionsItemView.h"
+#import "MoveQuestionToSlideSheetController.h"
 #import "QuestionEditSheetController.h"
 #import "Question.h"
 #import "Event.h"
@@ -24,22 +24,22 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 {
 	NSMutableArray *questions;
 	QuestionEditSheetController *questionEditSheetController;
-	MoveQuestionToSlideViewController *moveQuestionToSlideViewController;
+	MoveQuestionToSlideSheetController *moveQuestionToSlideSheetController;
 }
 
-@property (assign) NSMutableArray *questionViewControllers;
+@property (assign) NSMutableArray *slideQuestionsItemViewControllers;
 
 @end
 
 @implementation SlideQuestionsView
 
-@synthesize questionViewControllers;
+@synthesize slideQuestionsItemViewControllers;
 
 - (id)initWithFrame:(NSRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-		questionViewControllers = [[NSMutableArray alloc] init];
+		slideQuestionsItemViewControllers = [[NSMutableArray alloc] init];
 		[self updateViewHeight];
     }
     return self;
@@ -49,19 +49,19 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 {
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 
-	for (NSViewController *viewController in questionViewControllers) {
-		[notificationCenter removeObserver:self name:QuestionViewHeightDidChangeNotification object:[viewController view]];
+	for (NSViewController *viewController in slideQuestionsItemViewControllers) {
+		[notificationCenter removeObserver:self name:SlideQuestionsItemViewHeightDidChangeNotification object:[viewController view]];
 		[viewController commitEditing];
 		[[viewController view] removeFromSuperview];
 	}
-	[questionViewControllers removeAllObjects];
+	[slideQuestionsItemViewControllers removeAllObjects];
 
 	[questions release];
 	questions = [_questions mutableCopy];
 
 	for (Question *question in questions) {
-		QuestionViewController *viewController = [[QuestionViewController alloc] initWithQuestion:question];
-		[questionViewControllers addObject:viewController];
+		SlideQuestionsItemViewController *viewController = [[SlideQuestionsItemViewController alloc] initWithQuestion:question];
+		[slideQuestionsItemViewControllers addObject:viewController];
 		[viewController release];
 
 		[viewController.moveQuestionUpMenuItem setTarget:self];
@@ -79,7 +79,7 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 		[viewController.editQuestionButton setTarget:self];
 		[viewController.editQuestionButton setAction:@selector(editQuestionAction:)];
 		[[viewController.editQuestionButton cell] setRepresentedObject:question];
-		QuestionView *questionView = (QuestionView *)viewController.view;
+		SlideQuestionsItemView *questionView = (SlideQuestionsItemView *)viewController.view;
 		[questionView.textView setTarget:self];
 		[questionView.textView setAction:@selector(editQuestionAction:)];
 		[questionView.textView setRepresentedObject:question];
@@ -91,8 +91,8 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 
 	[self updateViewHeight];
 
-	for (QuestionViewController *questionViewController in questionViewControllers) {
-		[notificationCenter addObserver:self selector:@selector(questionViewHeightDidChange:) name:QuestionViewHeightDidChangeNotification object:questionViewController.view];
+	for (SlideQuestionsItemViewController *viewController in slideQuestionsItemViewControllers) {
+		[notificationCenter addObserver:self selector:@selector(slideQuestionsItemViewHeightDidChange:) name:SlideQuestionsItemViewHeightDidChangeNotification object:viewController.view];
 	}
 	
 	[[self window] recalculateKeyViewLoop];
@@ -103,13 +103,13 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 	NSRect frame;
 	float height = 0;
 
-	for (QuestionViewController *viewController in questionViewControllers) {
+	for (SlideQuestionsItemViewController *viewController in slideQuestionsItemViewControllers) {
 		frame = viewController.view.frame;
 		frame.origin.y = height;
 		frame.size.width = self.frame.size.width;
 		[viewController.view setFrame:frame];
 
-		[(QuestionView *)viewController.view updateViewHeight];
+		[(SlideQuestionsItemView *)viewController.view updateViewHeight];
 		height += viewController.view.frame.size.height + 10;
 	}
 
@@ -122,7 +122,7 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 	[[NSNotificationCenter defaultCenter] postNotificationName:SlideQuestionsViewHeightDidChangeNotification object:self];
 }
 
-- (void)questionViewHeightDidChange:(NSNotification *)notification
+- (void)slideQuestionsItemViewHeightDidChange:(NSNotification *)notification
 {
 	[self updateViewHeight];
 }
@@ -183,12 +183,12 @@ NSString * const SlideQuestionsViewHeightDidChangeNotification = @"SlideQuestion
 - (void)moveQuestionToSlideAction:(id)sender
 {
 	Question *question = [sender representedObject];
-	moveQuestionToSlideViewController = [[MoveQuestionToSlideViewController alloc] initWithQuestion:question delegate:self];
+	moveQuestionToSlideSheetController = [[MoveQuestionToSlideSheetController alloc] initWithQuestion:question delegate:self];
 }
 
 - (void)moveQuestionToSlideDidEnd:(NSInteger)returnCode
 {
-	[moveQuestionToSlideViewController release];
+	[moveQuestionToSlideSheetController release];
 }
 
 #pragma mark  NSMenuValidation Protocol

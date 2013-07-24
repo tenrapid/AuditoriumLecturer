@@ -8,8 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString * const AnswersEditViewHeightDidChangeNotification;
+extern NSString * const AnswerEditorViewHeightDidChangeNotification;
 
-@interface AnswersEditViewController : NSViewController
+@interface AnswerEditorViewController : NSViewController
 
 @end

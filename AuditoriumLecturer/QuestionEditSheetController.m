@@ -7,7 +7,7 @@
 //
 
 #import "QuestionEditSheetController.h"
-#import "AnswersEditViewController.h"
+#import "AnswerEditorViewController.h"
 #import "RuleEditorViewController.h"
 #import "Question.h"
 #import "Answer.h"
@@ -27,7 +27,7 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 
 @property (assign) IBOutlet NSTextField *textField;
 @property (assign) IBOutlet NSPopUpButton *typePopupButton;
-@property (assign) IBOutlet AnswersEditViewController *answersEditViewController;
+@property (assign) IBOutlet AnswerEditorViewController *answerEditorViewController;
 @property (assign) IBOutlet RuleEditorViewController *ruleEditorViewController;
 @property (assign) NSArrayController *answers;
 @property (assign) NSArrayController *rules;
@@ -38,7 +38,7 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 
 @synthesize textField;
 @synthesize typePopupButton;
-@synthesize answersEditViewController;
+@synthesize answerEditorViewController;
 @synthesize ruleEditorViewController;
 @synthesize answers;
 @synthesize rules;
@@ -69,8 +69,8 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 		[answers setAutomaticallyRearrangesObjects:YES];
 		[answers bind:@"content" toObject:self.representedObject withKeyPath:@"answers" options:nil];
 		
-		[answersEditViewController bind:@"answers" toObject:self withKeyPath:@"answers.arrangedObjects" options:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(answersEditViewHeightDidChange:) name:AnswersEditViewHeightDidChangeNotification object:answersEditViewController];
+		[answerEditorViewController bind:@"answers" toObject:self withKeyPath:@"answers.arrangedObjects" options:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(answerEditorViewHeightDidChange:) name:AnswerEditorViewHeightDidChangeNotification object:answerEditorViewController];
 
 		rules = [[NSArrayController alloc] init];
 		[rules setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
@@ -89,7 +89,7 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 
 - (void)dealloc
 {
-	[answersEditViewController unbind:@"answers"];
+	[answerEditorViewController unbind:@"answers"];
 	[ruleEditorViewController unbind:@"rules"];
 	[answers unbind:@"content"];
 	[rules unbind:@"content"];
@@ -126,10 +126,10 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 {
 	Question *question = self.representedObject;
 	if (question.type == QuestionMessageType) {
-		[answersEditViewController.view setHidden:YES];
+		[answerEditorViewController.view setHidden:YES];
 	}
 	NSInteger staticHeight = 242 + ([self.view.window isSheet] ? 0 : 22);
-	NSInteger dynamicHeight = question.type == QuestionMessageType ? ruleEditorViewController.view.frame.size.height : answersEditViewController.view.frame.size.height;
+	NSInteger dynamicHeight = question.type == QuestionMessageType ? ruleEditorViewController.view.frame.size.height : answerEditorViewController.view.frame.size.height;
 	NSRect frame = sheet.frame;
 	frame.origin.y += (frame.size.height - staticHeight) - dynamicHeight;
 	frame.size.height = staticHeight + dynamicHeight;
@@ -143,7 +143,7 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 	[sheet setFrame:frame display:YES animate:YES];
 }
 
-- (void)answersEditViewHeightDidChange:(NSNotification *)notification
+- (void)answerEditorViewHeightDidChange:(NSNotification *)notification
 {
 	[self updateViewHeight];
 }
@@ -156,14 +156,14 @@ NSString * const QuestionEditSheetDidCloseNotification = @"QuestionEditSheetDidC
 - (IBAction)cancelButtonAction:(id)sender
 {
 	[self discardEditing];
-	[self.answersEditViewController discardEditing];
+	[self.answerEditorViewController discardEditing];
 	[NSApp endSheet:sheet returnCode:NSCancelButton];
 }
 
 - (IBAction)saveButtonAction:(id)sender
 {
 	[self commitEditing];
-	[self.answersEditViewController commitEditing];
+	[self.answerEditorViewController commitEditing];
 	[NSApp endSheet:sheet returnCode:NSOKButton];
 }
 

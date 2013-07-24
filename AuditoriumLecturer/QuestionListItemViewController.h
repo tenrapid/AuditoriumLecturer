@@ -10,7 +10,7 @@
 
 @class Question;
 
-@interface QuestionListViewController : NSCollectionViewItem
+@interface QuestionListItemViewController : NSCollectionViewItem
 
 - (id)initWithQuestion:(Question *)question;
 

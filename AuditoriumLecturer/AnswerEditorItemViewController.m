@@ -6,31 +6,31 @@
 //  Copyright (c) 2013 Matthias Rahne. All rights reserved.
 //
 
-#import "AnswerEditViewController.h"
+#import "AnswerEditorItemViewController.h"
 #import "Question.h"
 #import "Answer.h"
 #import "Auditorium.h"
 #import "AutoGrowTextField.h"
 
-NSString * const AnswerEditViewHeightDidChangeNotification = @"AnswerEditViewHeightDidChangeNotification";
+NSString * const AnswerEditorItemViewHeightDidChangeNotification = @"AnswerEditorItemViewHeightDidChangeNotification";
 
-@interface AnswerEditViewController ()
+@interface AnswerEditorItemViewController ()
 
 @property (assign) IBOutlet AutoGrowTextField *answerTextField;
 @property (assign) IBOutlet AutoGrowTextField *feedbackTextField;
 
 @end
 
-@implementation AnswerEditViewController
+@implementation AnswerEditorItemViewController
 
 @synthesize plusButton;
 @synthesize minusButton;
 @synthesize answerTextField;
 @synthesize feedbackTextField;
 
-- (AnswerEditViewController *)initWithAnswer:(Answer *)answer;
+- (AnswerEditorItemViewController *)initWithAnswer:(Answer *)answer;
 {
-    self = [super initWithNibName:@"AnswerEdit" bundle:nil];
+    self = [super initWithNibName:@"AnswerEditorItem" bundle:nil];
     if (self) {
         self.representedObject = answer;
 		[self view];
@@ -100,7 +100,7 @@ NSString * const AnswerEditViewHeightDidChangeNotification = @"AnswerEditViewHei
 - (void)textFieldHeightDidChange:(NSNotification *)notification
 {
 	[self updateViewHeight];
-	[[NSNotificationCenter defaultCenter] postNotificationName:AnswerEditViewHeightDidChangeNotification object:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:AnswerEditorItemViewHeightDidChangeNotification object:self];
 }
 
 @end

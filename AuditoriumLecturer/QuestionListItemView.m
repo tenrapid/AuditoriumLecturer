@@ -6,25 +6,25 @@
 //  Copyright (c) 2013 Matthias Rahne. All rights reserved.
 //
 
-#import "QuestionListView.h"
+#import "QuestionListItemView.h"
 #import "Question.h"
 #import "Event.h"
 #import "QuestionEditSheetController.h"
-#import "MoveQuestionToSlideViewController.h"
+#import "MoveQuestionToSlideSheetController.h"
 #import "Slideshow.h"
 
-@interface QuestionListView ()
+@interface QuestionListItemView ()
 
 @property (assign) IBOutlet NSTextField *textField;
 @property (assign) IBOutlet NSPopUpButton *popUpButton;
 @property (retain) NSTimer *doubleClickTimer;
 @property (retain) NSTrackingArea *trackingArea;
 @property (retain) QuestionEditSheetController *questionEditSheetController;
-@property (retain) MoveQuestionToSlideViewController *moveQuestionToSlideViewController;
+@property (retain) MoveQuestionToSlideSheetController *moveQuestionToSlideSheetController;
 
 @end
 
-@implementation QuestionListView
+@implementation QuestionListItemView
 
 @synthesize question;
 @synthesize textField;
@@ -32,7 +32,7 @@
 @synthesize doubleClickTimer;
 @synthesize trackingArea;
 @synthesize questionEditSheetController;
-@synthesize moveQuestionToSlideViewController;
+@synthesize moveQuestionToSlideSheetController;
 
 - (id)initWithFrame:(NSRect)frame
 {
@@ -142,12 +142,12 @@
 
 - (IBAction)moveQuestionToSlideAction:(id)sender
 {
-	self.moveQuestionToSlideViewController = [[[MoveQuestionToSlideViewController alloc] initWithQuestion:self.question delegate:self] autorelease];
+	self.moveQuestionToSlideSheetController = [[[MoveQuestionToSlideSheetController alloc] initWithQuestion:self.question delegate:self] autorelease];
 }
 
 - (void)moveQuestionToSlideDidEnd:(NSInteger)returnCode
 {
-	self.moveQuestionToSlideViewController = nil;
+	self.moveQuestionToSlideSheetController = nil;
 }
 
 - (IBAction)removeQuestionAction:(id)sender

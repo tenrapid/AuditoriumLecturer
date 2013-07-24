@@ -6,18 +6,18 @@
 //  Copyright (c) 2013 Matthias Rahne. All rights reserved.
 //
 
-#import "AnswersEditViewController.h"
-#import "AnswerEditViewController.h"
+#import "AnswerEditorViewController.h"
+#import "AnswerEditorItemViewController.h"
 #import "Answer.h"
 #import "Question.h"
 
-NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewHeightDidChangeNotification";
+NSString * const AnswerEditorViewHeightDidChangeNotification = @"AnswerEditorViewHeightDidChangeNotification";
 
 
-@interface AnswersEditViewController ()
+@interface AnswerEditorViewController ()
 {
 	NSArray *answers;
-	NSMutableArray *answerEditViewControllers;
+	NSMutableArray *answerEditorItemViewControllers;
 	NSMutableDictionary *correctAnswerRadios;
 	IBOutlet NSView *correctAnswerLabel;
 }
@@ -27,7 +27,7 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 @end
 
 
-@implementation AnswersEditViewController
+@implementation AnswerEditorViewController
 
 @synthesize question;
 
@@ -35,7 +35,7 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-		answerEditViewControllers = [[NSMutableArray alloc] init];
+		answerEditorItemViewControllers = [[NSMutableArray alloc] init];
 		correctAnswerRadios = [[NSMutableDictionary alloc] init];
 		[self addObserver:self forKeyPath:@"question.type" options:0 context:nil];
     }
@@ -47,12 +47,12 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 {
 	[self removeObserver:self forKeyPath:@"question.type"];
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-	for (NSViewController *viewController in answerEditViewControllers) {
-		[notificationCenter removeObserver:self name:AnswerEditViewHeightDidChangeNotification object:[viewController view]];
+	for (NSViewController *viewController in answerEditorItemViewControllers) {
+		[notificationCenter removeObserver:self name:AnswerEditorItemViewHeightDidChangeNotification object:[viewController view]];
 		[[viewController view] removeFromSuperview];
 	}
 	[correctAnswerRadios release];
-	[answerEditViewControllers release];
+	[answerEditorItemViewControllers release];
 	[answers release];
 	[super dealloc];
 }
@@ -65,25 +65,25 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 		[radio removeFromSuperview];
 	}
 	[correctAnswerRadios removeAllObjects];
-	for (NSViewController *viewController in answerEditViewControllers) {
-		[notificationCenter removeObserver:self name:AnswerEditViewHeightDidChangeNotification object:viewController];
+	for (NSViewController *viewController in answerEditorItemViewControllers) {
+		[notificationCenter removeObserver:self name:AnswerEditorItemViewHeightDidChangeNotification object:viewController];
 		[viewController commitEditing];
 		[[viewController view] removeFromSuperview];
 	}
-	[answerEditViewControllers removeAllObjects];
+	[answerEditorItemViewControllers removeAllObjects];
 	
 	[answers release];
 	answers = [_answers mutableCopy];
 
 	for (Answer *answer in answers) {
-		AnswerEditViewController *viewController = [[AnswerEditViewController alloc] initWithAnswer:answer];
-		[answerEditViewControllers addObject:viewController];
+		AnswerEditorItemViewController *viewController = [[AnswerEditorItemViewController alloc] initWithAnswer:answer];
+		[answerEditorItemViewControllers addObject:viewController];
 
 		NSView *view = [viewController view];
 		[view setFrame:NSMakeRect(0, 0, self.view.frame.size.width, view.frame.size.height)];
 		[self.view addSubview:view];
 		
-		[notificationCenter addObserver:self selector:@selector(answerEditViewHeightDidChange:) name:AnswerEditViewHeightDidChangeNotification object:viewController];
+		[notificationCenter addObserver:self selector:@selector(answerEditorItemViewHeightDidChange:) name:AnswerEditorItemViewHeightDidChangeNotification object:viewController];
 		[viewController release];
 	}
 	
@@ -91,8 +91,8 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 		// set the answers' question and implicitly update the view height
 		self.question = [answers[0] question];
 		// hide minus button if there is only one answer
-		AnswerEditViewController *answerEditViewController = answerEditViewControllers[0];
-		[answerEditViewController.minusButton setHidden:[answers count] == 1];
+		AnswerEditorItemViewController *answerEditorItemViewController = answerEditorItemViewControllers[0];
+		[answerEditorItemViewController.minusButton setHidden:[answers count] == 1];
 	}
 
 	[[self.view window] recalculateKeyViewLoop];
@@ -130,8 +130,8 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 {
 	if ([keyPath isEqualToString:@"question.type"]) {
 		if (self.question.type == QuestionSingleChoiceType) {
-			for (AnswerEditViewController *answerEditViewController in answerEditViewControllers) {
-				Answer *answer = answerEditViewController.representedObject;
+			for (AnswerEditorItemViewController *viewController in answerEditorItemViewControllers) {
+				Answer *answer = viewController.representedObject;
 				NSButton *radio = [[NSButton alloc] init];
 				[radio setButtonType:NSRadioButton];
 				[radio setTitle:@""];
@@ -168,7 +168,7 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 	float height = 26;
 
 	float originX = self.question.type == QuestionSingleChoiceType ? 22 : 0;
-	for (AnswerEditViewController *viewController in answerEditViewControllers) {
+	for (AnswerEditorItemViewController *viewController in answerEditorItemViewControllers) {
 		frame = viewController.view.frame;
 		frame.origin.y = height;
 		frame.origin.x = originX;
@@ -195,13 +195,13 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 	frame.size.height = height;
 
 	[self.view setFrame:frame];
-	[[NSNotificationCenter defaultCenter] postNotificationName:AnswersEditViewHeightDidChangeNotification object:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:AnswerEditorViewHeightDidChangeNotification object:self];
 //	NSLog(@"frame %f, %f, %f, %f", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
 
 	[self.view setNeedsDisplay:YES];
 }
 
-- (void)answerEditViewHeightDidChange:(NSNotification *)notification
+- (void)answerEditorItemViewHeightDidChange:(NSNotification *)notification
 {
 	[self updateViewHeight];
 }
@@ -211,7 +211,7 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 - (BOOL)commitEditing
 {
 	BOOL returnValue = [super commitEditing];
-	for (AnswerEditViewController *answerEditViewController in answerEditViewControllers) {
+	for (AnswerEditorItemViewController *answerEditViewController in answerEditorItemViewControllers) {
 		returnValue &= [answerEditViewController commitEditing];
 	}
 	if (self.question.type == QuestionMultipleChoiceType) {
@@ -227,7 +227,7 @@ NSString * const AnswersEditViewHeightDidChangeNotification = @"AnswersEditViewH
 - (void)discardEditing
 {
 	[super discardEditing];
-	for (AnswerEditViewController *answerEditViewController in answerEditViewControllers) {
+	for (AnswerEditorItemViewController *answerEditViewController in answerEditorItemViewControllers) {
 		[answerEditViewController discardEditing];
 	}
 }

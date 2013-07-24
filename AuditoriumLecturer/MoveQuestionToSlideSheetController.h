@@ -10,7 +10,7 @@
 
 @class Question, Slide;
 
-@interface MoveQuestionToSlideViewController : NSViewController
+@interface MoveQuestionToSlideSheetController : NSViewController
 {
 	id delegate;
 }

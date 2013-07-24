@@ -6,27 +6,27 @@
 //  Copyright (c) 2013 Matthias Rahne. All rights reserved.
 //
 
-#import "ListQuestionsController.h"
-#import "QuestionListViewController.h"
+#import "QuestionListController.h"
+#import "QuestionListItemViewController.h"
 #import "QuestionListSectionHeaderView.h"
 #import "Question.h"
 #import "Auditorium.h"
 #import "Slideshow.h"
 
-@interface ListQuestionsController ()
+@interface QuestionListController ()
 
-@property (assign) IBOutlet NSView *listQuestionsView;
+@property (assign) IBOutlet NSView *questionListView;
 @property (retain) NSArrayController *questions;
-@property (retain) NSMutableArray *questionListViewControllers;
-@property (retain) NSMutableArray *questionListGroupHeaderViews;
+@property (retain) NSMutableArray *questionListItemViewControllers;
+@property (retain) NSMutableArray *questionListSectionHeaderViews;
 
 @end
 
-@implementation ListQuestionsController
+@implementation QuestionListController
 
-@synthesize listQuestionsView;
+@synthesize questionListView;
 @synthesize questions;
-@synthesize questionListViewControllers;
+@synthesize questionListItemViewControllers;
 
 - (void)awakeFromNib
 {
@@ -38,8 +38,8 @@
 	[self.questions setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"slideNumber" ascending:YES], [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]]];
 	[self.questions fetch:self];
 
-	self.questionListViewControllers = [NSMutableArray array];
-	self.questionListGroupHeaderViews = [NSMutableArray array];
+	self.questionListItemViewControllers = [NSMutableArray array];
+	self.questionListSectionHeaderViews = [NSMutableArray array];
 	
 	[self addObserver:self forKeyPath:@"questions.arrangedObjects" options:0 context:nil];
 	[[Auditorium sharedInstance] addObserver:self forKeyPath:@"event" options:0 context:nil];
@@ -52,8 +52,8 @@
 	[[Auditorium sharedInstance] removeObserver:self forKeyPath:@"event"];
 	[[Slideshow sharedInstance] removeObserver:self forKeyPath:@"slideIdentifierToSlideNumberMap"];
 	self.questions = nil;
-	self.questionListViewControllers = nil;
-	self.questionListGroupHeaderViews = nil;
+	self.questionListItemViewControllers = nil;
+	self.questionListSectionHeaderViews = nil;
 	[super dealloc];
 }
 
@@ -77,14 +77,14 @@
 
 - (void)update
 {
-	for (QuestionListViewController *viewController in self.questionListViewControllers) {
+	for (QuestionListItemViewController *viewController in self.questionListItemViewControllers) {
 		[viewController.view removeFromSuperviewWithoutNeedingDisplay];
 	}
-	[self.questionListViewControllers removeAllObjects];
-	for (NSView *view in self.questionListGroupHeaderViews) {
+	[self.questionListItemViewControllers removeAllObjects];
+	for (NSView *view in self.questionListSectionHeaderViews) {
 		[view removeFromSuperviewWithoutNeedingDisplay];
 	}
-	[self.questionListGroupHeaderViews removeAllObjects];
+	[self.questionListSectionHeaderViews removeAllObjects];
 
 	NSArray *sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"slideNumber" ascending:YES], [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES]];
 	NSArray *questionsSorted = [self.questions.arrangedObjects sortedArrayUsingDescriptors:sortDescriptors];
@@ -95,7 +95,7 @@
 		if (question.slideNumber.integerValue != slideNumber) {
 			slideNumber = question.slideNumber.integerValue;
 			height -= height ? 1 : 0;
-			NSRect frame = NSMakeRect(0, height, listQuestionsView.frame.size.width, 19);
+			NSRect frame = NSMakeRect(0, height, questionListView.frame.size.width, 19);
 			QuestionListSectionHeaderView *view = [[[QuestionListSectionHeaderView alloc] initWithFrame:frame] autorelease];
 			if (slideNumber) {
 				view.textField.stringValue = [NSString stringWithFormat:@"Folie %li", (long)slideNumber];
@@ -103,25 +103,25 @@
 			else {
 				view.textField.stringValue = [NSString stringWithFormat:@"nicht zugeordnet"];
 			}
-			[self.listQuestionsView addSubview:view];
-			[self.questionListGroupHeaderViews addObject:view];
+			[self.questionListView addSubview:view];
+			[self.questionListSectionHeaderViews addObject:view];
 			height += frame.size.height;
 		}
 //		NSLog(@"%@ %@ %@ %@", question.slideIdentifier, question.slideNumber, question.order, question.text);
-		QuestionListViewController *viewController = [[[QuestionListViewController alloc] initWithQuestion:question] autorelease];
+		QuestionListItemViewController *viewController = [[[QuestionListItemViewController alloc] initWithQuestion:question] autorelease];
 		NSRect frame = viewController.view.frame;
 		frame.origin.x = 0;
 		frame.origin.y = height;
-		frame.size.width = listQuestionsView.frame.size.width;
+		frame.size.width = questionListView.frame.size.width;
 		[viewController.view setFrame:frame];
-		[self.listQuestionsView addSubview:viewController.view];
-		[self.questionListViewControllers addObject:viewController];
+		[self.questionListView addSubview:viewController.view];
+		[self.questionListItemViewControllers addObject:viewController];
 		height += frame.size.height;
 	}
 
-	NSSize size = self.listQuestionsView.frame.size;
+	NSSize size = self.questionListView.frame.size;
 	size.height = height;
-	[self.listQuestionsView setFrameSize:size];
+	[self.questionListView setFrameSize:size];
 }
 
 @end
