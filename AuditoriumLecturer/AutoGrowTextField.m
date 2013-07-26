@@ -22,16 +22,16 @@ NSString * const AutoGrowTextFieldHeightDidChangeNotification = @"AutoGrowTextFi
 
 - (void)setFrame:(NSRect)frameRect
 {
-	BOOL update = frameRect.size.width != self.frame.size.width && ![self.stringValue isEqualToString:@""];
-	if (update) {
-		CGFloat newHeight = [self neededFrameHeight:frameRect];
-		update = frameRect.size.height != newHeight;
+//	BOOL update = frameRect.size.width != self.frame.size.width && ![self.stringValue isEqualToString:@""];
+//	if (update) {
+//		CGFloat newHeight = [self neededFrameHeight:frameRect];
+//		update = frameRect.size.height != newHeight;
 //		frameRect.size.height = [self neededFrameHeight:frameRect];
-	}
+//	}
 	[super setFrame:frameRect];
-	if (update) {
+//	if (update) {
 //		[[NSNotificationCenter defaultCenter] postNotificationName:AutoGrowTextFieldHeightDidChangeNotification object:self];
-	}
+//	}
 }
 
 - (void)textDidChange:(NSNotification *)aNotification
@@ -49,6 +49,7 @@ NSString * const AutoGrowTextFieldHeightDidChangeNotification = @"AutoGrowTextFi
 
 - (CGFloat)neededFrameHeight:(NSRect)bounds
 {
+	bounds.size.width -= 4; // take border width into account
 	bounds.size.height = CGFLOAT_MAX;
 	[self stringValue];
 	return [self.cell cellSizeForBounds:bounds].height;
