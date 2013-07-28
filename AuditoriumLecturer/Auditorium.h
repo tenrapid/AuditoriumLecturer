@@ -12,6 +12,8 @@
 
 @class Slide, AuditoriumNetworkManager, AuditoriumNetworkManagerDelegateProtocol, AuditoriumObject, AuditoriumEvent, Event, LoggedInUser;
 
+extern NSString * const AuditoriumSyncFinishedNotification;
+
 @interface Auditorium : NSObject <AuditoriumNetworkManagerDelegateProtocol>
 
 @property (assign) BOOL loggedIn;

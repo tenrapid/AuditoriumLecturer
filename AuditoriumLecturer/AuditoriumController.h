@@ -12,6 +12,6 @@
 @interface AuditoriumController : NSObject
 
 - (IBAction)syncAction:(id)sender;
-- (IBAction)sendToolbarItemPressed:(id)sender;
+- (IBAction)sendAction:(id)sender;
 
 @end

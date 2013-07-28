@@ -25,6 +25,8 @@ typedef enum SyncState {
 	FinishSyncSyncState = 3
 } SyncState;
 
+NSString * const AuditoriumSyncFinishedNotification = @"AuditoriumSyncFinishedNotification";
+
 @interface Auditorium ()
 {
 	NSMutableArray *eventsToPull;
@@ -211,12 +213,12 @@ typedef enum SyncState {
 			self.syncing = YES;
 			self.syncInfoSheetController = [[[SyncInfoSheetController alloc] init] autorelease];
 			[self.syncInfoSheetController setMessage:@"Lade Veranstaltungen…"];
-			[self.networkManager eventsForUser:self.loggedInUser];
+			[self eventsForUser];
 			break;
 			
 		case SyncEventsSyncState:
 			self.syncState = SyncQuestionsSyncState;
-			[self syncQuestions];
+			[self pullPushQuestionsForEvents];
 			break;
 			
 		case SyncQuestionsSyncState:
@@ -251,6 +253,8 @@ typedef enum SyncState {
 			if (![context save:&error]) {
 				[NSApp presentError:error];
 			}
+
+			[[NSNotificationCenter defaultCenter] postNotificationName:AuditoriumSyncFinishedNotification object:self];
 			break;
 	}
 }
@@ -271,6 +275,11 @@ typedef enum SyncState {
 	[eventsSyncing removeAllObjects];
 	self.syncState = FinishSyncSyncState;
 	[self updateSyncState];
+}
+
+- (void)eventsForUser
+{
+	[self.networkManager eventsForUser:self.loggedInUser];
 }
 
 - (void)didEventsForUser:(NSArray *)serverEvents
@@ -326,7 +335,8 @@ typedef enum SyncState {
 	
 	[context processPendingChanges];
 	[context.undoManager enableUndoRegistration];
-	
+
+	// decide if events are in conflict, should be pulled from the server or pushed to the server
 	for (NSDictionary *serverEvent in serverEvents) {
 		Event *localEvent = [localEvents objectForKey:[serverEvent objectForKey:@"auditoriumId"]];
 		NSInteger localVersion = localEvent.version.integerValue;
@@ -360,7 +370,7 @@ typedef enum SyncState {
 	[self updateSyncState];
 }
 
-- (void)syncQuestions
+- (void)pullPushQuestionsForEvents
 {
 	NSLog(@"pull %@\npush %@\nconflict %@", eventsToPull, eventsToPush, eventsInConflict);
 	
@@ -512,7 +522,7 @@ typedef enum SyncState {
 	else if (resolve == ResolveThroughPush) {
 		[eventsToPush addObject:event];
 	}
-	[self syncQuestions];
+	[self pullPushQuestionsForEvents];
 }
 
 #pragma mark Sending current slide to server

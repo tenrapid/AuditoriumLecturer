@@ -115,6 +115,23 @@
 	[self.auditorium sync];
 }
 
+- (IBAction)sendAction:(id)sender
+{
+	if (!self.isSending && !self.auditorium.syncing && self.auditorium.event.modified.boolValue) {
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startSendingAfterSync) name:AuditoriumSyncFinishedNotification object:self.auditorium];
+		[self.auditorium sync];
+	}
+	else {
+		self.sending = !self.isSending;
+	}
+}
+
+- (void)startSendingAfterSync
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:AuditoriumSyncFinishedNotification object:self.auditorium];
+	self.sending = YES;
+}
+
 - (BOOL)validateMenuItem:(NSMenuItem *)item {
 	// validate "Synchronize" menu item
 	if (item.action == @selector(syncAction:)) {
@@ -127,11 +144,6 @@
 {
 	[sendToolbarItem setImage:[NSImage imageNamed:pulsingState < 2 ? @"TB3_Record-Pressed" : @"TB3_Record-Pressed-Off"]];
 	pulsingState = pulsingState < 2 ? pulsingState + 1 : 0;
-}
-
-- (IBAction)sendToolbarItemPressed:(id)sender
-{
-	self.sending = !self.isSending;
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
